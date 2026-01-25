@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Diabetes Advisor - DiabetCare AI Wireframe</title>
+    <meta name="description" content="24/7 AI-powered diabetes advisor chatbot with multilingual support">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DiabetCare">
+
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192x192.png">
+
+    <!-- Premium Stylesheet -->
+    <link rel="stylesheet" href="css/premium-wireframe.css">
+</head>
+<body>
+    <!-- Header Container (Loaded via JavaScript) -->
+    <div id="header-container"></div>
+
+    <div class="container">
+
+        <main class="app-content" style="padding-bottom: 8rem;">
+            <section class="chat-header">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;" role="img" aria-label="AI Robot">🤖</div>
+                <h3 style="margin-bottom: 0.25rem;">DiabetCare AI Advisor</h3>
+                <p style="font-size: 0.9rem; color: #6b7280;">Powered by AWS Bedrock Claude 3</p>
+                <div class="language-badges">
+                    <span class="language-badge" onclick="changeLanguage('en')">English</span>
+                    <span class="language-badge inactive" onclick="changeLanguage('hi')">हिन्दी</span>
+                </div>
+            </section>
+
+            <section class="chat-conversation">
+                <!-- AI Message -->
+                <div class="chat-message">
+                    <div class="chat-avatar ai" role="img" aria-label="AI Assistant">🤖</div>
+                    <div class="chat-message-content">
+                        <div class="chat-bubble">
+                            <p>Hello Rajesh! I'm your AI diabetes advisor. I can help you with:</p>
+                            <ul style="margin-top: 0.75rem; padding-left: 1.25rem; line-height: 1.7;">
+                                <li>Blood sugar management tips</li>
+                                <li>Diet and meal planning</li>
+                                <li>Exercise recommendations</li>
+                                <li>Understanding your glucose trends</li>
+                                <li>Medication reminders</li>
+                            </ul>
+                            <p style="margin-top: 0.75rem;">How can I help you today?</p>
+                        </div>
+                        <div class="chat-timestamp">Just now</div>
+                    </div>
+                </div>
+
+                <!-- User Message -->
+                <div class="chat-message user">
+                    <div class="chat-avatar user" role="img" aria-label="User">👤</div>
+                    <div class="chat-message-content">
+                        <div class="chat-bubble">
+                            <p>My fasting glucose was 145 mg/dL this morning. Is that too high?</p>
+                        </div>
+                        <div class="chat-timestamp">2 minutes ago</div>
+                    </div>
+                </div>
+
+                <!-- AI Response -->
+                <div class="chat-message">
+                    <div class="chat-avatar ai" role="img" aria-label="AI Assistant">🤖</div>
+                    <div class="chat-message-content">
+                        <div class="chat-bubble">
+                            <p>A fasting glucose of 145 mg/dL is indeed higher than the target range. Here's what you should know:</p>
+
+                            <div class="chat-info-box">
+                                <p style="font-weight: 500; margin-bottom: 0.5rem;"><span role="img" aria-label="Chart">📊</span> Fasting Glucose Ranges:</p>
+                                <ul>
+                                    <li>Normal: 70-100 mg/dL</li>
+                                    <li>Prediabetes: 100-125 mg/dL</li>
+                                    <li>Diabetes: ≥126 mg/dL</li>
+                                </ul>
+                            </div>
+
+                            <p style="margin-bottom: 0.75rem;"><strong>Your reading (145 mg/dL) is above target.</strong> Here are some tips:</p>
+
+                            <div class="chat-info-box success">
+                                <p style="font-weight: 500; margin-bottom: 0.5rem;"><span role="img" aria-label="Light bulb">💡</span> Immediate Actions:</p>
+                                <ul>
+                                    <li>Stay hydrated (drink water)</li>
+                                    <li>Take a 15-20 minute walk</li>
+                                    <li>Avoid sugary breakfast</li>
+                                    <li>Check your medication timing</li>
+                                </ul>
+                            </div>
+
+                            <p>Since this is a single reading, I recommend:</p>
+                            <ol style="padding-left: 1.25rem; line-height: 1.7; margin-top: 0.5rem;">
+                                <li>Monitor for 2-3 more days</li>
+                                <li>If consistently >130, contact your doctor</li>
+                                <li>Review yesterday's dinner (late eating? high carbs?)</li>
+                            </ol>
+
+                            <p style="margin-top: 1rem; font-size: 0.9rem; color: #6b7280; font-style: italic;">Would you like meal suggestions for better fasting glucose?</p>
+                        </div>
+                        <div class="chat-timestamp">Just now</div>
+                    </div>
+                </div>
+
+                <!-- Quick Reply Suggestions -->
+                <div class="quick-replies">
+                    <p class="quick-replies-label">Quick replies:</p>
+                    <div class="quick-reply-buttons">
+                        <button class="quick-reply-btn">Yes, show meal plans</button>
+                        <button class="quick-reply-btn">Exercise tips</button>
+                        <button class="quick-reply-btn">About medication</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features-info">
+                <h4><span role="img" aria-label="Sparkles">✨</span> AI Advisor Features</h4>
+                <ul>
+                    <li>Personalized advice based on your glucose history</li>
+                    <li>Multilingual support (English, Hindi, Tamil, Telugu, Bengali)</li>
+                    <li>24/7 availability - no waiting for appointments</li>
+                    <li>Evidence-based recommendations from medical guidelines</li>
+                    <li>Privacy-first - conversations are encrypted</li>
+                </ul>
+            </section>
+
+            <section class="disclaimer white-text">
+                <p>
+                    <strong>Medical Disclaimer:</strong> This AI advisor provides general information and suggestions only.
+                    It is NOT a substitute for professional medical advice, diagnosis, or treatment.
+                    Always consult your doctor for medical decisions.
+                </p>
+            </section>
+        </main>
+
+        <!-- Chat Input (Fixed at Bottom, Above Bottom Nav) -->
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <input type="text" placeholder="Type your question..." class="chat-input" />
+                <button class="chat-send-btn">📤</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Container (Loaded via JavaScript) -->
+    <div id="footer-container"></div>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator" class="offline-indicator">
+        <span class="offline-icon">📡</span>
+        <span class="offline-text">You're offline</span>
+    </div>
+
+    <script src="js/wireframe.js"></script>
+</body>
+</html>

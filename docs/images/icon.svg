@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="64" fill="url(#grad)"/>
+
+  <!-- Heart symbol (diabetes care) -->
+  <path d="M256 430c-5 0-10-2-13-5-60-55-115-105-115-165 0-50 35-85 80-85 25 0 42 12 48 25 6-13 23-25 48-25 45 0 80 35 80 85 0 60-55 110-115 165-3 3-8 5-13 5z"
+        fill="white"
+        opacity="0.95"/>
+
+  <!-- Medical cross -->
+  <g transform="translate(256, 180)">
+    <rect x="-15" y="-60" width="30" height="120" fill="white" rx="4"/>
+    <rect x="-60" y="-15" width="120" height="30" fill="white" rx="4"/>
+  </g>
+
+  <!-- Glucose drop -->
+  <path d="M350 350c0 25-20 45-45 45s-45-20-45-45c0-15 20-40 45-65 25 25 45 50 45 65z"
+        fill="white"
+        opacity="0.9"/>
+
+  <!-- Text -->
+  <text x="256" y="480"
+        font-family="Arial, sans-serif"
+        font-size="60"
+        font-weight="bold"
+        fill="white"
+        text-anchor="middle">DiabetCare</text>
+</svg>

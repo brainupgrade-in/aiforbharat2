@@ -1,0 +1,20 @@
+{
+  "name": "ai-for-bharat-2",
+  "version": "1.0.0",
+  "description": "**Team Name:** [To be filled] **Problem Statement:** Design an AI solution that improves efficiency, understanding, or support within healthcare ecosystems **Team Leader Name:** [To be filled] **Focus Area:** Diabetes Management & Screening",
+  "main": "capture-fullpage-screenshots.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "screenshots": "node capture-fullpage-screenshots.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "puppeteer": "^24.36.0"
+  }
+}

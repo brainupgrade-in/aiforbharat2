@@ -1,0 +1,496 @@
+# AI for Bharat - DiabetCare AI Healthcare Project
+# Git Ignore File
+
+# ============================================
+# Python
+# ============================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.virtualenv/
+pipenv/
+.python-version
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# IPython
+profile_default/
+ipython_config.py
+
+# PyCharm
+.idea/
+
+# ============================================
+# Machine Learning / AI
+# ============================================
+# Trained models (large files)
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.pt
+*.pth
+*.ckpt
+*.pb
+*.tflite
+*.onnx
+models/*.h5
+models/*.pkl
+models/*.pt
+models/saved_model/
+checkpoints/
+*.weights
+
+# TensorFlow
+*.tfevents.*
+logs/
+tensorboard/
+
+# PyTorch
+lightning_logs/
+
+# Datasets (large files - use Git LFS or S3 instead)
+data/raw/
+data/processed/
+datasets/
+*.csv
+*.tsv
+*.parquet
+*.tfrecord
+*.npy
+*.npz
+
+# Medical imaging large files (fundus photos, DR scans)
+fundus_images/
+retina_scans/
+medical_images/
+patient_data/
+*.dicom
+*.dcm
+*.nii
+*.nii.gz
+
+# Exception: Keep small sample/test datasets
+!data/samples/
+!data/test/
+
+# Model artifacts
+mlruns/
+mlartifacts/
+wandb/
+.mlflow/
+
+# ============================================
+# React / Node.js / JavaScript
+# ============================================
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.npm
+.eslintcache
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output
+
+# Production build
+build/
+dist/
+out/
+.next/
+.nuxt/
+.cache/
+
+# React / Vite specific
+.vite/
+vite.config.js.timestamp-*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Parcel
+.parcel-cache/
+
+# ============================================
+# AWS Amplify
+# ============================================
+# Amplify Gen 2
+amplify/
+.amplify/
+amplify-*
+aws-exports.js
+amplifyconfiguration.json
+amplifyconfiguration.dart
+amplify_outputs.json
+
+# Amplify backend
+amplify/backend/amplify-meta.json
+amplify/backend/awscloudformation/
+amplify/backend/.temp/
+amplify/#current-cloud-backend/
+amplify/team-provider-info.json
+
+# Amplify CLI
+.amplifyrc
+
+# ============================================
+# AWS
+# ============================================
+# AWS SAM
+.aws-sam/
+samconfig.toml
+
+# AWS credentials (NEVER commit these!)
+.aws/
+*.pem
+*.key
+*-key.json
+credentials.json
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform.lock.hcl
+
+# ============================================
+# Environment Variables & Secrets
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.test
+secrets.json
+config/secrets.yml
+*.secret
+*.private
+
+# API keys and tokens (healthcare data security)
+api_keys.json
+tokens.json
+bedrock_config.json
+rekognition_config.json
+
+# ============================================
+# IDEs and Editors
+# ============================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA / Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# NetBeans
+nbproject/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Vim
+*.swp
+*.swo
+*~
+.vim/
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# Operating Systems
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# Documentation
+# ============================================
+# Compiled documentation
+docs/_build/
+docs/.doctrees/
+site/
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
+
+# ============================================
+# Logs and Databases
+# ============================================
+*.log
+logs/
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# Exception: Keep schema files
+!schema.sql
+!migrations/*.sql
+
+# ============================================
+# Temporary Files
+# ============================================
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+
+# ============================================
+# Compressed Files
+# ============================================
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Exception: Keep project documentation archives
+!docs/*.pdf
+!research/*.pdf
+
+# ============================================
+# Application Specific
+# ============================================
+# PowerPoint temporary files
+~$*.ppt*
+~$*.pptx
+.~lock.*
+
+# Audio files (if recording for accessibility features)
+*.wav
+*.mp3
+*.flac
+*.ogg
+
+# Video files (demos, tutorials)
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Exception: Keep demo videos
+!demos/*.mp4
+!docs/videos/*.mp4
+
+# ============================================
+# Claude Code
+# ============================================
+# Claude specific (sensitive or large outputs)
+.claude/conversations/
+.claude/outputs/
+.claude/*.log
+
+# ============================================
+# DiabetCare AI - Project Specific
+# ============================================
+# EXCEPTION: Allow docs/ folder for GitHub Pages hosting
+!docs/
+!docs/**/*
+!docs/css/**/*
+!docs/js/**/*
+!docs/images/**/*
+!docs/*.html
+!docs/*.md
+!docs/README.md
+
+# EXCEPTION: Allow screenshots folder for app demos
+!screenshots/
+!screenshots/**/*
+!screenshots/*.png
+!screenshots/*.jpg
+!screenshots/*.md
+
+# EXCEPTION: Allow SVG diagrams and slides
+!*.svg
+!diagrams/*.svg
+!slides/*.svg
+
+# EXCEPTION: Allow research PDFs
+!research/
+!research/**/*
+!research/*.pdf
+!research/*.md
+
+# EXCEPTION: Allow markdown documentation
+!*.md
+!docs/*.md
+!README.md
+!CLAUDE.md
+!TECH_STACK.md
+!IDEA_SUBMISSION.md
+!DIABETES_FOCUS.md
+!FUNDING_VALIDATION.md
+!PROTOTYPE_COST_BREAKDOWN.md
+!MVP_BUDGET_FINAL.md
+
+# EXCEPTION: Allow presentation
+!*.pptx
+!"Idea Submission _ AWS AI for Bharat Hackathon.pptx"
+
+# EXCEPTION: Allow Puppeteer screenshot script
+!capture-fullpage-screenshots.js
+
+# EXCEPTION: Allow package.json
+!package.json
+
+# Hackathon submission artifacts
+submission/
+demo_recordings/
+presentation_final/
+
+# Indian food database (sensitive nutrition data)
+indian_food_db/
+nutrition_data/
+
+# Patient test data (anonymized but still private)
+test_patients/
+user_test_results/
+
+# Clinical validation data
+clinical_study/
+validation_results/
+
+# ============================================
+# Healthcare Data Privacy
+# ============================================
+# HIPAA / DPDP Act 2023 compliance - NO PATIENT DATA
+patient_*.csv
+patient_*.json
+health_records/
+phi_data/
+pii_data/
+anonymized_data/
+clinical_data/
+
+# Fundus images (DR screening test data)
+test_fundus/
+sample_retina/
+
+# Glucose logs (sample test data)
+glucose_samples/
+test_logs/

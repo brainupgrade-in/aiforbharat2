@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glucose Tracker - DiabetCare AI Wireframe</title>
+    <meta name="description" content="Log and track your blood glucose levels with smart trend analysis">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DiabetCare">
+
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192x192.png">
+
+    <!-- Premium Stylesheet -->
+    <link rel="stylesheet" href="css/premium-wireframe.css">
+</head>
+<body>
+    <!-- Header Container (Loaded via JavaScript) -->
+    <div id="header-container"></div>
+
+    <div class="container">
+
+        <main class="app-content">
+            <section class="form-section">
+                <h2>Record Glucose Reading</h2>
+                <form class="glucose-form">
+                    <div class="form-group">
+                        <label>Glucose Level (mg/dL)</label>
+                        <input type="number" class="form-input form-input-large" placeholder="e.g., 126" required min="40" max="600" />
+                        <span class="form-hint">Normal fasting: 70-100 mg/dL</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Meal Context</label>
+                        <select class="form-input" required>
+                            <option value="">Select...</option>
+                            <option value="fasting">Fasting (before breakfast)</option>
+                            <option value="before-meal">Before meal</option>
+                            <option value="after-meal">1-2 hours after meal</option>
+                            <option value="random">Random</option>
+                            <option value="bedtime">Before bedtime</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date & Time</label>
+                        <input type="datetime-local" class="form-input" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes (optional)</label>
+                        <textarea class="form-input" placeholder="e.g., Felt dizzy, had heavy breakfast" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Save Reading</button>
+                </form>
+            </section>
+
+            <section class="recent-readings">
+                <h3>Recent Readings</h3>
+                <div class="reading-list">
+                    <div class="reading-item">
+                        <div class="reading-item-content">
+                            <div class="reading-value-wrapper">
+                                <div class="reading-value normal">126 mg/dL</div>
+                                <div class="reading-meta">Fasting • Today 7:30 AM</div>
+                            </div>
+                            <div class="reading-badge">Normal</div>
+                        </div>
+                    </div>
+
+                    <div class="reading-item">
+                        <div class="reading-item-content">
+                            <div class="reading-value-wrapper">
+                                <div class="reading-value warning">168 mg/dL</div>
+                                <div class="reading-meta">After meal • Yesterday 9:00 PM</div>
+                            </div>
+                            <div class="reading-badge high">High</div>
+                        </div>
+                    </div>
+
+                    <div class="reading-item">
+                        <div class="reading-item-content">
+                            <div class="reading-value-wrapper">
+                                <div class="reading-value normal">118 mg/dL</div>
+                                <div class="reading-meta">Fasting • Yesterday 7:15 AM</div>
+                            </div>
+                            <div class="reading-badge">Normal</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="tips">
+                <h4>💡 Tips for Accurate Readings</h4>
+                <ul>
+                    <li>Wash and dry hands before testing</li>
+                    <li>Fasting readings should be taken after 8 hours of no food</li>
+                    <li>Post-meal readings should be 1-2 hours after eating</li>
+                    <li>Log readings at consistent times daily</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer Container (Loaded via JavaScript) -->
+    <div id="footer-container"></div>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator" class="offline-indicator">
+        <span class="offline-icon">📡</span>
+        <span class="offline-text">You're offline</span>
+    </div>
+
+    <script src="js/wireframe.js"></script>
+</body>
+</html>

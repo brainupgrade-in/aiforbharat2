@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DiabetCare AI Wireframe</title>
+    <meta name="description" content="Your personal diabetes management dashboard with AI insights">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DiabetCare">
+
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192x192.png">
+
+    <!-- Premium Stylesheet -->
+    <link rel="stylesheet" href="css/premium-wireframe.css">
+</head>
+<body>
+    <!-- Header Container (Loaded via JavaScript) -->
+    <div id="header-container"></div>
+
+    <div class="container">
+
+        <main class="app-content">
+            <section class="dashboard-greeting">
+                <h2>Good Morning, Rajesh!</h2>
+                <p class="date">Saturday, January 25, 2026</p>
+            </section>
+
+            <section class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Latest Glucose</div>
+                    <div class="stat-value">126 mg/dL</div>
+                    <div class="stat-time">2 hours ago (Fasting)</div>
+                    <div class="stat-indicator normal">✓ Within target</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">7-Day Average</div>
+                    <div class="stat-value">132 mg/dL</div>
+                    <div class="stat-trend">↓ 5% vs last week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">HbA1c (Est.)</div>
+                    <div class="stat-value">6.8%</div>
+                    <div class="stat-indicator warning">⚠ Borderline</div>
+                </div>
+            </section>
+
+            <section class="glucose-chart">
+                <h3>Glucose Trend (Last 7 Days)</h3>
+                <div class="placeholder-image" style="min-height: 300px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;" role="img" aria-label="Chart">📈</div>
+                        <p style="font-style: normal; color: var(--text-secondary); margin-bottom: 0.5rem;">Glucose Trend Chart</p>
+                        <p style="font-size: 0.75rem; color: var(--text-tertiary);">Line chart showing glucose readings over the last 7 days will appear here</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-grid">
+                    <a href="glucose-tracker.html" class="action-card">
+                        <div class="action-icon" role="img" aria-label="Chart">📊</div>
+                        <div class="action-label">Log Glucose</div>
+                    </a>
+                    <a href="meal-analyzer.html" class="action-card">
+                        <div class="action-icon" role="img" aria-label="Meal">🍽️</div>
+                        <div class="action-label">Analyze Meal</div>
+                    </a>
+                    <a href="retina-scan.html" class="action-card">
+                        <div class="action-icon" role="img" aria-label="Eye">👁️</div>
+                        <div class="action-label">Retina Scan</div>
+                    </a>
+                    <a href="chatbot.html" class="action-card">
+                        <div class="action-icon" role="img" aria-label="Robot">🤖</div>
+                        <div class="action-label">Ask AI Advisor</div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="insights">
+                <h3>AI Insights</h3>
+                <div class="insight-card">
+                    <div class="insight-icon" role="img" aria-label="Light bulb">💡</div>
+                    <div class="insight-content">
+                        <p><strong>Your glucose is 8% lower after morning walks.</strong></p>
+                        <p>Try to walk for 20-30 minutes after breakfast to improve control.</p>
+                    </div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon" role="img" aria-label="Warning">⚠️</div>
+                    <div class="insight-content">
+                        <p><strong>High carb meals detected on weekends.</strong></p>
+                        <p>Consider reducing rice portions to 1 cup to stay within target.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reminders">
+                <h3>Upcoming</h3>
+                <div class="reminder-item">
+                    <div class="reminder-time">Today, 8:00 PM</div>
+                    <div class="reminder-text">💊 Take Metformin (500mg)</div>
+                </div>
+                <div class="reminder-item">
+                    <div class="reminder-time">Tomorrow, 9:00 AM</div>
+                    <div class="reminder-text">🩸 Fasting glucose check</div>
+                </div>
+                <div class="reminder-item">
+                    <div class="reminder-time">Feb 1, 2026</div>
+                    <div class="reminder-text">👨‍⚕️ Dr. Sharma checkup appointment</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer Container (Loaded via JavaScript) -->
+    <div id="footer-container"></div>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator" class="offline-indicator">
+        <span class="offline-icon">📡</span>
+        <span class="offline-text">You're offline</span>
+    </div>
+
+    <script src="js/wireframe.js"></script>
+</body>
+</html>

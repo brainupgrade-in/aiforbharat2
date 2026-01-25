@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F4C81;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1E88E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00C9A7;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.95" />
+      <stop offset="100%" style="stop-color:#FFFFFF;stop-opacity:0.98" />
+    </linearGradient>
+
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#bgGradient)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="150" cy="150" r="100" fill="#FFFFFF" opacity="0.1"/>
+  <circle cx="1800" cy="950" r="120" fill="#FFFFFF" opacity="0.1"/>
+
+  <!-- Header -->
+  <text x="960" y="100" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    FUNDING REQUIREMENTS
+  </text>
+  <text x="960" y="160" font-family="Arial, sans-serif" font-size="32" fill="#E0F2FE" text-anchor="middle">
+    DiabetCare AI - Seed Round Investment Opportunity
+  </text>
+
+  <!-- Main Card -->
+  <rect x="100" y="220" width="1720" height="780" rx="24" fill="url(#cardGradient)" filter="drop-shadow(0 10px 30px rgba(0,0,0,0.2))"/>
+
+  <!-- Funding Amount Box -->
+  <rect x="150" y="280" width="800" height="200" rx="16" fill="url(#primaryGradient)"/>
+  <text x="550" y="340" font-family="Arial, sans-serif" font-size="28" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    SEED FUNDING REQUIRED
+  </text>
+  <text x="550" y="420" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    ₹2.5 Cr
+  </text>
+  <text x="550" y="460" font-family="Arial, sans-serif" font-size="24" fill="#E0F2FE" text-anchor="middle">
+    12-18 Month Runway
+  </text>
+
+  <!-- Valuation Box -->
+  <rect x="970" y="280" width="800" height="200" rx="16" fill="url(#accentGradient)"/>
+  <text x="1370" y="340" font-family="Arial, sans-serif" font-size="28" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+    PRE-MONEY VALUATION
+  </text>
+  <text x="1370" y="420" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="#FFFFFF" text-anchor="middle">
+    ₹10 Cr
+  </text>
+  <text x="1370" y="450" font-family="Arial, sans-serif" font-size="22" fill="#E0F2FE" text-anchor="middle">
+    20% Equity Offer
+  </text>
+  <text x="1370" y="475" font-family="Arial, sans-serif" font-size="18" fill="#D1FAE5" text-anchor="middle">
+    OR Convertible Note (20% disc, ₹15 Cr cap)
+  </text>
+
+  <!-- Use of Funds Section -->
+  <text x="150" y="550" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#0F172A">
+    Use of Funds Breakdown
+  </text>
+
+  <!-- Fund allocation bars -->
+  <!-- AI/ML Development -->
+  <text x="150" y="610" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#334155">
+    AI/ML Development &amp; AWS Infrastructure
+  </text>
+  <rect x="150" y="625" width="820" height="35" rx="8" fill="#E2E8F0"/>
+  <rect x="150" y="625" width="574" height="35" rx="8" fill="#3B82F6"/>
+  <text x="450" y="648" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    ₹70L (28%)
+  </text>
+
+  <!-- Product Development -->
+  <text x="150" y="700" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#334155">
+    Product Development (React PWA + Backend)
+  </text>
+  <rect x="150" y="715" width="820" height="35" rx="8" fill="#E2E8F0"/>
+  <rect x="150" y="715" width="574" height="35" rx="8" fill="#8B5CF6"/>
+  <text x="450" y="738" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    ₹70L (28%)
+  </text>
+
+  <!-- Clinical Validation -->
+  <text x="150" y="790" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#334155">
+    Clinical Validation &amp; Regulatory (CDSCO)
+  </text>
+  <rect x="150" y="805" width="820" height="35" rx="8" fill="#E2E8F0"/>
+  <rect x="150" y="805" width="574" height="35" rx="8" fill="#10B981"/>
+  <text x="450" y="828" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    ₹70L (28%)
+  </text>
+
+  <!-- Marketing -->
+  <text x="150" y="880" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#334155">
+    Marketing &amp; User Acquisition
+  </text>
+  <rect x="150" y="895" width="820" height="35" rx="8" fill="#E2E8F0"/>
+  <rect x="150" y="895" width="246" height="35" rx="8" fill="#F59E0B"/>
+  <text x="290" y="918" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    ₹30L (12%)
+  </text>
+
+  <!-- Operations -->
+  <text x="150" y="970" font-family="Arial, sans-serif" font-size="22" font-weight="600" fill="#334155">
+    Operations &amp; Team (6 FTE)
+  </text>
+  <rect x="150" y="985" width="820" height="35" rx="8" fill="#E2E8F0"/>
+  <rect x="150" y="985" width="82" height="35" rx="8" fill="#EF4444"/>
+  <text x="208" y="1008" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF">
+    ₹10L (4%)
+  </text>
+
+  <!-- Key Metrics Section -->
+  <text x="1020" y="550" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#0F172A">
+    Financial Projections (Y1-Y3)
+  </text>
+
+  <!-- Metrics boxes -->
+  <rect x="1020" y="580" width="360" height="110" rx="12" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+  <text x="1200" y="615" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#1E40AF" text-anchor="middle">
+    Year 1 Revenue
+  </text>
+  <text x="1200" y="655" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#1E3A8A" text-anchor="middle">
+    ₹50L
+  </text>
+  <text x="1200" y="680" font-family="Arial, sans-serif" font-size="16" fill="#3B82F6" text-anchor="middle">
+    10K users @ ₹499/yr
+  </text>
+
+  <rect x="1410" y="580" width="360" height="110" rx="12" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/>
+  <text x="1590" y="615" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#065F46" text-anchor="middle">
+    Year 2 Revenue
+  </text>
+  <text x="1590" y="655" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#047857" text-anchor="middle">
+    ₹5 Cr
+  </text>
+  <text x="1590" y="680" font-family="Arial, sans-serif" font-size="16" fill="#059669" text-anchor="middle">
+    100K users @ ₹499/yr
+  </text>
+
+  <rect x="1020" y="720" width="360" height="110" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="1200" y="755" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#92400E" text-anchor="middle">
+    Year 3 Revenue
+  </text>
+  <text x="1200" y="795" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#78350F" text-anchor="middle">
+    ₹20 Cr
+  </text>
+  <text x="1200" y="820" font-family="Arial, sans-serif" font-size="16" fill="#D97706" text-anchor="middle">
+    400K users @ ₹499/yr
+  </text>
+
+  <rect x="1410" y="720" width="360" height="110" rx="12" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="1590" y="755" font-family="Arial, sans-serif" font-size="18" font-weight="600" fill="#3730A3" text-anchor="middle">
+    Expected ROI
+  </text>
+  <text x="1590" y="795" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#4338CA" text-anchor="middle">
+    8-10x
+  </text>
+  <text x="1590" y="820" font-family="Arial, sans-serif" font-size="16" fill="#6366F1" text-anchor="middle">
+    Exit by Year 4-5
+  </text>
+
+  <!-- Key Highlights -->
+  <text x="1020" y="880" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#0F172A">
+    Investment Highlights
+  </text>
+
+  <text x="1040" y="920" font-family="Arial, sans-serif" font-size="20" fill="#334155">
+    ✓ 225M TAM (diabetics + pre-diabetics in India)
+  </text>
+  <text x="1040" y="955" font-family="Arial, sans-serif" font-size="20" fill="#334155">
+    ✓ AI-first solution validated by global studies (92%+ DR accuracy)
+  </text>
+  <text x="1040" y="990" font-family="Arial, sans-serif" font-size="20" fill="#334155">
+    ✓ AWS partnership opportunity for co-marketing
+  </text>
+
+  <!-- Footer -->
+  <rect x="100" y="1005" width="1720" height="55" rx="0" fill="#0F172A" opacity="0.05"/>
+  <text x="960" y="1030" font-family="Arial, sans-serif" font-size="16" fill="#92400E" text-anchor="middle">
+    Revenue Scenarios: Conservative (B2C) ₹50L Y1 • Optimistic (B2B+B2C) ₹10-15 Cr Y1 (incl. govt contracts)
+  </text>
+  <text x="960" y="1050" font-family="Arial, sans-serif" font-size="16" fill="#64748B" text-anchor="middle">
+    Contact: team@diabetcare.ai | Deck: aws-ai-bharat-2026.pdf | Due Diligence: On Request
+  </text>
+</svg>

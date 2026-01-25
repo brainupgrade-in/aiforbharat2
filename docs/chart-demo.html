@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Visualization Demo - DiabetCare AI</title>
+    <meta name="description" content="Chart visualization examples for glucose trends">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+
+    <!-- Premium Stylesheet -->
+    <link rel="stylesheet" href="css/premium-wireframe.css">
+
+    <!-- Chart.js CDN (for actual implementation) -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script> -->
+</head>
+<body>
+    <!-- Header Container (Loaded via JavaScript) -->
+    <div id="header-container"></div>
+
+    <div class="container">
+        <main class="app-content">
+            <h1>Chart Visualization Demo</h1>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                Visualizing glucose trends helps users understand patterns and make informed decisions.
+            </p>
+
+            <!-- Bar Chart (CSS-only) -->
+            <section style="margin-bottom: 3rem;">
+                <h2>Bar Chart - Daily Average Glucose (CSS-only)</h2>
+                <div class="chart-container">
+                    <div class="chart-mockup">
+                        <div class="chart-grid">
+                            <div class="chart-grid-line"></div>
+                            <div class="chart-grid-line"></div>
+                            <div class="chart-grid-line"></div>
+                            <div class="chart-grid-line"></div>
+                        </div>
+
+                        <div class="chart-data">
+                            <div class="chart-bar" style="height: 65%;">
+                                <div class="chart-bar-value">126</div>
+                            </div>
+                            <div class="chart-bar" style="height: 58%;">
+                                <div class="chart-bar-value">118</div>
+                            </div>
+                            <div class="chart-bar" style="height: 75%;">
+                                <div class="chart-bar-value">142</div>
+                            </div>
+                            <div class="chart-bar" style="height: 62%;">
+                                <div class="chart-bar-value">122</div>
+                            </div>
+                            <div class="chart-bar" style="height: 70%;">
+                                <div class="chart-bar-value">135</div>
+                            </div>
+                            <div class="chart-bar" style="height: 68%;">
+                                <div class="chart-bar-value">130</div>
+                            </div>
+                            <div class="chart-bar" style="height: 64%;">
+                                <div class="chart-bar-value">124</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-labels">
+                        <div class="chart-label">Mon</div>
+                        <div class="chart-label">Tue</div>
+                        <div class="chart-label">Wed</div>
+                        <div class="chart-label">Thu</div>
+                        <div class="chart-label">Fri</div>
+                        <div class="chart-label">Sat</div>
+                        <div class="chart-label">Sun</div>
+                    </div>
+
+                    <div class="chart-legend">
+                        <div class="chart-legend-item">
+                            <div class="chart-legend-color normal"></div>
+                            <span>Normal (70-140 mg/dL)</span>
+                        </div>
+                        <div class="chart-legend-item">
+                            <div class="chart-legend-color high"></div>
+                            <span>High (>140 mg/dL)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Line Chart (CSS-only) -->
+            <section style="margin-bottom: 3rem;">
+                <h2>Line Chart - Glucose Trend (CSS-only)</h2>
+                <div class="chart-container">
+                    <div class="line-chart">
+                        <div class="line-chart-path">
+                            <div class="line-chart-line"></div>
+                            <div class="line-chart-dots">
+                                <div class="chart-dot normal" style="bottom: 45%;" title="Mon: 126 mg/dL"></div>
+                                <div class="chart-dot normal" style="bottom: 38%;" title="Tue: 118 mg/dL"></div>
+                                <div class="chart-dot high" style="bottom: 55%;" title="Wed: 142 mg/dL"></div>
+                                <div class="chart-dot normal" style="bottom: 42%;" title="Thu: 122 mg/dL"></div>
+                                <div class="chart-dot normal" style="bottom: 50%;" title="Fri: 135 mg/dL"></div>
+                                <div class="chart-dot normal" style="bottom: 48%;" title="Sat: 130 mg/dL"></div>
+                                <div class="chart-dot normal" style="bottom: 44%;" title="Sun: 124 mg/dL"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-labels">
+                        <div class="chart-label">Mon</div>
+                        <div class="chart-label">Tue</div>
+                        <div class="chart-label">Wed</div>
+                        <div class="chart-label">Thu</div>
+                        <div class="chart-label">Fri</div>
+                        <div class="chart-label">Sat</div>
+                        <div class="chart-label">Sun</div>
+                    </div>
+
+                    <div class="chart-legend">
+                        <div class="chart-legend-item">
+                            <div class="chart-legend-color normal"></div>
+                            <span>Normal</span>
+                        </div>
+                        <div class="chart-legend-item">
+                            <div class="chart-legend-color high"></div>
+                            <span>High</span>
+                        </div>
+                        <div class="chart-legend-item">
+                            <div class="chart-legend-color low"></div>
+                            <span>Low</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Integration Instructions -->
+            <section style="margin-bottom: 3rem;">
+                <h2>Chart.js Integration for Production</h2>
+                <div class="chart-integration-note">
+                    <h4><span role="img" aria-label="Info">ℹ️</span> For Actual Implementation</h4>
+                    <p style="margin-bottom: 1rem;">The CSS-only charts above are for wireframe purposes. For the production app, integrate <strong>Chart.js</strong> for interactive, responsive charts.</p>
+
+                    <h5 style="margin-bottom: 0.5rem;">1. Add Chart.js CDN:</h5>
+                    <code>&lt;script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"&gt;&lt;/script&gt;</code>
+
+                    <h5 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">2. Create Canvas Element:</h5>
+                    <code>&lt;canvas id="glucoseChart"&gt;&lt;/canvas&gt;</code>
+
+                    <h5 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">3. Initialize Chart:</h5>
+                    <pre style="background: var(--bg-card); padding: 1rem; border-radius: var(--radius-md); overflow-x: auto; font-size: 0.875rem; line-height: 1.6;">
+const ctx = document.getElementById('glucoseChart');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+            label: 'Glucose (mg/dL)',
+            data: [126, 118, 142, 122, 135, 130, 124],
+            borderColor: '#1E88E5',
+            backgroundColor: 'rgba(30, 136, 229, 0.1)',
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: false,
+                min: 60,
+                max: 200
+            }
+        }
+    }
+});
+                    </pre>
+
+                    <h5 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">4. Alternative: Recharts (for React):</h5>
+                    <code>npm install recharts</code>
+                    <p style="margin-top: 0.5rem; font-size: 0.875rem;">Recharts is the recommended choice if you're using ReactJS for the actual implementation.</p>
+                </div>
+            </section>
+
+            <!-- Reference Zone Chart -->
+            <section style="margin-bottom: 3rem;">
+                <h2>Glucose Range Visualization</h2>
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 1rem;">Target Ranges</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Danger Zone -->
+                        <div style="background: var(--color-danger-bg); padding: 1rem; border-radius: var(--radius-lg); border-left: 4px solid var(--color-danger);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: var(--color-danger);">Danger Zone</strong>
+                                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Immediate attention needed</div>
+                                </div>
+                                <div style="font-weight: 700; font-size: 1.25rem; color: var(--color-danger);">&gt; 180 mg/dL</div>
+                            </div>
+                        </div>
+
+                        <!-- High Zone -->
+                        <div style="background: var(--color-warning-bg); padding: 1rem; border-radius: var(--radius-lg); border-left: 4px solid var(--color-warning);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: var(--color-warning);">High Zone</strong>
+                                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Above target</div>
+                                </div>
+                                <div style="font-weight: 700; font-size: 1.25rem; color: var(--color-warning);">141-180 mg/dL</div>
+                            </div>
+                        </div>
+
+                        <!-- Normal Zone -->
+                        <div style="background: var(--color-success-bg); padding: 1rem; border-radius: var(--radius-lg); border-left: 4px solid var(--color-success);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: var(--color-success);">Normal Zone</strong>
+                                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Optimal range</div>
+                                </div>
+                                <div style="font-weight: 700; font-size: 1.25rem; color: var(--color-success);">70-140 mg/dL</div>
+                            </div>
+                        </div>
+
+                        <!-- Low Zone -->
+                        <div style="background: var(--color-info-bg); padding: 1rem; border-radius: var(--radius-lg); border-left: 4px solid var(--color-info);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <strong style="color: var(--color-info);">Low Zone</strong>
+                                    <div style="font-size: 0.875rem; color: var(--text-secondary);">Hypoglycemia risk</div>
+                                </div>
+                                <div style="font-weight: 700; font-size: 1.25rem; color: var(--color-info);">&lt; 70 mg/dL</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer Container (Loaded via JavaScript) -->
+    <div id="footer-container"></div>
+
+    <script src="js/wireframe.js"></script>
+</body>
+</html>

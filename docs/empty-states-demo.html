@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty States Demo - DiabetCare AI</title>
+    <meta name="description" content="Empty state component examples">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+
+    <!-- Premium Stylesheet -->
+    <link rel="stylesheet" href="css/premium-wireframe.css">
+</head>
+<body>
+    <!-- Header Container (Loaded via JavaScript) -->
+    <div id="header-container"></div>
+
+    <div class="container">
+        <main class="app-content">
+            <h1>Empty State Components Demo</h1>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">These components appear when there's no data to display yet.</p>
+
+            <!-- No Glucose Readings -->
+            <section style="margin-bottom: 3rem;">
+                <h2>No Glucose Readings</h2>
+                <div class="empty-state">
+                    <div class="empty-state-icon" role="img" aria-label="Chart">📊</div>
+                    <h3 class="empty-state-title">No glucose readings yet</h3>
+                    <p class="empty-state-description">
+                        Start tracking your blood glucose levels to see trends and insights.
+                        Your first reading will appear here.
+                    </p>
+                    <div class="empty-state-cta">
+                        <a href="glucose-tracker.html" class="btn btn-primary">
+                            <span role="img" aria-label="Plus">➕</span> Log First Reading
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- No Meals Logged -->
+            <section style="margin-bottom: 3rem;">
+                <h2>No Meals Logged</h2>
+                <div class="empty-state">
+                    <div class="empty-state-icon" role="img" aria-label="Meal">🍽️</div>
+                    <h3 class="empty-state-title">No meals analyzed yet</h3>
+                    <p class="empty-state-description">
+                        Take a photo of your meal and let our AI estimate carbohydrates
+                        and provide nutritional insights.
+                    </p>
+                    <div class="empty-state-cta">
+                        <a href="meal-analyzer.html" class="btn btn-primary">
+                            <span role="img" aria-label="Camera">📸</span> Analyze Your First Meal
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- No Retina Scans -->
+            <section style="margin-bottom: 3rem;">
+                <h2>No Retina Scans</h2>
+                <div class="empty-state">
+                    <div class="empty-state-icon" role="img" aria-label="Eye">👁️</div>
+                    <h3 class="empty-state-title">No retina scans recorded</h3>
+                    <p class="empty-state-description">
+                        Early detection of diabetic retinopathy can prevent vision loss.
+                        Schedule your first scan today.
+                    </p>
+                    <div class="empty-state-cta">
+                        <a href="retina-scan.html" class="btn btn-primary">
+                            <span role="img" aria-label="Camera">📷</span> Start Retina Scan
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- No AI Conversations -->
+            <section style="margin-bottom: 3rem;">
+                <h2>No AI Conversations</h2>
+                <div class="empty-state">
+                    <div class="empty-state-icon" role="img" aria-label="Robot">🤖</div>
+                    <h3 class="empty-state-title">Start a conversation</h3>
+                    <p class="empty-state-description">
+                        Ask our AI advisor anything about diabetes management, diet,
+                        exercise, or understanding your glucose trends.
+                    </p>
+                    <div class="empty-state-cta">
+                        <a href="chatbot.html" class="btn btn-primary">
+                            <span role="img" aria-label="Chat">💬</span> Chat with AI Advisor
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- No Notifications -->
+            <section style="margin-bottom: 3rem;">
+                <h2>No Notifications</h2>
+                <div class="empty-state">
+                    <div class="empty-state-icon" role="img" aria-label="Bell">🔔</div>
+                    <h3 class="empty-state-title">You're all caught up!</h3>
+                    <p class="empty-state-description">
+                        No new notifications. We'll let you know when there's
+                        something that needs your attention.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Search No Results -->
+            <section style="margin-bottom: 3rem;">
+                <h2>Search No Results</h2>
+                <div class="empty-state">
+                    <div class="empty-state-icon" role="img" aria-label="Magnifying Glass">🔍</div>
+                    <h3 class="empty-state-title">No results found</h3>
+                    <p class="empty-state-description">
+                        We couldn't find what you're looking for.
+                        Try different keywords or check your spelling.
+                    </p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer Container (Loaded via JavaScript) -->
+    <div id="footer-container"></div>
+
+    <script src="js/wireframe.js"></script>
+</body>
+</html>

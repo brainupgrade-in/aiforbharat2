@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skeleton Loading Demo - DiabetCare AI</title>
+    <meta name="description" content="Skeleton loading screen examples">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+
+    <!-- Premium Stylesheet -->
+    <link rel="stylesheet" href="css/premium-wireframe.css">
+
+    <style>
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+
+        .demo-controls {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container (Loaded via JavaScript) -->
+    <div id="header-container"></div>
+
+    <div class="container">
+        <main class="app-content">
+            <h1>Skeleton Loading Screens Demo</h1>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                Skeleton screens improve perceived performance by showing placeholder content while data loads.
+            </p>
+
+            <!-- Stat Card Skeleton -->
+            <section class="demo-section">
+                <h2>Loading Stat Cards</h2>
+                <div class="demo-controls">
+                    <button class="btn btn-primary" onclick="toggleStatSkeleton()">Toggle Loading State</button>
+                </div>
+
+                <div id="statCards" class="quick-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Latest Glucose</div>
+                        <div class="stat-value">126 mg/dL</div>
+                        <div class="stat-indicator normal">✓ Within target</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">7-Day Average</div>
+                        <div class="stat-value">132 mg/dL</div>
+                        <div class="stat-trend">↓ 5% vs last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">HbA1c (Est.)</div>
+                        <div class="stat-value">6.8%</div>
+                        <div class="stat-indicator warning">⚠ Borderline</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reading List Skeleton -->
+            <section class="demo-section">
+                <h2>Loading Reading List</h2>
+                <div class="demo-controls">
+                    <button class="btn btn-primary" onclick="toggleReadingsSkeleton()">Toggle Loading State</button>
+                </div>
+
+                <div id="readingsList">
+                    <div class="reading-item">
+                        <div class="reading-item-content">
+                            <div class="reading-value-wrapper">
+                                <div class="reading-value normal">126 mg/dL</div>
+                                <div class="reading-meta">Fasting • Today 7:30 AM</div>
+                            </div>
+                            <div class="reading-badge">Normal</div>
+                        </div>
+                    </div>
+                    <div class="reading-item">
+                        <div class="reading-item-content">
+                            <div class="reading-value-wrapper">
+                                <div class="reading-value warning">168 mg/dL</div>
+                                <div class="reading-meta">After meal • Yesterday 9:00 PM</div>
+                            </div>
+                            <div class="reading-badge high">High</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chat Message Skeleton -->
+            <section class="demo-section">
+                <h2>Loading Chat Messages</h2>
+                <div class="demo-controls">
+                    <button class="btn btn-primary" onclick="toggleChatSkeleton()">Toggle Loading State</button>
+                </div>
+
+                <div id="chatMessages">
+                    <div class="chat-message">
+                        <div class="chat-avatar ai" role="img" aria-label="AI">🤖</div>
+                        <div class="chat-message-content">
+                            <div class="chat-bubble">
+                                <p>Hello! How can I help you today with your diabetes management?</p>
+                            </div>
+                            <div class="chat-timestamp">Just now</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Generic Skeleton Patterns -->
+            <section class="demo-section">
+                <h2>Skeleton Components</h2>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Skeleton Card</h3>
+                <div class="skeleton-card">
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line short"></div>
+                    <div class="skeleton-line medium"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Skeleton with Avatar</h3>
+                <div style="display: flex; gap: 1rem; align-items: start;">
+                    <div class="skeleton-circle"></div>
+                    <div style="flex: 1;">
+                        <div class="skeleton-text"></div>
+                        <div class="skeleton-text medium"></div>
+                        <div class="skeleton-text short"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer Container (Loaded via JavaScript) -->
+    <div id="footer-container"></div>
+
+    <script src="js/wireframe.js"></script>
+    <script>
+        // Toggle functions for demo
+        function toggleStatSkeleton() {
+            const container = document.getElementById('statCards');
+            const isLoading = container.classList.contains('loading');
+
+            if (isLoading) {
+                // Show actual content
+                container.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-label">Latest Glucose</div>
+                        <div class="stat-value">126 mg/dL</div>
+                        <div class="stat-indicator normal">✓ Within target</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">7-Day Average</div>
+                        <div class="stat-value">132 mg/dL</div>
+                        <div class="stat-trend">↓ 5% vs last week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">HbA1c (Est.)</div>
+                        <div class="stat-value">6.8%</div>
+                        <div class="stat-indicator warning">⚠ Borderline</div>
+                    </div>
+                `;
+                container.classList.remove('loading');
+            } else {
+                // Show skeleton
+                container.innerHTML = `
+                    <div class="skeleton-card">
+                        <div class="skeleton-text short"></div>
+                        <div class="skeleton-line" style="height: 36px; margin-bottom: 0.5rem;"></div>
+                        <div class="skeleton-text medium"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-text short"></div>
+                        <div class="skeleton-line" style="height: 36px; margin-bottom: 0.5rem;"></div>
+                        <div class="skeleton-text medium"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-text short"></div>
+                        <div class="skeleton-line" style="height: 36px; margin-bottom: 0.5rem;"></div>
+                        <div class="skeleton-text medium"></div>
+                    </div>
+                `;
+                container.classList.add('loading');
+            }
+        }
+
+        function toggleReadingsSkeleton() {
+            const container = document.getElementById('readingsList');
+            const isLoading = container.classList.contains('loading');
+
+            if (isLoading) {
+                // Show actual content
+                container.innerHTML = `
+                    <div class="reading-item">
+                        <div class="reading-item-content">
+                            <div class="reading-value-wrapper">
+                                <div class="reading-value normal">126 mg/dL</div>
+                                <div class="reading-meta">Fasting • Today 7:30 AM</div>
+                            </div>
+                            <div class="reading-badge">Normal</div>
+                        </div>
+                    </div>
+                    <div class="reading-item">
+                        <div class="reading-item-content">
+                            <div class="reading-value-wrapper">
+                                <div class="reading-value warning">168 mg/dL</div>
+                                <div class="reading-meta">After meal • Yesterday 9:00 PM</div>
+                            </div>
+                            <div class="reading-badge high">High</div>
+                        </div>
+                    </div>
+                `;
+                container.classList.remove('loading');
+            } else {
+                // Show skeleton
+                container.innerHTML = `
+                    <div class="skeleton-card" style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div style="flex: 1;">
+                                <div class="skeleton-line" style="height: 24px; width: 120px; margin-bottom: 0.5rem;"></div>
+                                <div class="skeleton-text medium"></div>
+                            </div>
+                            <div class="skeleton-line" style="width: 80px; height: 32px;"></div>
+                        </div>
+                    </div>
+                    <div class="skeleton-card" style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div style="flex: 1;">
+                                <div class="skeleton-line" style="height: 24px; width: 120px; margin-bottom: 0.5rem;"></div>
+                                <div class="skeleton-text medium"></div>
+                            </div>
+                            <div class="skeleton-line" style="width: 80px; height: 32px;"></div>
+                        </div>
+                    </div>
+                `;
+                container.classList.add('loading');
+            }
+        }
+
+        function toggleChatSkeleton() {
+            const container = document.getElementById('chatMessages');
+            const isLoading = container.classList.contains('loading');
+
+            if (isLoading) {
+                // Show actual content
+                container.innerHTML = `
+                    <div class="chat-message">
+                        <div class="chat-avatar ai" role="img" aria-label="AI">🤖</div>
+                        <div class="chat-message-content">
+                            <div class="chat-bubble">
+                                <p>Hello! How can I help you today with your diabetes management?</p>
+                            </div>
+                            <div class="chat-timestamp">Just now</div>
+                        </div>
+                    </div>
+                `;
+                container.classList.remove('loading');
+            } else {
+                // Show skeleton
+                container.innerHTML = `
+                    <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+                        <div class="skeleton-circle"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton-card">
+                                <div class="skeleton-line"></div>
+                                <div class="skeleton-line medium"></div>
+                                <div class="skeleton-line short"></div>
+                            </div>
+                            <div class="skeleton-text short" style="margin-top: 0.5rem;"></div>
+                        </div>
+                    </div>
+                `;
+                container.classList.add('loading');
+            }
+        }
+    </script>
+</body>
+</html>

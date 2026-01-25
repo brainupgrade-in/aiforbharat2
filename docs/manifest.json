@@ -1,0 +1,110 @@
+{
+  "name": "DiabetCare AI - Smart Diabetes Management",
+  "short_name": "DiabetCare",
+  "description": "AI-powered diabetes management and diabetic retinopathy screening for India",
+  "start_url": "/dashboard.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["health", "medical", "lifestyle"],
+  "icons": [
+    {
+      "src": "images/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "images/screenshot1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "label": "Dashboard with glucose trends"
+    },
+    {
+      "src": "images/screenshot2.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "label": "AI meal analyzer"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log Glucose",
+      "short_name": "Glucose",
+      "description": "Quick glucose entry",
+      "url": "/glucose-tracker.html",
+      "icons": [{ "src": "images/icon-glucose.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Analyze Meal",
+      "short_name": "Meal",
+      "description": "Photo-based meal analysis",
+      "url": "/meal-analyzer.html",
+      "icons": [{ "src": "images/icon-meal.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Retina Scan",
+      "short_name": "DR Scan",
+      "description": "Diabetic retinopathy screening",
+      "url": "/retina-scan.html",
+      "icons": [{ "src": "images/icon-retina.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "AI Advisor",
+      "short_name": "Chatbot",
+      "description": "Ask diabetes questions",
+      "url": "/chatbot.html",
+      "icons": [{ "src": "images/icon-chatbot.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

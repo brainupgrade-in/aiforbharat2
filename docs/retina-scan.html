@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retina Scan - DiabetCare AI Wireframe</title>
+    <meta name="description" content="AI diabetic retinopathy screening using smartphone fundus camera">
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DiabetCare">
+
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/icon-192x192.png">
+
+    <!-- Premium Stylesheet -->
+    <link rel="stylesheet" href="css/premium-wireframe.css">
+</head>
+<body>
+    <!-- Header Container (Loaded via JavaScript) -->
+    <div id="header-container"></div>
+
+    <div class="container">
+
+        <main class="app-content">
+            <section class="info-section">
+                <h3 style="margin-bottom: 0.75rem; color: var(--text-primary); font-weight: 700;">ℹ️ About Diabetic Retinopathy</h3>
+                <p style="line-height: 1.7; color: var(--text-primary);">Diabetic retinopathy is a diabetes complication that affects eyes. It's caused by damage to blood vessels in the retina. Early detection can prevent 95% of vision loss.</p>
+                <p style="margin-top: 0.75rem; font-weight: 600; color: var(--text-primary);">Recommended: Screen annually if diabetic</p>
+            </section>
+
+            <section class="scan-section card" style="text-align: center;">
+                <h2>Upload Fundus Photo</h2>
+                <p class="text-secondary" style="margin-bottom: 2rem;">Take a photo using your smartphone camera or upload existing retina scan</p>
+
+                <div class="camera-preview" style="background: var(--bg-secondary); border: 2px dashed var(--border-medium); border-radius: var(--radius-lg); padding: 4rem 2rem; margin-bottom: 1.5rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">👁️</div>
+                    <p class="text-secondary">Retina camera preview will appear here</p>
+                    <p class="text-tertiary" style="font-size: 0.85rem; margin-top: 0.5rem;">Ensure good lighting and steady hand</p>
+                </div>
+
+                <div class="upload-buttons" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" style="padding: 1rem 2rem;">📸 Capture Retina Photo</button>
+                    <button class="btn btn-secondary" style="padding: 1rem 2rem;">📁 Upload Existing Scan</button>
+                </div>
+
+                <div class="chat-info-box success" style="margin-top: 1.5rem;">
+                    <p style="font-size: 0.9rem;"><strong>💡 Tip:</strong> Works with any smartphone camera! No special equipment needed. For best results, use good lighting and keep your hand steady.</p>
+                </div>
+            </section>
+
+            <section class="analysis-demo" style="margin-top: 2rem;">
+                <h3>Example Analysis Result (Demo)</h3>
+
+                <div class="scan-result card">
+                    <div class="scan-images" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: var(--bg-secondary); height: 150px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+                            [Right Eye Scan]
+                        </div>
+                        <div style="background: var(--bg-secondary); height: 150px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+                            [Left Eye Scan]
+                        </div>
+                    </div>
+
+                    <div class="risk-assessment" style="background: var(--color-warning-bg); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem; text-align: center;">
+                        <div style="font-size: 0.9rem; color: var(--color-warning-dark); margin-bottom: 0.5rem; font-weight: 600;">RISK LEVEL DETECTED</div>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--color-warning-dark); margin-bottom: 0.5rem;">MILD DR</div>
+                        <div style="font-size: 0.85rem; color: var(--color-warning-dark); font-weight: 600;">Confidence: 87%</div>
+                    </div>
+
+                    <div class="findings" style="background: var(--bg-secondary); padding: 1.25rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+                        <h4 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 700;">AI Analysis Findings:</h4>
+                        <ul style="padding-left: 1.25rem; line-height: 1.9; color: var(--text-primary);">
+                            <li>Microaneurysms detected in right eye (temporal region)</li>
+                            <li>Minimal hemorrhages observed</li>
+                            <li>No hard exudates or cotton wool spots</li>
+                            <li>Optic disc and macula appear normal</li>
+                            <li>No signs of proliferative retinopathy</li>
+                        </ul>
+                    </div>
+
+                    <div class="recommendations">
+                        <h4 style="margin-bottom: 0.75rem; color: var(--color-success-dark); font-weight: 700;">📋 Recommendations:</h4>
+                        <ul style="padding-left: 1.25rem; line-height: 1.9; color: var(--color-success-dark);">
+                            <li><strong>Follow-up:</strong> Schedule ophthalmologist visit within 6 months</li>
+                            <li><strong>Blood sugar control:</strong> Maintain HbA1c < 7%</li>
+                            <li><strong>Blood pressure:</strong> Keep BP < 140/90 mmHg</li>
+                            <li><strong>Next screening:</strong> 6-12 months (based on doctor advice)</li>
+                            <li><strong>Lifestyle:</strong> Continue exercise, healthy diet, medication compliance</li>
+                        </ul>
+                    </div>
+
+                    <div class="disclaimer white-text">
+                        <p>
+                            <strong>Medical Disclaimer:</strong> This AI screening is for early detection only and NOT a medical diagnosis.
+                            Always consult a qualified ophthalmologist for professional evaluation and treatment decisions.
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-primary" style="flex: 1; padding: 1rem;">📄 Download Report (PDF)</button>
+                        <button class="btn btn-secondary" style="flex: 1; padding: 1rem;">📧 Share with Doctor</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="scan-history" style="margin-top: 2rem;">
+                <h3>Screening History</h3>
+                <div class="card" style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">Scan - January 2026</div>
+                            <div class="text-secondary" style="font-size: 0.85rem;">Jan 25, 2026</div>
+                        </div>
+                        <div class="reading-badge" style="background: var(--color-warning-bg); color: var(--color-warning-dark); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem;">Mild DR</div>
+                    </div>
+                    <button style="color: var(--brand-primary); background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 0; font-weight: 600;">View Details →</button>
+                </div>
+
+                <div class="card" style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">Scan - July 2025</div>
+                            <div class="text-secondary" style="font-size: 0.85rem;">Jul 10, 2025</div>
+                        </div>
+                        <div class="reading-badge" style="background: var(--color-success-bg); color: var(--color-success-dark); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem;">No DR</div>
+                    </div>
+                    <button style="color: var(--brand-primary); background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 0; font-weight: 600;">View Details →</button>
+                </div>
+            </section>
+
+            <section class="info-card card" style="margin-top: 2rem;">
+                <h4 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 700;">📱 Optional: Professional Fundus Camera Accessories</h4>
+                <p class="text-secondary" style="margin-bottom: 1rem; font-size: 0.9rem;">
+                    <strong>For healthcare professionals or improved image quality (optional):</strong>
+                </p>
+                <ul style="padding-left: 1.25rem; line-height: 1.8; color: var(--text-primary);">
+                    <li>D-Eye (Italy) - ₹12,000-15,000</li>
+                    <li>iExaminer (Welch Allyn) - ₹8,000-10,000</li>
+                    <li>Remidio FOP (India) - ₹5,000-7,000</li>
+                </ul>
+                <div style="margin-top: 1rem; padding: 1rem; background: var(--color-info-bg); border-radius: var(--radius-md); border-left: 4px solid var(--color-info-dark);">
+                    <p style="font-size: 0.85rem; color: var(--color-info-dark); line-height: 1.6; margin: 0;">
+                        <strong>Note:</strong> These accessories are NOT required. The app works with any smartphone camera.
+                        Professional accessories may provide better image quality for clinical use.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer Container (Loaded via JavaScript) -->
+    <div id="footer-container"></div>
+
+    <!-- Offline Indicator -->
+    <div id="offline-indicator" class="offline-indicator">
+        <span class="offline-icon">📡</span>
+        <span class="offline-text">You're offline</span>
+    </div>
+
+    <script src="js/wireframe.js"></script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" width="1600" height="1100">
+  <!-- Title -->
+  <text x="800" y="30" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#1f2937">DiabetCare AI - Technical Architecture</text>
+  <text x="800" y="55" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#6b7280">AWS Cloud-Native Serverless Architecture</text>
+
+  <!-- Region Container -->
+  <rect x="30" y="80" width="1540" height="980" fill="#f9fafb" stroke="#1f2937" stroke-width="3" rx="10"/>
+  <text x="60" y="110" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1f2937">AWS Region: ap-south-1 (Mumbai)</text>
+
+  <!-- Availability Zones -->
+  <rect x="50" y="130" width="740" height="900" fill="#e0f2fe" stroke="#0369a1" stroke-width="2" rx="8" stroke-dasharray="8,4"/>
+  <text x="420" y="155" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#0369a1">Availability Zone A (ap-south-1a)</text>
+
+  <rect x="810" y="130" width="740" height="900" fill="#fef3c7" stroke="#d97706" stroke-width="2" rx="8" stroke-dasharray="8,4"/>
+  <text x="1180" y="155" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#d97706">Availability Zone B (ap-south-1b)</text>
+
+  <!-- Internet/User Layer -->
+  <rect x="60" y="180" width="1480" height="120" fill="#dbeafe" stroke="#2563eb" stroke-width="2" rx="6"/>
+  <text x="800" y="205" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#1e40af">Internet Layer / End Users</text>
+
+  <!-- Mobile Users -->
+  <rect x="100" y="220" width="200" height="65" fill="#fff" stroke="#2563eb" stroke-width="2" rx="4"/>
+  <text x="200" y="238" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">Mobile Devices</text>
+  <text x="200" y="254" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Android 8+ / iOS 14+</text>
+  <text x="200" y="267" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Chrome 90+ / Safari 14+</text>
+  <text x="200" y="280" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">HTTPS/2, WebSocket</text>
+
+  <!-- Desktop Users -->
+  <rect x="330" y="220" width="200" height="65" fill="#fff" stroke="#2563eb" stroke-width="2" rx="4"/>
+  <text x="430" y="238" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">Desktop Browsers</text>
+  <text x="430" y="254" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Chrome/Firefox/Edge</text>
+  <text x="430" y="267" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Responsive UI (Tailwind)</text>
+  <text x="430" y="280" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">PWA Installable</text>
+
+  <!-- Route 53 -->
+  <rect x="560" y="220" width="200" height="65" fill="#fff" stroke="#ea580c" stroke-width="2" rx="4"/>
+  <text x="660" y="238" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">Amazon Route 53</text>
+  <text x="660" y="254" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">DNS: diabetcare.ai</text>
+  <text x="660" y="267" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Health Checks</text>
+  <text x="660" y="280" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Geo-routing (India)</text>
+
+  <!-- CloudFront -->
+  <rect x="790" y="220" width="220" height="65" fill="#fff" stroke="#f59e0b" stroke-width="2" rx="4"/>
+  <text x="900" y="238" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">CloudFront CDN</text>
+  <text x="900" y="254" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Edge Locations: 8 (India)</text>
+  <text x="900" y="267" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Cache: Static Assets</text>
+  <text x="900" y="280" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">TLS 1.3, Gzip/Brotli</text>
+
+  <!-- WAF -->
+  <rect x="1040" y="220" width="180" height="65" fill="#fff" stroke="#dc2626" stroke-width="2" rx="4"/>
+  <text x="1130" y="238" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">AWS WAF</text>
+  <text x="1130" y="254" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">DDoS Protection</text>
+  <text x="1130" y="267" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Rate Limiting</text>
+  <text x="1130" y="280" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">SQL Injection Block</text>
+
+  <!-- Certificate Manager -->
+  <rect x="1250" y="220" width="180" height="65" fill="#fff" stroke="#059669" stroke-width="2" rx="4"/>
+  <text x="1340" y="238" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">ACM</text>
+  <text x="1340" y="254" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">SSL Certificates</text>
+  <text x="1340" y="267" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Auto-renewal</text>
+  <text x="1340" y="280" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">*.diabetcare.ai</text>
+
+  <!-- Edge Services Layer -->
+  <rect x="60" y="320" width="1480" height="100" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="6"/>
+  <text x="800" y="345" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#92400e">Edge/API Gateway Layer</text>
+
+  <!-- Amplify Hosting -->
+  <rect x="100" y="355" width="280" height="50" fill="#fff" stroke="#f59e0b" stroke-width="2" rx="4"/>
+  <text x="240" y="373" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">AWS Amplify Hosting</text>
+  <text x="240" y="388" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">React 18 PWA • Vite Build • Git CI/CD</text>
+  <text x="240" y="400" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">S3 Static Hosting + CloudFront</text>
+
+  <!-- AppSync -->
+  <rect x="410" y="355" width="280" height="50" fill="#fff" stroke="#6366f1" stroke-width="2" rx="4"/>
+  <text x="550" y="373" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">AWS AppSync (GraphQL)</text>
+  <text x="550" y="388" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Queries/Mutations/Subscriptions</text>
+  <text x="550" y="400" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">WSS Real-time, API Key + Cognito Auth</text>
+
+  <!-- API Gateway -->
+  <rect x="720" y="355" width="280" height="50" fill="#fff" stroke="#6366f1" stroke-width="2" rx="4"/>
+  <text x="860" y="373" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">API Gateway (REST)</text>
+  <text x="860" y="388" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">REST APIs, Lambda Proxy Integration</text>
+  <text x="860" y="400" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Throttling: 10K req/sec, CORS Enabled</text>
+
+  <!-- API Gateway WebSocket -->
+  <rect x="1030" y="355" width="280" height="50" fill="#fff" stroke="#6366f1" stroke-width="2" rx="4"/>
+  <text x="1170" y="373" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">API Gateway (WebSocket)</text>
+  <text x="1170" y="388" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Real-time Chatbot, Live Updates</text>
+  <text x="1170" y="400" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Persistent Connections, Lambda Backend</text>
+
+  <!-- Authentication Layer -->
+  <rect x="70" y="440" width="360" height="140" fill="#e0e7ff" stroke="#6366f1" stroke-width="2" rx="6"/>
+  <text x="250" y="465" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#3730a3">Authentication & Authorization</text>
+
+  <!-- Cognito User Pool -->
+  <rect x="90" y="480" width="150" height="85" fill="#fff" stroke="#6366f1" stroke-width="2" rx="4"/>
+  <text x="165" y="496" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Cognito User Pool</text>
+  <text x="165" y="511" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Email/Phone Sign-up</text>
+  <text x="165" y="523" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">OTP Verification</text>
+  <text x="165" y="535" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">MFA (SMS/TOTP)</text>
+  <text x="165" y="547" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Password Policies</text>
+  <text x="165" y="559" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">JWT Tokens</text>
+
+  <!-- Cognito Identity Pool -->
+  <rect x="260" y="480" width="150" height="85" fill="#fff" stroke="#6366f1" stroke-width="2" rx="4"/>
+  <text x="335" y="496" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Cognito Identity</text>
+  <text x="335" y="511" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Federated Auth</text>
+  <text x="335" y="523" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Google OAuth 2.0</text>
+  <text x="335" y="535" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Temporary AWS Creds</text>
+  <text x="335" y="547" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">IAM Role Mapping</text>
+  <text x="335" y="559" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">S3/DynamoDB Access</text>
+
+  <!-- Compute Layer (Lambda Functions) -->
+  <rect x="70" y="600" width="720" height="180" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="6"/>
+  <text x="430" y="625" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#92400e">Serverless Compute Layer (AWS Lambda)</text>
+
+  <!-- Lambda - Auth -->
+  <rect x="90" y="640" width="130" height="125" fill="#fff" stroke="#f59e0b" stroke-width="2" rx="4"/>
+  <text x="155" y="656" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#333">Auth Service</text>
+  <text x="155" y="671" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Node.js 20</text>
+  <text x="155" y="683" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Memory: 512MB</text>
+  <text x="155" y="695" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Timeout: 30s</text>
+  <text x="155" y="710" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Pre-signup validation</text>
+  <text x="155" y="722" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Custom claims</text>
+  <text x="155" y="734" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Session mgmt</text>
+  <text x="155" y="746" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• ABHA linking</text>
+
+  <!-- Lambda - Glucose API -->
+  <rect x="240" y="640" width="130" height="125" fill="#fff" stroke="#f59e0b" stroke-width="2" rx="4"/>
+  <text x="305" y="656" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#333">Glucose API</text>
+  <text x="305" y="671" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Node.js 20</text>
+  <text x="305" y="683" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Memory: 1024MB</text>
+  <text x="305" y="695" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Timeout: 60s</text>
+  <text x="305" y="710" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• CRUD operations</text>
+  <text x="305" y="722" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Trend analysis</text>
+  <text x="305" y="734" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• HbA1c estimation</text>
+  <text x="305" y="746" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Pattern detection</text>
+
+  <!-- Lambda - DR Processing -->
+  <rect x="390" y="640" width="130" height="125" fill="#fff" stroke="#f59e0b" stroke-width="2" rx="4"/>
+  <text x="455" y="656" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#333">DR Processor</text>
+  <text x="455" y="671" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Python 3.11</text>
+  <text x="455" y="683" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Memory: 2048MB</text>
+  <text x="455" y="695" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Timeout: 300s</text>
+  <text x="455" y="710" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Image validation</text>
+  <text x="455" y="722" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Rekognition API</text>
+  <text x="455" y="734" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Result parsing</text>
+  <text x="455" y="746" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Doctor alerts</text>
+
+  <!-- Lambda - Chatbot -->
+  <rect x="540" y="640" width="130" height="125" fill="#fff" stroke="#f59e0b" stroke-width="2" rx="4"/>
+  <text x="605" y="656" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#333">AI Chatbot</text>
+  <text x="605" y="671" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Python 3.11</text>
+  <text x="605" y="683" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Memory: 1536MB</text>
+  <text x="605" y="695" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Timeout: 120s</text>
+  <text x="605" y="710" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Bedrock Claude</text>
+  <text x="605" y="722" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Context mgmt</text>
+  <text x="605" y="734" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• i18n (Hi/En)</text>
+  <text x="605" y="746" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• RAG queries</text>
+
+  <!-- Lambda - Meal Analyzer -->
+  <rect x="690" y="640" width="130" height="125" fill="#fff" stroke="#f59e0b" stroke-width="2" rx="4"/>
+  <text x="755" y="656" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#333">Meal Analyzer</text>
+  <text x="755" y="671" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Python 3.11</text>
+  <text x="755" y="683" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Memory: 2048MB</text>
+  <text x="755" y="695" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Timeout: 180s</text>
+  <text x="755" y="710" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Bedrock Nova</text>
+  <text x="755" y="722" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Food detection</text>
+  <text x="755" y="734" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Carb DB lookup</text>
+  <text x="755" y="746" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Nutritional info</text>
+
+  <!-- AI/ML Services Layer -->
+  <rect x="820" y="440" width="720" height="340" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" rx="6"/>
+  <text x="1180" y="465" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#5b21b6">AI/ML Services Layer</text>
+
+  <!-- Bedrock Claude -->
+  <rect x="840" y="485" width="200" height="105" fill="#fff" stroke="#7c3aed" stroke-width="2" rx="4"/>
+  <text x="940" y="503" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">AWS Bedrock</text>
+  <text x="940" y="518" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Claude 3 Haiku</text>
+  <text x="940" y="533" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Model: claude-3-haiku</text>
+  <text x="940" y="545" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Context: 200K tokens</text>
+  <text x="940" y="557" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Cost: $0.25/$1.25 per 1M</text>
+  <text x="940" y="569" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Use: Diabetes advisor</text>
+  <text x="940" y="581" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Multilingual support</text>
+
+  <!-- Bedrock Nova -->
+  <rect x="1060" y="485" width="200" height="105" fill="#fff" stroke="#7c3aed" stroke-width="2" rx="4"/>
+  <text x="1160" y="503" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">AWS Bedrock</text>
+  <text x="1160" y="518" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Amazon Nova Pro</text>
+  <text x="1160" y="533" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Vision Model</text>
+  <text x="1160" y="545" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Image Analysis</text>
+  <text x="1160" y="557" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Indian Food Dataset</text>
+  <text x="1160" y="569" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Carb Estimation</text>
+  <text x="1160" y="581" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Portion Detection</text>
+
+  <!-- Bedrock Knowledge Base -->
+  <rect x="1280" y="485" width="220" height="105" fill="#fff" stroke="#7c3aed" stroke-width="2" rx="4"/>
+  <text x="1390" y="503" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Bedrock Knowledge Base</text>
+  <text x="1390" y="518" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">RAG Pipeline</text>
+  <text x="1390" y="533" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">OpenSearch Serverless</text>
+  <text x="1390" y="545" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Vector DB: FAISS</text>
+  <text x="1390" y="557" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Diabetes Guidelines</text>
+  <text x="1390" y="569" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Clinical Protocols</text>
+  <text x="1390" y="581" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Semantic Search</text>
+
+  <!-- Rekognition -->
+  <rect x="840" y="610" width="220" height="85" fill="#fff" stroke="#ea580c" stroke-width="2" rx="4"/>
+  <text x="950" y="628" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon Rekognition</text>
+  <text x="950" y="643" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Custom Labels Model</text>
+  <text x="950" y="658" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">DR Detection: 92.4%</text>
+  <text x="950" y="670" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Inference: 2 units min</text>
+  <text x="950" y="682" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Classes: 5 (No DR-PDR)</text>
+
+  <!-- SageMaker -->
+  <rect x="1080" y="610" width="200" height="85" fill="#fff" stroke="#10b981" stroke-width="2" rx="4"/>
+  <text x="1180" y="628" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon SageMaker</text>
+  <text x="1180" y="643" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">ML Pipelines</text>
+  <text x="1180" y="658" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Pattern Recognition</text>
+  <text x="1180" y="670" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Risk Scoring Model</text>
+  <text x="1180" y="682" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">XGBoost Endpoint</text>
+
+  <!-- Translate -->
+  <rect x="1300" y="610" width="200" height="85" fill="#fff" stroke="#6366f1" stroke-width="2" rx="4"/>
+  <text x="1400" y="628" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon Translate</text>
+  <text x="1400" y="643" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Neural MT</text>
+  <text x="1400" y="658" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Languages: 10+</text>
+  <text x="1400" y="670" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Hi, Ta, Te, Bn, Mr...</text>
+  <text x="1400" y="682" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Real-time API</text>
+
+  <!-- Data Layer -->
+  <rect x="60" y="810" width="1480" height="200" fill="#d1fae5" stroke="#059669" stroke-width="2" rx="6"/>
+  <text x="800" y="835" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#065f46">Data Persistence & Storage Layer</text>
+
+  <!-- DynamoDB -->
+  <rect x="100" y="855" width="240" height="135" fill="#fff" stroke="#059669" stroke-width="2" rx="4"/>
+  <text x="220" y="873" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon DynamoDB</text>
+  <text x="220" y="888" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">NoSQL Database</text>
+  <text x="220" y="903" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Tables:</text>
+  <text x="220" y="916" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Users (PK: userId)</text>
+  <text x="220" y="928" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• GlucoseReadings (PK: userId, SK: timestamp)</text>
+  <text x="220" y="940" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• DRScans (PK: scanId, GSI: userId)</text>
+  <text x="220" y="952" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• ChatHistory (PK: userId, SK: messageId)</text>
+  <text x="220" y="964" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Meals (PK: mealId, GSI: userId-date)</text>
+  <text x="220" y="976" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Capacity: On-demand, Encryption: AES-256</text>
+
+  <!-- S3 -->
+  <rect x="360" y="855" width="220" height="135" fill="#fff" stroke="#059669" stroke-width="2" rx="4"/>
+  <text x="470" y="873" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon S3</text>
+  <text x="470" y="888" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Object Storage</text>
+  <text x="470" y="903" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Buckets:</text>
+  <text x="470" y="916" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• diabetcare-retina-images</text>
+  <text x="470" y="928" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">  (jpg, max 10MB, lifecycle 365d)</text>
+  <text x="470" y="940" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• diabetcare-meal-photos</text>
+  <text x="470" y="952" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">  (jpg/png, max 5MB, lifecycle 180d)</text>
+  <text x="470" y="964" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• diabetcare-reports</text>
+  <text x="470" y="976" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Encryption: SSE-S3, Versioning: Enabled</text>
+
+  <!-- RDS PostgreSQL -->
+  <rect x="600" y="855" width="220" height="135" fill="#fff" stroke="#059669" stroke-width="2" rx="4"/>
+  <text x="710" y="873" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon RDS PostgreSQL</text>
+  <text x="710" y="888" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Relational DB</text>
+  <text x="710" y="903" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Instance: db.t4g.medium</text>
+  <text x="710" y="916" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">PostgreSQL 15.3</text>
+  <text x="710" y="928" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Multi-AZ: Enabled</text>
+  <text x="710" y="940" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Storage: 100GB GP3 SSD</text>
+  <text x="710" y="952" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Tables: clinical_records,</text>
+  <text x="710" y="964" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">doctor_consultations</text>
+  <text x="710" y="976" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Backup: 7-day retention</text>
+
+  <!-- ElastiCache -->
+  <rect x="840" y="855" width="200" height="135" fill="#fff" stroke="#059669" stroke-width="2" rx="4"/>
+  <text x="940" y="873" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon ElastiCache</text>
+  <text x="940" y="888" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Redis 7.0</text>
+  <text x="940" y="903" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Node: cache.t4g.small</text>
+  <text x="940" y="916" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Cluster: 2 nodes</text>
+  <text x="940" y="928" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Use Cases:</text>
+  <text x="940" y="940" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Session storage</text>
+  <text x="940" y="952" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• API response cache</text>
+  <text x="940" y="964" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• Chatbot context</text>
+  <text x="940" y="976" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">TTL: 3600s-86400s</text>
+
+  <!-- SNS -->
+  <rect x="1060" y="855" width="160" height="135" fill="#fff" stroke="#f59e0b" stroke-width="2" rx="4"/>
+  <text x="1140" y="873" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon SNS</text>
+  <text x="1140" y="888" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Notifications</text>
+  <text x="1140" y="903" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Topics:</text>
+  <text x="1140" y="916" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• dr-alerts</text>
+  <text x="1140" y="928" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• glucose-warnings</text>
+  <text x="1140" y="940" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">• reminders</text>
+  <text x="1140" y="952" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Protocols:</text>
+  <text x="1140" y="964" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">SMS, Email, Push</text>
+  <text x="1140" y="976" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Mobile: FCM/APNS</text>
+
+  <!-- CloudWatch -->
+  <rect x="1240" y="855" width="280" height="135" fill="#fff" stroke="#6366f1" stroke-width="2" rx="4"/>
+  <text x="1380" y="873" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Amazon CloudWatch</text>
+  <text x="1380" y="888" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666">Monitoring & Observability</text>
+  <text x="1380" y="903" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666">Metrics: Lambda duration, DynamoDB throttles</text>
+  <text x="1380" y="916" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Logs: Lambda, API Gateway, AppSync</text>
+  <text x="1380" y="928" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Alarms: Error rate &gt;1%, Latency &gt;2s</text>
+  <text x="1380" y="940" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Dashboards: Real-time app health</text>
+  <text x="1380" y="952" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Log Retention: 30 days</text>
+  <text x="1380" y="964" font-family="Arial, sans-серifans-serif" font-size="7" text-anchor="middle" fill="#666">X-Ray: Distributed tracing</text>
+  <text x="1380" y="976" font-family="Arial, sans-serif" font-size="7" text-anchor="middle" fill="#666">Cost: ~$50/month (5GB logs)</text>
+
+  <!-- Connection Lines with Labels -->
+  <!-- Users to Route53 -->
+  <line x1="430" y1="285" x2="660" y2="240" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="520" y="260" font-family="Arial, sans-serif" font-size="9" fill="#2563eb">DNS Query</text>
+
+  <!-- Route53 to CloudFront -->
+  <line x1="760" y1="252" x2="790" y2="252" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="775" y="245" font-family="Arial, sans-serif" font-size="9" fill="#ea580c">HTTPS</text>
+
+  <!-- CloudFront to Amplify -->
+  <line x1="900" y1="285" x2="350" y2="355" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="620" y="315" font-family="Arial, sans-serif" font-size="9" fill="#f59e0b">Static Assets</text>
+
+  <!-- API Gateway to Lambda -->
+  <line x1="305" y1="405" x2="305" y2="640" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="605" y1="405" x2="605" y2="640" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Lambda to Bedrock -->
+  <line x1="670" y1="702" x2="840" y2="537" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arrowhead)"/>
+  <text x="750" y="615" font-family="Arial, sans-serif" font-size="8" fill="#7c3aed">Bedrock API</text>
+
+  <!-- Lambda to Rekognition -->
+  <line x1="520" y1="710" x2="840" y2="652" stroke="#ea580c" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arrowhead)"/>
+
+  <!-- Lambda to DynamoDB -->
+  <line x1="305" y1="765" x2="220" y2="855" stroke="#059669" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="250" y="805" font-family="Arial, sans-serif" font-size="8" fill="#059669">SDK</text>
+
+  <!-- Lambda to S3 -->
+  <line x1="455" y1="765" x2="470" y2="855" stroke="#059669" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+    </marker>
+  </defs>
+</svg>

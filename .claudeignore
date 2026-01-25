@@ -1,0 +1,374 @@
+# AI for Bharat - DiabetCare AI Healthcare Project
+# Claude Ignore File
+# Files and directories that Claude Code should not read or analyze
+
+# ============================================
+# Large ML/AI Files
+# ============================================
+# Trained models (too large for context)
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.pt
+*.pth
+*.ckpt
+*.pb
+*.tflite
+*.onnx
+*.weights
+models/
+checkpoints/
+saved_models/
+
+# Model logs and artifacts
+logs/
+tensorboard/
+mlruns/
+mlartifacts/
+wandb/
+lightning_logs/
+*.tfevents.*
+
+# ============================================
+# Datasets
+# ============================================
+# Raw and processed datasets (too large)
+data/
+datasets/
+*.csv
+*.tsv
+*.parquet
+*.tfrecord
+*.npy
+*.npz
+
+# Medical imaging files (fundus, retina scans)
+fundus_images/
+retina_scans/
+medical_images/
+patient_data/
+*.dicom
+*.dcm
+*.nii
+*.nii.gz
+
+# Large JSON files (patient records, clinical data)
+data/*.json
+datasets/*.json
+*.jsonl
+
+# Exception: Keep small example/documentation files for reference
+!data/samples/**
+!data/examples/**
+!docs/**
+!research/**
+!screenshots/**
+
+# ============================================
+# Dependencies
+# ============================================
+# Python dependencies
+venv/
+env/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Node modules (large, not needed for context)
+node_modules/
+.npm
+.pnp
+.pnp.js
+
+# ============================================
+# Build Artifacts
+# ============================================
+# Compiled code
+*.so
+*.dll
+*.dylib
+*.class
+*.o
+*.a
+
+# React/Vite build outputs
+build/
+dist/
+out/
+.next/
+.nuxt/
+.cache/
+.vite/
+
+# ============================================
+# AWS Amplify
+# ============================================
+# Amplify Gen 2 (can be large and auto-generated)
+amplify/
+.amplify/
+amplify/backend/awscloudformation/
+amplify/#current-cloud-backend/
+aws-exports.js
+amplifyconfiguration.json
+amplify_outputs.json
+
+# ============================================
+# IDE and Editor Files
+# ============================================
+.idea/
+.vscode/
+*.iml
+*.code-workspace
+.project
+.classpath
+.settings/
+
+# ============================================
+# System Files
+# ============================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.directory
+
+# ============================================
+# Logs and Temporary Files
+# ============================================
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+*.cache
+
+# ============================================
+# Secrets and Credentials
+# ============================================
+# Never read credentials (security)
+.env
+.env.*
+*.secret
+*.private
+*.pem
+*.key
+*-key.json
+credentials.json
+secrets.json
+.aws/
+api_keys.json
+tokens.json
+bedrock_config.json
+rekognition_config.json
+
+# ============================================
+# Compressed Archives
+# ============================================
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# Exception: May need to read PDF documentation
+!docs/*.pdf
+!research/*.pdf
+
+# ============================================
+# Media Files
+# ============================================
+# Audio files (large, not needed for code context)
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+
+# Video files (large demo recordings)
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Exception: Small screenshots are OK for UI context
+!screenshots/*.png
+!screenshots/*.jpg
+!docs/images/*.png
+!docs/images/*.jpg
+
+# ============================================
+# Documentation Build Outputs
+# ============================================
+docs/_build/
+docs/.doctrees/
+site/
+
+# ============================================
+# Test Coverage and Reports
+# ============================================
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.pytest_cache/
+.hypothesis/
+.nyc_output
+
+# ============================================
+# Jupyter Notebooks (can be large with outputs)
+# ============================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Note: .ipynb files are OK but outputs might be large
+# Clean outputs before important analysis
+
+# ============================================
+# AWS and Cloud Artifacts
+# ============================================
+.aws-sam/
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# ============================================
+# Large Binary Files
+# ============================================
+*.bin
+*.exe
+*.app
+*.deb
+*.rpm
+*.apk
+*.aab
+*.ipa
+
+# ============================================
+# Database Files
+# ============================================
+# Database files (can be large)
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+
+# Exception: Schema files are OK
+!schema.sql
+!migrations/*.sql
+
+# ============================================
+# Claude Specific
+# ============================================
+# Large Claude outputs or conversations
+.claude/conversations/
+.claude/outputs/
+.claude/*.log
+
+# ============================================
+# Healthcare Data Privacy
+# ============================================
+# NEVER read patient data (HIPAA / DPDP Act 2023 compliance)
+patient_data/
+health_records/
+phi_data/
+pii_data/
+anonymized_data/
+clinical_data/
+patient_*.csv
+patient_*.json
+
+# Clinical study data
+clinical_study/
+validation_results/
+test_patients/
+user_test_results/
+
+# Medical test images (large and sensitive)
+test_fundus/
+sample_retina/
+glucose_samples/
+test_logs/
+
+# ============================================
+# Indian Food Database
+# ============================================
+# May contain proprietary nutrition data
+indian_food_db/
+nutrition_data/
+food_database/
+
+# ============================================
+# Hackathon Submission
+# ============================================
+# Large submission artifacts
+submission/
+demo_recordings/
+presentation_final/
+
+# ============================================
+# IMPORTANT: Files Claude SHOULD Read
+# ============================================
+# Documentation (explicitly include these)
+!README.md
+!CLAUDE.md
+!TECH_STACK.md
+!IDEA_SUBMISSION.md
+!DIABETES_FOCUS.md
+!FUNDING_VALIDATION.md
+!FUNDING_SLIDE_UPDATES.md
+!PROTOTYPE_COST_BREAKDOWN.md
+!PROTOTYPE_COST_13DAYS.md
+!MVP_BUDGET_FINAL.md
+!SCREENSHOTS.md
+
+# Source code documentation
+!docs/*.md
+!docs/*.html
+!docs/css/*.css
+!docs/js/*.js
+
+# Project configuration
+!package.json
+!tsconfig.json
+!vite.config.js
+!vite.config.ts
+
+# SVG diagrams (small, informative)
+!*.svg
+!diagrams/*.svg
+
+# Screenshots README (but not the actual large PNG files)
+!screenshots/README.md
+
+# Research markdown (but not large PDFs)
+!research/*.md
+
+# JavaScript/TypeScript source files
+!src/**/*.js
+!src/**/*.jsx
+!src/**/*.ts
+!src/**/*.tsx
+
+# Amplify schema files (important for understanding data model)
+!amplify/data/resource.ts
+!amplify/auth/resource.ts
+!amplify/storage/resource.ts
+
+# Configuration files
+!.gitignore
+!.claudeignore
+!.eslintrc.*
+!.prettierrc
