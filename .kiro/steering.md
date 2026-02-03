@@ -1,4 +1,6 @@
-# DiabetCare AI - Best Practices
+# DiabetCare AI - Project Steering Guide
+
+This file provides project-level guidance for AI assistants working on this codebase.
 
 ## Table of Contents
 - [AWS Well-Architected Framework](#aws-well-architected-framework)
@@ -506,7 +508,7 @@ Moderate NPDR, Severe NPDR, PDR.
 
 Model achieves 92.4% sensitivity and 88.1% specificity on validation set.
 
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+Co-Authored-By: Claude <noreply@anthropic.com>
 "
 ```
 
