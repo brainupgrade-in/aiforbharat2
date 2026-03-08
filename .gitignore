@@ -171,16 +171,15 @@ vite.config.js.timestamp-*
 # ============================================
 # AWS Amplify
 # ============================================
-# Amplify Gen 2
-amplify/
+# Amplify Gen 2 — generated outputs (NOT the source code in amplify/)
 .amplify/
-amplify-*
-aws-exports.js
+amplify_outputs.json
 amplifyconfiguration.json
 amplifyconfiguration.dart
-amplify_outputs.json
+amplify-*
+aws-exports.js
 
-# Amplify backend
+# Amplify Gen 1 legacy (not used, but keep for safety)
 amplify/backend/amplify-meta.json
 amplify/backend/awscloudformation/
 amplify/backend/.temp/

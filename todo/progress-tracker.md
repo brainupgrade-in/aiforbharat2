@@ -22,7 +22,13 @@
   - [x] Demo Mode clearly labeled with amber "DEMO MODE" badge when AI is not connected
   - [x] DR scan page has "DEMO MODE" banner and disclaimer
   - [x] DR results page has "DEMO MODE" indicator
-  - [ ] Lambda function for Bedrock endpoint needs deployment (code architecture ready)
+  - [x] Lambda function for Bedrock endpoint created (`amplify/functions/chatbot/handler.ts` + `resource.ts`)
+  - [x] Function URL configured in `amplify/backend.ts` (public endpoint with CORS)
+  - [x] Bedrock IAM permissions granted (InvokeModel for Claude 3 Haiku + 3.5 Haiku)
+  - [x] System prompt hardcoded in Lambda: India-specific diabetes advisor, multilingual (EN/HI/KN)
+  - [ ] Deploy via `npx ampx sandbox` or `git push` to get the Function URL
+  - [ ] Set `VITE_BEDROCK_ENDPOINT` to the Function URL in Amplify Hosting env vars
+  - [ ] Enable Claude 3 Haiku model access in AWS Bedrock console (us-east-1)
   - [ ] Rekognition Custom Labels model not trained (needs Kaggle dataset + training time)
   - [ ] S3 storage for images not wired yet
 
@@ -120,15 +126,19 @@
 ### New Files Created
 - `src/pages/NazarChat.jsx` — AI chatbot with Bedrock integration + demo fallback
 - `src/pages/NazarGlucose.jsx` — Glucose tracker with DynamoDB wiring
+- `amplify/functions/chatbot/handler.ts` — Lambda handler calling Bedrock Claude 3 Haiku
+- `amplify/functions/chatbot/resource.ts` — Amplify Gen 2 function definition
+- `.env.example` — Documents VITE_BEDROCK_ENDPOINT env var
 - `todo/progress-tracker.md` — This file
 
 ### Files Modified
+- `amplify/backend.ts` — Added chatbot Lambda, Function URL, Bedrock IAM permissions
 - `src/pages/NazarApp.jsx` — 5-tab navigation (home, scan, AI chat, glucose, community)
 - `src/pages/NazarScan.jsx` — Added "DEMO MODE" banner
 - `src/pages/NazarResult.jsx` — Added "DEMO MODE" indicator
 - `src/lib/i18n.js` — Added 40+ new translation keys for chatbot + glucose tracker
 - `vite.config.js` — Added vite-plugin-pwa with Workbox service worker
-- `package.json` — Added vite-plugin-pwa + workbox-window devDependencies
+- `package.json` — Added vite-plugin-pwa, workbox-window, @aws-sdk/client-bedrock-runtime
 - `PROJECT_SUMMARY.md` — Team name fix
 - `README.md` — Team name fix
 - `template.md` — Team name fix
@@ -148,14 +158,15 @@
 ## Remaining Work (Prioritized)
 
 ### Must-Do Before Submission
-1. **Record demo video** (30 min) — Record screen, upload to YouTube/Drive, paste link in Slide 13
-2. **Deploy updated code** — `git push origin main` triggers Amplify CI/CD
-3. **Capture fresh screenshots** — Replace wireframe screenshots in deck with live MVP screenshots
-4. **Run Lighthouse audit** — Update Slide 11 with actual scores
-5. **Update deck claims** — Qualify "92% sensitivity" as "target based on published literature"
+1. **Deploy updated code** — `git push origin main` triggers Amplify CI/CD (deploys Lambda + Function URL)
+2. **Enable Bedrock model access** — AWS Console → Bedrock → Model access → Enable Claude 3 Haiku (us-east-1)
+3. **Set VITE_BEDROCK_ENDPOINT** — Copy Function URL from CloudFormation outputs → Amplify Hosting → Environment Variables
+4. **Record demo video** (30 min) — Record screen, upload to YouTube/Drive, paste link in Slide 13
+5. **Capture fresh screenshots** — Replace wireframe screenshots in deck with live MVP screenshots
+6. **Run Lighthouse audit** — Update Slide 11 with actual scores
+7. **Update deck claims** — Qualify "92% sensitivity" as "target based on published literature"
 
 ### Nice-to-Have (If Time Permits)
-6. Deploy Lambda function for Bedrock chatbot endpoint
-7. Wire meal analyzer to Bedrock vision model
-8. Add S3 storage for fundus images
-9. Full WCAG accessibility audit
+8. Wire meal analyzer to Bedrock vision model
+9. Add S3 storage for fundus images
+10. Full WCAG accessibility audit
