@@ -1,0 +1,21 @@
+{
+  "name": "nazar-ai-intro-video",
+  "version": "1.0.0",
+  "description": "Nazar AI hackathon intro video",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts NazarAIIntro out/nazar-ai-intro.mp4",
+    "render-720": "remotion render src/index.ts NazarAIIntro out/nazar-ai-intro-720.mp4 --scale=0.667",
+    "compositions": "remotion compositions src/index.ts"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.417",
+    "remotion": "4.0.417",
+    "zod": "3.22.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.11",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3"
+  }
+}

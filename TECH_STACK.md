@@ -1040,7 +1040,7 @@ npm run test:load
 - [ ] Performance optimization (Lighthouse >90)
 - [ ] Security audit
 - [ ] Clinical validation study design
-- [ ] Create demo video (3-5 minutes)
+- [x] Create demo video — https://youtu.be/G620A-YF_bY
 
 ---
 

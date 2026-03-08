@@ -1,0 +1,1 @@
+Our AI Diabetes Advisor, powered by Amazon Bedrock Nova Micro, provides 24/7 personalized guidance in the patient's own language. It understands Indian dietary patterns, local medications, and cultural context — something no generic chatbot can offer.

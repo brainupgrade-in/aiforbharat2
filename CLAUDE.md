@@ -47,6 +47,9 @@ Design an AI solution that improves efficiency, understanding, or support within
 - **E2E Integration Tests** — 14/14 passing (Vitest) ✅
   - Cognito auth, AppSync GraphQL CRUD, Bedrock chatbot, live site health check
   - Test user: `testuser@nazarai.test`
+- **Intro/Demo Video** — Live on YouTube ✅
+  - YouTube: https://youtu.be/G620A-YF_bY
+  - Built with Remotion 4.0 (React-based) + edge-tts voiceover
 - **Next phase:** Amazon Rekognition Custom Labels for DR screening, meal photo analysis
 
 ## Repository Structure
@@ -698,6 +701,23 @@ python scripts/generate_manifest.py \
 - Niramai (AI breast cancer screening)
 - Tricog Health (AI ECG analysis)
 - Google AI diabetic retinopathy (India pilot)
+
+## Preferred TTS Voice Settings
+
+For video narration and voiceover generation, always use these settings:
+- **Tool:** `edge-tts` (Microsoft Edge Neural TTS — free, high quality)
+- **Voice:** `en-US-AndrewMultilingualNeural` (Warm, Confident, Authentic, Conversational)
+- **Rate:** `+0%` (normal speed for natural delivery)
+- **Style:** Presentation/demo narration
+- **Command:** `edge-tts --voice "en-US-AndrewMultilingualNeural" --rate="+0%" --text "TEXT" --write-media output.mp3`
+- **Why this voice:** Realistic, human-like, conversational tone — ideal for hackathon demos, product videos, and professional presentations
+- **Per-scene workflow:** Split script into numbered `.txt` files in `video/public/audio/scenes/`, generate per-scene `.mp3`, concatenate with `ffmpeg` (0.6s gaps)
+- **Video engine:** Remotion 4.0 (React-based) in `video/` folder, 1920x1080 @ 30fps
+- **ElevenLabs API key:** Located at `/home/rajesh/claudecodehealth/marketing/.env` (quota limited, prefer edge-tts)
+
+## Team Name
+
+- **Team Name:** TheHealthGheware
 
 ---
 

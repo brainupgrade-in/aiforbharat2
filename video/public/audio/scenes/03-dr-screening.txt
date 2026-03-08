@@ -1,0 +1,1 @@
+Our flagship feature: AI Diabetic Retinopathy Screening. Take a fundus photo with your smartphone. Our AI analyzes it in seconds, grading severity from zero to four with a lotus petal indicator. If DR is detected, nearby doctors appear instantly with GPS directions and WhatsApp referral.

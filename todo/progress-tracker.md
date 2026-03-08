@@ -7,11 +7,10 @@
 
 ## CRITICAL — Submission Blockers
 
-### 1. Demo Video Missing (Slide 13)
-- **Status:** NOT DONE
-- **Action:** Record 3-min demo: login → home → scan → results → AI chat → glucose tracker → community → multilingual → high contrast
-- **Upload to:** YouTube (unlisted) or Google Drive (public link)
-- **Update:** Paste link into Slide 13 of PPTX
+### 1. Demo Video (Slide 13)
+- **Status:** ✅ DONE
+- **YouTube:** https://youtu.be/G620A-YF_bY
+- **Slide 13 updated** with YouTube link in PPTX
 
 ### 2. AI Integration (Core Differentiator)
 - **Status:** PARTIALLY DONE
@@ -161,7 +160,7 @@
 1. **Deploy updated code** — `git push origin main` triggers Amplify CI/CD (deploys Lambda + Function URL)
 2. **Enable Bedrock model access** — AWS Console → Bedrock → Model access → Enable Claude 3 Haiku (us-east-1)
 3. **Set VITE_BEDROCK_ENDPOINT** — Copy Function URL from CloudFormation outputs → Amplify Hosting → Environment Variables
-4. **Record demo video** (30 min) — Record screen, upload to YouTube/Drive, paste link in Slide 13
+4. ~~**Record demo video**~~ ✅ Done — https://youtu.be/G620A-YF_bY (linked in Slide 13)
 5. **Capture fresh screenshots** — Replace wireframe screenshots in deck with live MVP screenshots
 6. **Run Lighthouse audit** — Update Slide 11 with actual scores
 7. **Update deck claims** — Qualify "92% sensitivity" as "target based on published literature"

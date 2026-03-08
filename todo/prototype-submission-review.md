@@ -11,12 +11,10 @@
 
 ## CRITICAL — Submission Blockers
 
-### 1. Demo Video Missing (Slide 13)
-- **Status:** ❌ NOT DONE
-- **Requirement:** Slide 13 explicitly says `[TO BE ADDED — Record and upload to YouTube/Drive before submission]`
-- **Action:** Record a 3-minute demo video covering: login → home → scan workflow → results (patient + doctor mode) → community dashboard → multilingual toggle → high contrast mode
-- **Upload to:** YouTube (unlisted) or Google Drive (public link)
-- **Update:** Paste link into Slide 13 of the PPTX
+### 1. Demo Video (Slide 13)
+- **Status:** ✅ DONE
+- **YouTube:** https://youtu.be/G620A-YF_bY
+- **Slide 13 updated** with YouTube link in PPTX
 
 ### 2. AI Integration Not Implemented (Core Differentiator)
 - **Status:** ⏳ PARTIALLY DONE — Demo Mode approach implemented, Bedrock endpoint ready
@@ -182,11 +180,11 @@
 |---|---|---|---|
 | **Live Prototype** | 7/10 | **8/10** | +Chatbot, +Glucose tracker, +PWA, +Demo Mode labels |
 | **AWS Service Usage** | 4/10 | **5/10** | +DynamoDB wired for glucose; Bedrock endpoint ready but not deployed |
-| **Deck Completeness** | 8/10 | 8/10 | Still missing demo video link and updated screenshots |
+| **Deck Completeness** | 8/10 | **9/10** | Demo video added (https://youtu.be/G620A-YF_bY) |
 | **Documentation** | 9/10 | **10/10** | +`.kiro/` specs aligned with codebase, +progress tracker |
 | **Feature Coverage** | 5/10 | **7/10** | +Glucose tracker (DynamoDB), +AI chatbot (demo), +PWA/offline |
 | **AI Integration** | 2/10 | **4/10** | Chatbot UI ready for Bedrock; Demo Mode clearly labeled; no live AI yet |
 | **Mobile/Accessibility** | 7/10 | **8/10** | +PWA installable, +service worker caching |
 | **Innovation** | 8/10 | 8/10 | Unchanged — strong concept |
 
-**Overall Assessment:** Significant progress on feature coverage (chatbot, glucose tracker, PWA) and documentation alignment. The #1 remaining risk is still no live AI — deploying the Bedrock Lambda endpoint for the chatbot would be the highest-impact next step. Demo video is the other critical blocker.
+**Overall Assessment:** Significant progress on feature coverage (chatbot, glucose tracker, PWA) and documentation alignment. Demo video is live at https://youtu.be/G620A-YF_bY and linked in Slide 13 of the PPTX.

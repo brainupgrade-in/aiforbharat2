@@ -679,7 +679,7 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
   - Feature walkthrough
   - Architecture diagrams
   - API documentation
-- [ ] Demo video (3-5 minutes)
+- [x] Demo video — https://youtu.be/G620A-YF_bY
   - Problem statement
   - Solution walkthrough
   - Technical highlights (AWS Bedrock, Rekognition)

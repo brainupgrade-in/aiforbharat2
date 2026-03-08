@@ -17,6 +17,7 @@ A mobile-first progressive web application (PWA) that provides AI-powered diabet
 
 **Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
 **GitHub:** [https://github.com/brainupgrade-in/aiforbharat2](https://github.com/brainupgrade-in/aiforbharat2)
+**Demo Video:** [https://youtu.be/G620A-YF_bY](https://youtu.be/G620A-YF_bY)
 
 **Tagline:** "Smart Diabetes Care for Every Indian - Early Detection, Better Outcomes"
 **Hindi Tagline:** "आँखों से प्यार झलकना चाहिए, बीमारी नहीं"

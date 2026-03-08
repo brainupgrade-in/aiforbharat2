@@ -1,0 +1,1 @@
+This is Nazar AI — meaning "Your Eyes, Our Focus." A mobile-first Progressive Web App that puts AI-powered diabetes care in every Indian's pocket. No app store downloads needed. Works on any smartphone. Available in English, Hindi, and Kannada.

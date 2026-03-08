@@ -1,0 +1,1 @@
+The Smart Glucose Tracker lets patients log their blood sugar readings, view 7-day trends, and receive pattern-based alerts. All data syncs to DynamoDB in real time.
