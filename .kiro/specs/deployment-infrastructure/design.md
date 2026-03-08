@@ -179,10 +179,12 @@ ai-for-bharat-2/
 │   ├── App.jsx                  # Auth gate + routing
 │   ├── index.css                # TailwindCSS + Nazar design system
 │   ├── pages/
-│   │   ├── NazarApp.jsx         # Main app shell with bottom tab nav
+│   │   ├── NazarApp.jsx         # Main app shell with 5-tab bottom nav
 │   │   ├── NazarHome.jsx        # Home dashboard
-│   │   ├── NazarScan.jsx        # DR scan workflow
-│   │   ├── NazarResult.jsx      # Results (patient + doctor modes)
+│   │   ├── NazarScan.jsx        # DR scan workflow (demo mode)
+│   │   ├── NazarResult.jsx      # Results (patient + doctor modes, demo mode)
+│   │   ├── NazarChat.jsx        # AI chatbot (Bedrock-ready + demo fallback)
+│   │   ├── NazarGlucose.jsx     # Glucose tracker (DynamoDB-wired)
 │   │   └── NazarCommunity.jsx   # Community impact dashboard
 │   ├── components/
 │   │   ├── NazarAuthScreen.jsx  # Branded login screen
@@ -209,13 +211,12 @@ ai-for-bharat-2/
 import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
-import { storage } from './storage/resource';
 
 const backend = defineBackend({
   auth,
   data,
-  storage,
 });
+// Note: S3 storage not yet configured. Planned for Phase 2 (fundus images, meal photos).
 ```
 
 **amplify/auth/resource.ts** (Cognito — Deployed):

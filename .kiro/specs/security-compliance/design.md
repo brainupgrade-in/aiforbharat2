@@ -849,5 +849,5 @@ console.error('Error details:', err);
 
 **Version:** 1.0
 **Last Updated:** 2026-01-25
-**Authors:** DiabetCare AI Security Team
+**Authors:** TheHealthGheware (Nazar AI Team)
 **Next Review:** 2026-04-25 (Quarterly)

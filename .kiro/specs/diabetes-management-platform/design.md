@@ -5,7 +5,7 @@
 Nazar AI (DiabetCare AI) is a mobile-first Progressive Web Application (PWA) that provides comprehensive diabetes management through AI-powered features. The system leverages AWS cloud services to deliver diabetic retinopathy screening, glucose tracking, meal analysis, and personalized diabetes guidance to India's 89.8 million diabetic population.
 
 **Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
-**Status:** React MVP deployed with authentication, DR screening workflow, multilingual support (EN/HI/KN), community dashboard, GPS-based doctor finder. AI model integration in progress.
+**Status:** React MVP deployed with authentication, DR screening workflow (demo mode), AI chatbot (Bedrock-ready with demo fallback), glucose tracker (DynamoDB-wired), multilingual support (EN/HI/KN), community dashboard, GPS-based doctor finder, PWA with Workbox service worker. AI model endpoint integration in progress.
 
 The platform addresses critical healthcare gaps by providing accessible, affordable diabetes care through smartphone technology, reducing the need for specialist consultations while enabling early detection of complications.
 
@@ -92,7 +92,7 @@ The system follows a serverless, cloud-native architecture built on AWS services
 - `App.jsx`: Auth gate that shows NazarAuthScreen if unauthenticated, NazarApp if authenticated
 
 **2. App Shell & Navigation** ✅
-- `NazarApp`: Main app shell with sticky header (logo, language switcher, high-contrast toggle, sign-out) and bottom tab navigation (Home, Scan, Results, Community)
+- `NazarApp`: Main app shell with sticky header (logo, language switcher, high-contrast toggle, sign-out) and bottom tab navigation (Home, Scan, AI Chat, Glucose, Community) — 5 tabs; Results shown after scan completion
 
 **3. Home Dashboard** ✅
 - `NazarHome`: Animated greeting, scan CTA button, last scan card with LotusSeverity indicator, streak counter with fire animation, 7-day blood sugar sparkline chart (custom SVG), community stats with location-aware user count
@@ -116,20 +116,28 @@ The system follows a serverless, cloud-native architecture built on AWS services
 - `lib/i18n.js`: Translation system for EN, Hindi (हिन्दी), Kannada (ಕನ್ನಡ) with variable interpolation — covers all screens
 - `lib/location.js`: GPS detection, reverse geocoding, 30-min cache in localStorage, Google Maps URL generation, WhatsApp deeplinks
 
-#### Planned Components (Phase 2)
-- `GlucoseTracker`: Manual glucose logging with trend charts (data model ready in Amplify)
-- `MealAnalyzer`: Photo-based Indian food recognition (AWS Bedrock Nova Pro integration)
-- `Chatbot`: AI diabetes advisor (AWS Bedrock Claude 3 Haiku integration)
-- `Dashboard`: Health metrics overview with HbA1c, time in range
+**8. AI Chatbot** ✅
+- `NazarChat`: AI diabetes advisor chatbot in Nazar design system with Bedrock integration endpoint (`VITE_BEDROCK_ENDPOINT` env var) + demo fallback with 5 rich response categories (glucose, breakfast, exercise, retina, general). Shows "DEMO MODE" badge when Bedrock not connected. Multilingual greetings and suggested questions (EN/HI/KN).
 
-#### PWA Infrastructure
+**9. Glucose Tracker** ✅
+- `NazarGlucose`: Full glucose tracker wired to DynamoDB via Amplify Data (dynamic import of `aws-amplify/data`). Cloud sync status indicator (green = DynamoDB, amber = local only). Recharts trend chart with reference lines at 100/140 mg/dL. Status badges (High/Low/Normal). Multilingual contexts, labels, tips (EN/HI/KN).
+
+#### Planned Components (Phase 2)
+- `MealAnalyzer`: Photo-based Indian food recognition (AWS Bedrock Nova Pro integration)
+- `Dashboard`: Health metrics overview with HbA1c, time in range, complication risk scores
+
+#### PWA Infrastructure ✅
 
 **Service Worker Strategy**
-- Service worker scaffolding in docs/ folder (basic offline fallback)
-- Production PWA capabilities planned for Phase 2
+- Production PWA configured via `vite-plugin-pwa` with Workbox
+- Service worker auto-generated at build time (`sw.js` + workbox runtime)
+- Precaching: JS, CSS, HTML, PNG, SVG assets (8 entries, ~1578 KiB)
+- Runtime caching: Google Fonts (CacheFirst), AppSync API (NetworkFirst)
+- App installable on mobile Chrome
 
 **Offline Data Management**
 - Location data cached in localStorage (30-min TTL)
+- Glucose readings stored locally when DynamoDB unavailable (amber "local only" indicator)
 - Full IndexedDB offline sync planned for Phase 2
 
 ### Backend Services
@@ -208,23 +216,29 @@ ChatMessage {
 - User Pool: `ap-south-1_kbmI8hA9b`
 - Identity Pool: `ap-south-1:7f1b41d4-5786-4246-85b9-fa7ab00b8d83`
 
-#### Lambda Functions (Planned)
+#### Backend Architecture Note
 
-**1. DR Analysis Function** 📋 Planned
-- Will trigger on S3 fundus image upload
-- Call Rekognition Custom Labels for classification
-- Use Bedrock for patient-friendly explanation
-- Store results in DynamoDB
+**Current Architecture (MVP):**
+The MVP uses a simplified architecture without Lambda functions. Key integrations:
+- **Glucose Tracker** → Direct AppSync GraphQL → DynamoDB (via Amplify Data client in `NazarGlucose.jsx`)
+- **AI Chatbot** → Configurable REST endpoint (`VITE_BEDROCK_ENDPOINT`) → Bedrock Claude 3 Haiku (when deployed). Falls back to demo mode with rich local responses.
+- **DR Screening** → Demo mode with simulated results. UI complete with patient/doctor modes.
 
-**2. Meal Analysis Function** 📋 Planned
+**Planned Lambda Functions (Phase 2-3):**
+
+**1. Chatbot Bedrock Endpoint** 📋 Planned
+- Lambda function to proxy Bedrock Claude 3 Haiku API calls
+- System prompt: diabetes advisor, multilingual, India-specific
+- Frontend ready: `NazarChat.jsx` calls `VITE_BEDROCK_ENDPOINT`
+
+**2. DR Analysis Function** 📋 Planned
+- S3 fundus image upload → Rekognition Custom Labels inference
+- Patient-friendly explanation via Bedrock
+- Store results in DynamoDB RetinaScan model
+
+**3. Meal Analysis Function** 📋 Planned
 - Process meal photos using Bedrock Nova Pro
 - Query Indian food database for nutritional data
-- Calculate predicted glucose impact
-
-**3. Chatbot Handler Function** 📋 Planned
-- Process user messages through Bedrock Claude 3 Haiku
-- Maintain conversation context using ChatMessage model
-- Implement RAG using Bedrock Knowledge Bases
 
 **4. Risk Calculator Function** 📋 Planned
 - Analyze glucose patterns for complication risk

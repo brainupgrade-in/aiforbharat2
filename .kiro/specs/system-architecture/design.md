@@ -2,7 +2,7 @@
 
 **Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
 **Region:** ap-south-1 (Mumbai, India)
-**Status:** React MVP deployed with Amplify Gen 2 (Cognito + AppSync + DynamoDB). AI services integration in progress.
+**Status:** React MVP deployed with Amplify Gen 2 (Cognito + AppSync + DynamoDB), AI chatbot (Bedrock-ready + demo fallback), glucose tracker (DynamoDB-wired), PWA with Workbox service worker. AI model endpoint integration in progress.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -155,28 +155,24 @@ DiabetCare AI is built on a **serverless, cloud-native architecture** using AWS 
 - **Routing**: React Router v6
 - **PWA**: Workbox for service workers, offline support
 
-**Component Hierarchy:**
+**Component Hierarchy (Actual Implementation):**
 ```
 App (Root)
-├── AuthProvider (Cognito authentication)
-├── Router
-│   ├── PublicRoutes
-│   │   ├── Login
-│   │   ├── Register
-│   │   └── ForgotPassword
-│   ├── ProtectedRoutes
-│   │   ├── Dashboard
-│   │   ├── GlucoseTracker
-│   │   ├── RetinaScan
-│   │   ├── MealAnalyzer
-│   │   ├── Chatbot
-│   │   ├── Profile
-│   │   └── Settings
-│   └── DoctorRoutes
-│       ├── PatientList
-│       ├── PatientDetails
-│       └── DRReview
-└── ErrorBoundary
+├── NazarAuthScreen (Cognito — branded login with animated eye, impact stats)
+│   └── Amplify Authenticator (email/password auth)
+└── NazarApp (Main shell — authenticated users only)
+    ├── Header (logo, language switcher [EN/HI/KN], high-contrast toggle, sign-out)
+    ├── Bottom Tab Navigation (5 tabs)
+    │   ├── Home → NazarHome (greeting, scan CTA, sparkline, community stats)
+    │   ├── Scan → NazarScan (camera capture, demo mode) → NazarResult (patient/doctor modes)
+    │   ├── AI Chat → NazarChat (Bedrock-ready chatbot + demo fallback)
+    │   ├── Glucose → NazarGlucose (DynamoDB-wired tracker with Recharts trend)
+    │   └── Community → NazarCommunity (state leaderboard, village stats)
+    └── Shared Components
+        ├── LotusSeverity (DR severity indicator)
+        ├── IrisLoader (eye-themed spinner)
+        ├── MarigoldCelebration (No DR celebration)
+        └── NearbyDoctors (GPS + Google Maps + WhatsApp)
 ```
 
 **Offline Strategy:**
@@ -252,134 +248,70 @@ type Subscription {
 - Doctor access: `@auth(rules: [{allow: groups, groups: ["Doctors"]}])`
 - API Key for public endpoints (login, register)
 
-#### 2.2 API Gateway (REST)
+#### 2.2 API Architecture Note
 
-**Endpoints:**
+**Current Implementation (MVP):**
+The MVP uses **AppSync GraphQL only** — no REST API Gateway endpoints exist. All data operations go through AppSync:
+- Glucose readings: `createGlucoseReading`, `listGlucoseReadings` (GraphQL mutations/queries)
+- Retina scans: `createRetinaScan`, `listRetinaScans` (GraphQL)
+- Chat messages: `createChatMessage` (GraphQL)
+- User profiles: `createUserProfile`, `getUserProfile` (GraphQL)
+
+**AI Chatbot Endpoint:**
+- `VITE_BEDROCK_ENDPOINT` (configurable REST endpoint for Bedrock proxy Lambda — planned)
+- Currently uses demo fallback responses in `NazarChat.jsx`
+
+**Planned REST Endpoints (Phase 2):**
 ```
-POST   /auth/register           # User registration
-POST   /auth/login              # User login
-POST   /auth/refresh-token      # Refresh JWT
-GET    /glucose/readings        # Get glucose history
-POST   /glucose/readings        # Log glucose
-POST   /dr-scan/upload          # Upload retina image
-GET    /dr-scan/results/:id     # Get DR analysis results
-POST   /meal/analyze            # Analyze meal photo
-POST   /chatbot/message         # Send chatbot message
-WebSocket /chatbot/ws           # WebSocket for real-time chat
+POST   /chatbot/message         # Bedrock Claude 3 Haiku proxy
+POST   /dr-scan/analyze         # Rekognition Custom Labels inference
+POST   /meal/analyze            # Bedrock Nova Pro vision model
 GET    /abdm/link               # Link ABHA ID
-GET    /abdm/fetch-records      # Fetch health records from ABDM
 ```
 
 **Authentication:**
 - Cognito Authorizer for all protected endpoints
 - API Key for rate-limited public endpoints
 
-### 3. Application Layer (Lambda Functions)
+### 3. Application Layer
 
-#### 3.1 Auth Service (Node.js 20)
-**Responsibilities:**
-- Pre-signup validation (email/phone format)
-- Post-confirmation triggers (create DynamoDB user record)
-- Custom authentication challenges (TOTP for MFA)
-- ABHA ID linking
+#### Current Architecture (MVP — No Lambda Functions)
 
-**Environment Variables:**
-- `USER_POOL_ID`, `USER_POOL_CLIENT_ID`
-- `ABDM_API_URL`, `ABDM_CLIENT_ID`, `ABDM_CLIENT_SECRET`
+The MVP uses a **simplified serverless architecture** without Lambda functions:
 
-#### 3.2 Glucose API (Node.js 20)
-**Responsibilities:**
-- CRUD operations for glucose readings
-- Trend calculation (7-day, 30-day averages)
-- HbA1c estimation (GMI formula: (avg_glucose + 46.7) / 28.7)
-- Pattern detection (hypo/hyper events)
+**Glucose Tracking:**
+- Frontend (`NazarGlucose.jsx`) → Direct AppSync GraphQL → DynamoDB `GlucoseReading` model
+- Uses `aws-amplify/data` client (dynamic import) for CRUD operations
+- Trend calculation done client-side (Recharts visualization of last 8 readings)
+- Status determination client-side: High (>140 mg/dL), Low (<70), Normal
 
-**DynamoDB Table:**
-- Table: `GlucoseReadings`
-- Partition Key: `userId` (String)
-- Sort Key: `timestamp` (Number, Unix epoch)
-- GSI: `userId-mealContext-index` for filtering by meal context
+**AI Chatbot:**
+- Frontend (`NazarChat.jsx`) → Configurable `VITE_BEDROCK_ENDPOINT` REST endpoint
+- When endpoint not configured: rich demo responses (5 categories: glucose, breakfast, exercise, retina, general)
+- "DEMO MODE" badge clearly shown in UI
 
-#### 3.3 DR Processor (Python 3.11)
-**Responsibilities:**
-- Image validation (resolution, brightness, format)
-- S3 upload with encryption
-- Rekognition Custom Labels inference
+**DR Screening:**
+- Frontend (`NazarScan.jsx`) → Simulated analysis (demo mode)
+- "DEMO MODE" banner with disclaimer shown in UI
+- Patient and doctor result modes fully implemented in `NazarResult.jsx`
+
+#### Planned Lambda Functions (Phase 2-3)
+
+**3.1 Chatbot Bedrock Proxy** 📋 Planned
+- Process user messages through Bedrock Claude 3 Haiku
+- System prompt: diabetes advisor, multilingual, India-specific
+- Frontend ready: `NazarChat.jsx` calls `VITE_BEDROCK_ENDPOINT`
+- RAG via Bedrock Knowledge Bases (planned)
+
+**3.2 DR Processor** 📋 Planned
+- S3 fundus image upload → Rekognition Custom Labels inference
 - Result parsing and severity classification
-- DynamoDB record creation
-- EventBridge event publishing (for doctor notifications)
+- Patient-friendly explanation via Bedrock
 
-**Workflow:**
-```
-1. Receive base64 image from API Gateway
-2. Validate image quality (PIL library)
-3. Upload to S3 (boto3)
-4. Invoke Rekognition DetectCustomLabels API
-5. Parse response (labels: NoMDR, Mild, Moderate, Severe, PDR)
-6. Map labels to severity enum
-7. Store result in DynamoDB
-8. Publish event to EventBridge if severity >= Moderate
-9. Return result to client
-```
-
-#### 3.4 AI Chatbot (Python 3.11)
-**Responsibilities:**
-- Conversation context management (Redis cache)
-- Bedrock Claude 3 Haiku API invocation
-- RAG query to Knowledge Base (for clinical questions)
-- Language detection and translation (AWS Translate)
-- Response streaming via WebSocket
-
-**Prompt Engineering:**
-```python
-SYSTEM_PROMPT = """
-You are DiabetCare AI, a diabetes management assistant. You provide:
-- Evidence-based diabetes education
-- Lifestyle guidance (diet, exercise)
-- Medication reminders
-- Lab test interpretation
-
-IMPORTANT:
-- Do NOT diagnose medical conditions
-- Do NOT prescribe medications
-- Recommend consulting a doctor for medical decisions
-- Cite sources for clinical information (ADA, IDF, ICMR guidelines)
-
-Respond in a friendly, empathetic tone. Use simple language for low health literacy users.
-"""
-```
-
-**RAG Pipeline:**
-```
-1. User question → Bedrock Knowledge Base (OpenSearch)
-2. Retrieve top 3 relevant documents (diabetes guidelines)
-3. Construct prompt: SYSTEM_PROMPT + retrieved docs + user question
-4. Bedrock Claude 3 Haiku generates response
-5. Response + citations returned to user
-```
-
-#### 3.5 Meal Analyzer (Python 3.11)
-**Responsibilities:**
-- Meal photo upload to S3
-- Bedrock Nova Pro vision model API call
-- Food recognition (multi-label classification)
-- Nutritional database lookup (Indian Food Composition Table 2017)
+**3.3 Meal Analyzer** 📋 Planned
+- Bedrock Nova Pro vision model for food recognition
+- Indian food nutritional database lookup
 - Carb/calorie estimation
-
-**Workflow:**
-```
-1. Receive meal image (JPEG/PNG)
-2. Upload to S3 (diabetcare-meal-photos/)
-3. Invoke Bedrock Nova Pro with prompt:
-   "Identify all food items in this image. For each item, estimate:
-    - Food name (in English and Hindi)
-    - Portion size (grams or standard serving)
-    - Likelihood (confidence %)"
-4. Parse JSON response: [{food: "chapati", portion: "2 pieces", grams: 80}]
-5. Lookup nutritional data in IFCT database (DynamoDB table)
-6. Calculate total: carbs, calories, protein, fat, fiber, GI, GL
-7. Return structured response to client
-```
 
 ### 4. AI/ML Services Layer
 
@@ -842,5 +774,5 @@ PWA connects to Twilio Room (peer-to-peer video)
 
 **Version:** 1.0
 **Last Updated:** 2026-01-25
-**Authors:** DiabetCare AI Team
+**Authors:** TheHealthGheware (Nazar AI Team)
 **Reviewers:** AWS AI for Bharat Hackathon Submission

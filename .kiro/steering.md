@@ -1,11 +1,11 @@
-# Nazar AI (NazarAI AI) - Project Steering Guide
+# Nazar AI (DiabetCare AI) - Project Steering Guide
 
 This file provides project-level guidance for AI assistants working on this codebase.
 
 **Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
 **GitHub:** https://github.com/brainupgrade-in/aiforbharat2
 **Region:** ap-south-1 (Mumbai, India)
-**Status:** React MVP deployed with auth, DR screening workflow, multilingual (EN/HI/KN), community dashboard. AI integration (Bedrock, Rekognition) in progress.
+**Status:** React MVP deployed with auth, DR screening workflow, AI chatbot (Bedrock-ready with demo fallback), glucose tracker (DynamoDB-wired), multilingual (EN/HI/KN), community dashboard, PWA with service worker. AI model integration (Bedrock endpoint, Rekognition Custom Labels) in progress.
 
 ## Table of Contents
 - [AWS Well-Architected Framework](#aws-well-architected-framework)

@@ -38,10 +38,10 @@ Implementation tasks for the Nazar AI (DiabetCare AI) system architecture. Tasks
 ## Phase 2: Application Layer (Week 3-4)
 
 ### Lambda Functions
-- [ ] Create glucose-api Lambda (Node.js 20, ARM64)
-- [ ] Create dr-processor Lambda (Python 3.11)
-- [ ] Create chatbot Lambda (Python 3.11)
-- [ ] Create meal-analyzer Lambda (Python 3.11)
+**Note:** MVP uses direct AppSync→DynamoDB for glucose and demo mode for AI features. Lambda functions needed only for AI service proxies.
+- [ ] Create chatbot-bedrock Lambda (Bedrock Claude 3 Haiku proxy) — Frontend ready (`NazarChat.jsx` calls `VITE_BEDROCK_ENDPOINT`)
+- [ ] Create dr-processor Lambda (Rekognition Custom Labels inference)
+- [ ] Create meal-analyzer Lambda (Bedrock Nova Pro vision model)
 - [ ] Configure Lambda environment variables and IAM roles
 
 ### Event-Driven Workflows
@@ -109,10 +109,10 @@ Implementation tasks for the Nazar AI (DiabetCare AI) system architecture. Tasks
 - [x] Implement Amplify Auth integration (NazarAuthScreen + Authenticator) ✅
 
 ### PWA Features
-- [ ] Configure service worker with Workbox
-- [ ] Implement offline-first data caching (IndexedDB)
-- [ ] Add background sync for glucose/meal logs
-- [ ] Create PWA manifest with app icons
+- [x] Configure service worker with Workbox ✅ (vite-plugin-pwa with auto-generated sw.js)
+- [ ] Implement offline-first data caching (IndexedDB) — Phase 2
+- [ ] Add background sync for glucose/meal logs — Phase 2
+- [x] Create PWA manifest with app icons ✅ (name, theme color, icons generated at build)
 
 ### Performance Optimization
 - [ ] Implement code splitting (React.lazy)
