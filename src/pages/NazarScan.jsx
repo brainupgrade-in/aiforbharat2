@@ -107,7 +107,15 @@ export default function NazarScan({ lang, onResult }) {
 
   return (
     <div className="space-y-5 animate-fade-up">
-      <h1 className="font-display text-heading font-bold text-teal-deep">{t('scanTitle', lang)}</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-heading font-bold text-teal-deep">{t('scanTitle', lang)}</h1>
+        <span className="px-2.5 py-1 bg-amber-light text-amber-deep text-[10px] font-bold rounded-full">
+          DEMO MODE
+        </span>
+      </div>
+      <div className="bg-amber-light/60 rounded-xl px-3 py-2 text-[11px] text-ink-light">
+        {t('demoMode', lang)}
+      </div>
 
       {/* Hidden canvas for camera capture */}
       <canvas ref={canvasRef} className="hidden" />

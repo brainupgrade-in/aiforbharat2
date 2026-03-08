@@ -3,12 +3,15 @@ import { LANGS, t } from '../lib/i18n'
 import NazarHome from './NazarHome'
 import NazarScan from './NazarScan'
 import NazarResult from './NazarResult'
+import NazarChat from './NazarChat'
+import NazarGlucose from './NazarGlucose'
 import NazarCommunity from './NazarCommunity'
 
 const NAV_ITEMS = [
   { id: 'home', icon: 'home' },
   { id: 'scan', icon: 'scan' },
-  { id: 'results', icon: 'results' },
+  { id: 'chat', icon: 'chat' },
+  { id: 'glucose', icon: 'glucose' },
   { id: 'community', icon: 'community' },
 ]
 
@@ -19,30 +22,33 @@ function NavIcon({ icon, active }) {
   switch (icon) {
     case 'home':
       return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
           <polyline points="9 22 9 12 15 12 15 22" />
         </svg>
       )
     case 'scan':
       return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="3" />
           <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
         </svg>
       )
-    case 'results':
+    case 'chat':
       return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="16" y1="13" x2="8" y2="13" />
-          <line x1="16" y1="17" x2="8" y2="17" />
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      )
+    case 'glucose':
+      return (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
         </svg>
       )
     case 'community':
       return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
           <circle cx="9" cy="7" r="4" />
           <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -155,10 +161,12 @@ export default function NazarApp({ signOut }) {
         {tab === 'home' && <NazarHome lang={lang} onNavigate={handleNavigate} />}
         {tab === 'scan' && <NazarScan lang={lang} onResult={handleResult} />}
         {tab === 'results' && <NazarResult lang={lang} result={scanResult} onNavigate={handleNavigate} />}
+        {tab === 'chat' && <NazarChat lang={lang} />}
+        {tab === 'glucose' && <NazarGlucose lang={lang} />}
         {tab === 'community' && <NazarCommunity lang={lang} />}
       </main>
 
-      {/* Bottom nav */}
+      {/* Bottom nav — 5 tabs */}
       <nav
         className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-ivory-dark/50 safe-bottom"
         role="tablist"
@@ -166,12 +174,12 @@ export default function NazarApp({ signOut }) {
       >
         <div className="max-w-lg mx-auto flex items-center justify-around py-1.5">
           {NAV_ITEMS.map(({ id, icon }) => {
-            const active = tab === id
+            const active = tab === id || (id === 'scan' && tab === 'results')
             return (
               <button
                 key={id}
                 onClick={() => handleNavigate(id)}
-                className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-colors min-w-[56px] min-h-[48px] justify-center ${
+                className={`flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-xl transition-colors min-w-[48px] min-h-[48px] justify-center ${
                   active ? 'text-teal-deep' : 'text-ink-muted hover:text-ink-light'
                 }`}
                 role="tab"
@@ -179,7 +187,7 @@ export default function NazarApp({ signOut }) {
                 aria-label={t(id, lang)}
               >
                 <NavIcon icon={icon} active={active} />
-                <span className={`text-[10px] font-medium ${active ? 'font-semibold' : ''}`}>
+                <span className={`text-[9px] font-medium ${active ? 'font-semibold' : ''}`}>
                   {t(id, lang)}
                 </span>
               </button>

@@ -32,6 +32,11 @@ export default function NazarResult({ lang, result, onNavigate }) {
       <div className={revealed ? 'animate-iris-expand' : 'opacity-0'}>
         <div className="space-y-5">
 
+          {/* Demo Mode indicator */}
+          <div className="bg-amber-light/60 rounded-xl px-3 py-2 text-[11px] text-ink-light text-center">
+            {t('demoMode', lang)} — Simulated AI results for demonstration
+          </div>
+
           {/* Toggle Patient/Doctor */}
           <div className="flex justify-end">
             <button

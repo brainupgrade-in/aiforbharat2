@@ -1,17 +1,40 @@
-# How DiabetCare AI is Different from Existing Solutions
+# Nazar AI (DiabetCare AI) — Quick Reference
 
-**Existing diabetes solutions in India suffer from critical accessibility and integration gaps.** Telemedicine platforms like Practo and mfine offer general doctor consultations (₹300-500/session) but lack AI-powered diabetic retinopathy screening entirely. Glucose monitoring apps like BeatO and HealthifyMe require expensive hardware purchases (₹2,000-10,000 glucometers) and provide generic Western diet advice unusable for Indian cuisine. Most critically, advanced AI-based DR screening (Google AI, Aravind Eye Hospital) exists only in urban clinics with specialized fundus cameras costing ₹500-1,500 per scan—completely inaccessible to rural populations where 65% of India lives. No existing solution combines preventive complication screening with daily diabetes management in a single platform, forcing patients to juggle multiple apps, clinic visits, and expensive consultations.
+**Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
+**GitHub:** [https://github.com/brainupgrade-in/aiforbharat2](https://github.com/brainupgrade-in/aiforbharat2)
+**Hackathon:** AWS AI for Bharat
+**Team:** TheHealthGheware
+**Team Leader:** Rajesh Gheware
 
-**DiabetCare AI is India's first smartphone-based diabetic retinopathy screening app integrated with comprehensive AI-powered diabetes management, requiring zero hardware and zero clinic visits.** Unlike clinic-dependent solutions, we enable at-home DR screening using any smartphone camera with 92%+ accuracy matching specialists. Our offline-first Progressive Web App works on 2G/3G networks without app store downloads, while AWS Bedrock's multilingual AI chatbot (Hindi, Tamil, Telugu) provides 24/7 personalized guidance that competing apps lack. The Amazon Nova Pro meal analyzer recognizes 500+ Indian dishes with accurate carbohydrate estimation—solving the critical gap where Western food databases fail for chapati, dosa, and biryani. By eliminating the ₹20,000/year costs of premium diabetes programs (Fitterfly, Twin Health) and making specialist-level DR screening free, DiabetCare AI democratizes preventive care for 225 million diabetics and pre-diabetics, not just the 15-20% urban elite currently served.
+## One-Liner
+AI-powered diabetic retinopathy screening PWA that brings specialist-level eye care to 225 million Indians — from any smartphone, in any village, offline.
 
-# How Will It Be Able to Solve the Problem?
+## Key Stats
+- 89.8M diabetics in India (IDF Atlas 2025)
+- 43% undiagnosed
+- 90% of DR blindness preventable with timely screening
+- 225M total addressable market
 
-**DiabetCare AI solves India's diabetes crisis through early detection and continuous prevention, breaking the catastrophic cycle where 43% of diabetics remain undiagnosed (IDF Atlas 11th Edition, 2025) and many are diagnosed only when complications are already present.** By enabling smartphone-based diabetic retinopathy screening accessible from any village, we detect vision-threatening damage 2-3 years before blindness occurs—when laser treatment still works and costs only ₹5,000-10,000 versus ₹3-5 lakh for late-stage vitrectomy surgery or permanent disability. The AI-powered glucose tracker and meal analyzer empower patients with real-time insights that prevent HbA1c deterioration, achieving clinically significant improvements (≥0.5% reduction) in 60%+ of users through personalized nudges and pattern recognition. This shifts 40-50% of diabetics from the complication pathway to controlled management, directly reducing the ₹2-3 lakh crore annual GDP burden. Critically, the offline-first Progressive Web App architecture bypasses India's healthcare workforce shortage (20+ lakh professionals deficit) by replacing specialist visits with AI-powered triage—referring only high-risk cases to overburdened urban hospitals while managing 70-80% of routine monitoring autonomously. The multilingual chatbot provides 24/7 diabetes education in rural areas where ASHA workers lack specialized training, achieving population-scale behavior change that clinic-based interventions cannot reach. By making specialist-level care free and accessible on any ₹5,000 smartphone, DiabetCare AI transforms diabetes from a progressive disability sentence into a manageable chronic condition for 225 million Indians.
+## Tech Stack
+- React 18.3.1 + Vite + TailwindCSS
+- AWS Amplify Gen 2 (Cognito, DynamoDB, AppSync)
+- AWS Bedrock (Claude 3 Haiku, Nova Pro) — planned
+- Amazon Rekognition Custom Labels — planned
+- Multilingual: EN, HI, KN
 
-# USP of the Proposed Solution
+## Features (Implemented)
+- Email auth with branded login screen
+- DR screening workflow (camera → analysis → results)
+- Patient + Doctor result modes
+- Lotus severity indicator (0-4 petals)
+- GPS-based doctor finder + WhatsApp sharing
+- Community impact dashboard
+- Multilingual support (3 languages)
+- High contrast accessibility mode
 
-- **Smartphone-Based DR Screening** - First-in-India at-home diabetic retinopathy detection using smartphone cameras with 92%+ accuracy, eliminating ₹500-1,500 clinic visit costs and 2-3 hour travel time for rural patients
-- **Zero Hardware Dependency** - No glucometer, CGM, or fundus camera required—works on any ₹5,000+ Android/iOS smartphone, removing ₹2,000-10,000 device purchase barriers
-- **Offline-First Architecture** - Core features (glucose tracking, chatbot, meal analysis) function without internet on 2G/3G networks, solving rural connectivity challenges affecting 65% of India
-- **AI-Powered Indian Food Recognition** - Amazon Nova Pro trained on 500+ regional dishes (chapati, dosa, biryani, thali) with accurate carbohydrate estimation and multilingual guidance in Hindi, Tamil, Telugu, Bengali
-- **Preventive Care at Zero Cost** - Detects complications 2-3 years before irreversible damage with free DR screening and glucose tracking—democratizing specialist-level care vs ₹20,000/year premium programs, reaching 225M diabetics/pre-diabetics
+## Features (Planned)
+- AI chatbot (Bedrock Claude 3 Haiku)
+- Meal analyzer (Bedrock Nova Pro)
+- Glucose tracker
+- CGM integration
+- ABDM/ABHA integration

@@ -1,22 +1,25 @@
 # Technical Stack Documentation
 ## AWS AI for Bharat - Diabetes Screening Solution
 
-**Project Name:** DiabetCare AI
+**Project Name:** Nazar AI (DiabetCare AI)
 **Use Case:** Diabetes Management + Diabetic Retinopathy Screening
-**Last Updated:** 2026-01-25
+**Last Updated:** 2026-03-08
+**Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
 
 ---
 
 ## Executive Summary
 
-DiabetCare AI is a **mobile-first progressive web application (PWA)** built using ReactJS that provides AI-powered diabetes management and diabetic retinopathy screening for India's 77 million diabetic population. The solution leverages AWS Amplify for rapid full-stack development and AWS Bedrock for generative AI capabilities.
+Nazar AI (DiabetCare AI) is a **mobile-first progressive web application (PWA)** built using React 18.3.1 that provides AI-powered diabetic retinopathy screening and diabetes management for India's 89.8 million diabetic population. The solution leverages AWS Amplify Gen 2 for rapid full-stack development and AWS Bedrock for generative AI capabilities.
+
+**Current Status:** React MVP deployed on AWS Amplify Hosting (ap-south-1, India) with authentication, DR screening workflow, multilingual support (EN/HI/KN), and community features. AI model integration (Bedrock, Rekognition) in progress.
 
 **Key Decisions:**
 - ✅ **ReactJS PWA** instead of native Flutter app (faster development, no app store deployment)
-- ✅ **AWS Amplify** for complete backend infrastructure (auth, database, APIs, hosting)
-- ✅ **AWS Bedrock** for AI/ML capabilities (no custom model training required)
-- ✅ **GitHub Pages** for static wireframe hosting in `docs/` folder
-- ✅ **AWS Cloud9 / Amazon Q Developer** for cloud-based development environment
+- ✅ **AWS Amplify Gen 2** for complete backend infrastructure (auth, database, APIs, hosting) — deployed
+- ✅ **AWS Bedrock** for AI/ML capabilities (no custom model training required) — integration planned
+- ✅ **TailwindCSS** with custom Nazar design system (teal/amber palette, Baloo 2 + Noto Sans fonts)
+- ✅ **AWS Amplify Hosting** for live prototype deployment with CloudFront CDN
 
 ---
 
@@ -737,14 +740,10 @@ npm run dev
 
 ---
 
-### 6. Wireframing - GitHub Pages (docs/ folder)
+### 6. Wireframes & Live Prototype
 
-#### Setup
-```bash
-# Create docs/ folder for GitHub Pages
-mkdir -p docs/{css,js,images}
-
-# Create static HTML wireframes
+#### Original Wireframes (HTML/CSS in docs/ folder)
+```
 docs/
 ├── index.html              # Landing page wireframe
 ├── dashboard.html          # Main app dashboard
@@ -753,38 +752,41 @@ docs/
 ├── retina-scan.html        # Diabetic retinopathy screening
 ├── chatbot.html            # AI advisor chat interface
 ├── css/
-│   └── wireframe.css       # Minimal styling for wireframes
+│   ├── wireframe.css       # Base wireframe styling
+│   └── premium-wireframe.css  # Premium design styling
 ├── js/
-│   └── wireframe.js        # Basic interactivity
-└── images/
-    └── mockups/            # Screen mockups
+│   └── wireframe.js        # Wireframe interactivity
+└── images/                 # Wireframe image assets
 ```
 
-#### GitHub Pages Configuration
-```yaml
-# .github/workflows/deploy-wireframes.yml
-name: Deploy Wireframes to GitHub Pages
+#### React MVP (Live Prototype)
+The React MVP is deployed on AWS Amplify Hosting and has replaced the wireframes as the primary prototype.
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'docs/**'
+**Live URL:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+```
+src/
+├── main.jsx                # Entry point (Amplify config + BrowserRouter)
+├── App.jsx                 # Auth gate + routing
+├── index.css               # TailwindCSS + Nazar design system
+├── pages/
+│   ├── NazarApp.jsx        # Main app shell with bottom tab navigation
+│   ├── NazarHome.jsx       # Home dashboard
+│   ├── NazarScan.jsx       # Retina scan capture workflow
+│   ├── NazarResult.jsx     # DR results (patient + doctor modes)
+│   └── NazarCommunity.jsx  # Community impact dashboard
+├── components/
+│   ├── NazarAuthScreen.jsx # Branded login with animated eye
+│   ├── LotusSeverity.jsx   # DR severity flower indicator (0-4 petals)
+│   ├── IrisLoader.jsx      # Eye-themed loading spinner
+│   ├── MarigoldCelebration.jsx  # No DR celebration animation
+│   └── NearbyDoctors.jsx   # GPS-based doctor finder
+└── lib/
+    ├── i18n.js             # Translations (EN, HI, KN)
+    └── location.js         # Geolocation + maps utilities
 ```
 
-**Access URL:** `https://main.d3vwqyp1h0elbo.amplifyapp.com/`
+**Deployment:** Auto CI/CD on git push to main branch via AWS Amplify
 
 ---
 
@@ -994,41 +996,44 @@ npm run test:load
 
 ---
 
-## Next Steps
+## Development Progress
 
-### Week 1: Setup & Wireframes
-- [x] Choose tech stack (this document)
-- [ ] Create GitHub repository structure
-- [ ] Build HTML/CSS wireframes in `docs/`
-- [ ] Enable GitHub Pages
-- [ ] Set up AWS Cloud9 environment
-- [ ] Initialize Amplify project
+### Completed ✅
+- [x] Choose tech stack (React 18 + Vite + TailwindCSS + Amplify Gen 2)
+- [x] Create GitHub repository structure
+- [x] Build HTML/CSS wireframes in `docs/`
+- [x] Deploy to AWS Amplify Hosting (ap-south-1)
+- [x] Implement Amplify Auth (email-based login with Cognito)
+- [x] Build branded auth screen with animated eye and impact stats
+- [x] Build DR screening workflow (camera → analysis → results)
+- [x] Implement patient mode + doctor mode for results
+- [x] Build community impact dashboard with state leaderboard
+- [x] Implement multilingual support (EN, HI, KN)
+- [x] Implement high-contrast accessibility mode
+- [x] Build GPS-based nearby doctor finder
+- [x] Implement WhatsApp result sharing
+- [x] Define Amplify Data schema (5 models deployed)
+- [x] Create architecture diagrams and presentation decks
 
-### Week 2-3: MVP Development
-- [ ] Implement authentication (email + Google OAuth)
-- [ ] Build glucose tracker UI and backend
-- [ ] Integrate Bedrock chatbot
-- [ ] Implement meal photo upload
+### In Progress 🔄
+- [ ] Integrate AWS Bedrock (Claude 3 Haiku) for diabetes chatbot
+- [ ] Integrate Bedrock Nova Pro for meal photo analysis
+- [ ] Train Rekognition Custom Labels on Kaggle DR dataset
+- [ ] Connect camera capture to real AI analysis pipeline
 
-### Week 4-5: AI Features
-- [ ] Train Rekognition Custom Labels for DR detection
-- [ ] Build retina scan feature
-- [ ] Implement Bedrock-powered meal analysis
-- [ ] Create weekly report generation
-
-### Week 6: Testing & Deployment
+### Planned 📋
+- [ ] Build glucose tracker with Amplify Data mutations
+- [ ] CGM integration (Abbott FreeStyle Libre, Dexcom, BeatO)
+- [ ] ABDM integration (ABHA-compatible health records)
 - [ ] User testing with 20+ diabetic patients
-- [ ] Performance optimization
+- [ ] Performance optimization (Lighthouse >90)
 - [ ] Security audit
-- [ ] Production deployment
-
-### Week 7: Documentation & Presentation
-- [ ] Complete README with demo video
-- [ ] Create presentation deck
-- [ ] Submit to AWS AI for Bharat Hackathon
+- [ ] Clinical validation study design
+- [ ] Create demo video (3-5 minutes)
 
 ---
 
-**Last Updated:** 2026-01-25
-**Maintained By:** Hackathon Team
-**Questions?** Open an issue on GitHub
+**Last Updated:** 2026-03-08
+**Maintained By:** TheHealthGheware
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**GitHub:** https://github.com/brainupgrade-in/aiforbharat2

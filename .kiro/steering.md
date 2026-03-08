@@ -1,6 +1,11 @@
-# DiabetCare AI - Project Steering Guide
+# Nazar AI (NazarAI AI) - Project Steering Guide
 
 This file provides project-level guidance for AI assistants working on this codebase.
+
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**GitHub:** https://github.com/brainupgrade-in/aiforbharat2
+**Region:** ap-south-1 (Mumbai, India)
+**Status:** React MVP deployed with auth, DR screening workflow, multilingual (EN/HI/KN), community dashboard. AI integration (Bedrock, Rekognition) in progress.
 
 ## Table of Contents
 - [AWS Well-Architected Framework](#aws-well-architected-framework)
@@ -757,7 +762,7 @@ import { CloudWatchClient, PutMetricDataCommand } from '@aws-sdk/client-cloudwat
 const publishMetric = async (metricName: string, value: number) => {
   const cloudwatch = new CloudWatchClient({});
   await cloudwatch.send(new PutMetricDataCommand({
-    Namespace: 'DiabetCare',
+    Namespace: 'NazarAI',
     MetricData: [{
       MetricName: metricName,
       Value: value,
@@ -800,7 +805,7 @@ aws cloudwatch put-metric-alarm \
 export const glucoseApi = defineFunction({
   name: 'glucose-api',
   tags: {
-    Project: 'DiabetCare',
+    Project: 'NazarAI',
     Environment: 'Production',
     CostCenter: 'Healthcare',
   },
@@ -877,7 +882,7 @@ const generateChatbotResponse = bedrockLimiter.wrap(async (message: string) => {
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2026-01-25
-**Authors:** DiabetCare AI Team
+**Version:** 2.0
+**Last Updated:** 2026-03-08
+**Authors:** TheHealthGheware (Nazar AI Team)
 **Review Schedule:** Monthly

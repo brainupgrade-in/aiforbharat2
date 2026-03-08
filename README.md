@@ -1,29 +1,33 @@
-# AWS AI for Bharat Hackathon - DiabetCare AI
+# AWS AI for Bharat Hackathon - Nazar AI (DiabetCare AI)
 
 ## Team Information
 
-**Team Name:** [To be filled]
+**Team Name:** TheHealthGheware
 **Problem Statement:** Design an AI solution that improves efficiency, understanding, or support within healthcare ecosystems
-**Team Leader Name:** [To be filled]
+**Team Leader:** Rajesh Gheware — 25+ years at JPMorgan Chase, Deutsche Bank, Morgan Stanley. 5,000+ professionals trained. [rajeshgheware.github.io](https://rajeshgheware.github.io)
 **Focus Area:** Diabetes Management & Screening
 
 ---
 
 ## Executive Summary
 
-### Proposed Solution: DiabetCare AI - Diabetes Screening & Management Platform
+### Nazar AI — AI-Powered Diabetic Retinopathy Screening & Diabetes Management Platform
 
-A mobile-first progressive web application (PWA) that provides AI-powered diabetes management, diabetic retinopathy screening, and personalized health guidance for India's 89.8 million diabetics. Built with ReactJS, AWS Amplify, and AWS Bedrock, the platform eliminates barriers to specialist care through accessible technology.
+A mobile-first progressive web application (PWA) that provides AI-powered diabetic retinopathy screening, glucose tracking, meal analysis, and personalized diabetes guidance for India's 89.8 million diabetics. Built with ReactJS, AWS Amplify Gen 2, and AWS Bedrock, the platform eliminates barriers to specialist care through accessible technology.
+
+**Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
+**GitHub:** [https://github.com/brainupgrade-in/aiforbharat2](https://github.com/brainupgrade-in/aiforbharat2)
 
 **Tagline:** "Smart Diabetes Care for Every Indian - Early Detection, Better Outcomes"
+**Hindi Tagline:** "आँखों से प्यार झलकना चाहिए, बीमारी नहीं"
 
-**Tech Stack:**
-- Frontend: ReactJS 18 PWA (mobile-first, installable, offline-capable)
-- Backend: AWS Amplify Gen 2 (serverless, auto-scaling, TypeScript)
-- AI: AWS Bedrock (Claude 3 for chatbot, Nova Pro for meal analysis)
-- Computer Vision: Amazon Rekognition Custom Labels (diabetic retinopathy detection)
-- Development: AWS Cloud9 + Amazon Q Developer
-- Wireframes: GitHub Pages (docs/ folder)
+**Tech Stack (Implemented):**
+- Frontend: React 18.3.1 PWA + Vite + TailwindCSS (mobile-first, multilingual, high-contrast mode)
+- Backend: AWS Amplify Gen 2 (Cognito auth, DynamoDB, AppSync GraphQL, S3) — deployed in ap-south-1
+- AI: AWS Bedrock (Claude 3 Haiku for chatbot, Nova Pro for meal analysis) — planned integration
+- Computer Vision: Amazon Rekognition Custom Labels (DR detection) — planned integration
+- Multilingual: English, Hindi, Kannada (extensible i18n system)
+- Geolocation: GPS-based doctor finder with Google Maps + WhatsApp sharing
 
 ---
 
@@ -331,57 +335,58 @@ User question → AppSync GraphQL → Lambda → Bedrock Claude 3 Haiku
 
 ---
 
-## Implementation Roadmap (7 Weeks)
+## Implementation Roadmap
 
-### Week 1: Setup & Wireframes ✅
+### Phase 1: Setup & Wireframes ✅ COMPLETE
 - [x] Create GitHub repository structure
 - [x] Build HTML/CSS/JS wireframes in `docs/` folder
-- [ ] Enable GitHub Pages for wireframe sharing
-- [ ] Set up AWS Cloud9 development environment
-- [ ] Initialize AWS Amplify project with React + Vite
+- [x] Host wireframes via AWS Amplify Hosting
+- [x] Architecture diagrams created (logical, technical, use-case, cost, funding)
+- [x] Idea submission to hackathon
 
-### Week 2: Authentication & Core UI
-- [ ] Implement Amplify Auth (email, phone OTP, Google OAuth)
-- [ ] Build responsive React UI (TailwindCSS + shadcn/ui)
-- [ ] Create dashboard with navigation
-- [ ] Implement PWA manifest and service worker
-- [ ] Test offline functionality
+### Phase 2: React MVP ✅ COMPLETE
+- [x] Initialize AWS Amplify Gen 2 project with React 18 + Vite
+- [x] Implement Amplify Auth (email-based login with Cognito)
+- [x] Build branded auth screen (NazarAuthScreen) with animated eye, impact stats, testimonials
+- [x] Build responsive React UI with TailwindCSS (custom Nazar design system)
+- [x] Create bottom-tab navigation (Home, Scan, Results, Community)
+- [x] Define Amplify Data schema (5 models: GlucoseReading, MealLog, RetinaScan, ChatMessage, UserProfile)
+- [x] Implement multilingual support (English, Hindi, Kannada)
+- [x] Implement high-contrast accessibility mode
+- [x] Deploy to AWS Amplify Hosting (ap-south-1, India)
 
-### Week 3: Glucose Tracker
-- [ ] Define Amplify Data schema (User, GlucoseReading models)
-- [ ] Build glucose logging UI (manual entry)
-- [ ] Create glucose history chart (recharts)
-- [ ] Implement trend analysis and pattern detection
-- [ ] Test data sync
+### Phase 2a: DR Screening MVP ✅ COMPLETE
+- [x] Build multi-step retina scan workflow (capture → analyze → results)
+- [x] Implement live camera feed with optical guide overlay for fundus positioning
+- [x] Photo quality assessment simulation
+- [x] DR severity classification display (No DR → Proliferative DR, 5 grades)
+- [x] Lotus flower severity indicator component
+- [x] Patient mode + Doctor mode toggle for result display
+- [x] Lesion analysis display (microaneurysms, hemorrhages, neovascularization)
+- [x] Marigold celebration animation for No DR results
+- [x] GPS-based nearby doctor finder (Google Maps + WhatsApp integration)
+- [x] Community impact dashboard (state leaderboard, village stats, success stories)
 
-### Week 4: AI Chatbot (Bedrock)
-- [ ] Integrate AWS Bedrock (Claude 3 Haiku)
-- [ ] Build chat UI with conversation history
-- [ ] Implement diabetes advisor chatbot
-- [ ] Add multilingual support (Hindi)
-- [ ] Test chatbot responses
+### Phase 3: AI Integration 🔄 IN PROGRESS
+- [ ] Integrate AWS Bedrock (Claude 3 Haiku) for diabetes chatbot
+- [ ] Integrate Bedrock Nova Pro for meal photo analysis
+- [ ] Train Rekognition Custom Labels on Kaggle DR dataset (35K images)
+- [ ] Connect camera capture to real AI analysis pipeline
+- [ ] Implement S3 upload for retina scan and meal images
 
-### Week 5: Meal Analyzer & Retina Scan
-- [ ] Build meal photo upload (S3 Storage)
-- [ ] Integrate Bedrock Nova Pro for food recognition
-- [ ] Create Indian food database (PostgreSQL with GI values)
-- [ ] Train Rekognition Custom Labels on Kaggle DR dataset
-- [ ] Implement retina scan upload and analysis
-- [ ] Display DR risk level with explanation
+### Phase 4: Full Features 📋 PLANNED
+- [ ] Build glucose tracker with Amplify Data mutations
+- [ ] CGM integration (Abbott FreeStyle Libre, Dexcom, BeatO)
+- [ ] Doctor dashboard (telemedicine, prescription management)
+- [ ] ASHA worker dashboard (population-level monitoring)
+- [ ] ABDM integration (ABHA-compatible health records)
 
-### Week 6: Testing & Optimization
+### Phase 5: Testing & Launch 📋 PLANNED
 - [ ] User testing with 20+ diabetic patients
 - [ ] Performance optimization (Lighthouse >90)
 - [ ] Security audit (OWASP checklist)
-- [ ] Accessibility testing (WCAG 2.1 AA)
-- [ ] Cross-browser testing (Chrome, Safari, Firefox)
-
-### Week 7: Documentation & Submission
-- [ ] Complete README with screenshots
-- [ ] Create demo video (3-5 minutes)
-- [ ] Finalize presentation deck
-- [ ] Write architecture documentation
-- [ ] Submit to AWS AI for Bharat Hackathon
+- [ ] Clinical validation study design
+- [ ] Production deployment
 
 ---
 
@@ -738,22 +743,26 @@ DiabetCare AI is not just an app - it's a movement to democratize diabetes care,
 
 ---
 
-**Last Updated:** 2026-01-25
-**Version:** 2.0 (Diabetes-Focused)
+**Last Updated:** 2026-03-08
+**Version:** 3.0 (React MVP Deployed)
 **Hackathon:** AWS AI for Bharat
 **Problem Statement:** Healthcare Efficiency & Support - Diabetes Management
-**Repository:** https://github.com/[username]/ai-for-bharat-2
+**Repository:** https://github.com/brainupgrade-in/aiforbharat2
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
 
 ---
 
 ## Quick Links
 
-- **Presentation:** `Idea Submission _ AWS AI for Bharat Hackathon.pptx`
+- **Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
+- **Prototype Deck:** `Prototype Development Submission _ AWS AI for Bharat Hackathon_DiabetCareAI.pptx`
+- **Idea Deck:** `Idea Submission _ AWS AI for Bharat Hackathon.pptx`
 - **Technical Guide:** `CLAUDE.md` (developer instructions)
 - **Tech Stack Details:** `TECH_STACK.md` (comprehensive stack documentation)
+- **Project Summary:** `PROJECT_SUMMARY.md` (hackathon submission summary)
 - **Research Validation:** `research/diabetes-ncds-ai-mobile-research.md` (validated data)
-- **Wireframes:** `docs/` folder (GitHub Pages)
+- **Wireframes:** `docs/` folder (original HTML/CSS wireframes)
 
 ---
 
-**Note:** This is a hackathon submission document. The solution is proposed and not yet fully implemented. Data, metrics, and projections are based on validated research (IDF Atlas, Lancet, JMIR studies) and reasonable estimates. Actual implementation requires clinical validation, regulatory approval, and pilot testing before public deployment.
+**Note:** The React MVP is deployed and functional with authentication, DR screening workflow, multilingual support, and community features. AI model integration (Bedrock, Rekognition) is in progress. Clinical validation, regulatory approval, and pilot testing are required before public deployment. Data, metrics, and projections are based on validated research (IDF Atlas, Lancet, JMIR studies).

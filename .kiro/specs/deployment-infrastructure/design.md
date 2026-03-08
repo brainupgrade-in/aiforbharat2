@@ -1,4 +1,8 @@
-# DiabetCare AI - Deployment Guide
+# Nazar AI (DiabetCare AI) - Deployment Guide
+
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Region:** ap-south-1 (Mumbai, India)
+**Status:** MVP deployed via Amplify Hosting with auto CI/CD on git push
 
 ## Table of Contents
 - [Overview](#overview)
@@ -16,7 +20,7 @@
 
 ## Overview
 
-DiabetCare AI uses **AWS Amplify Gen 2** for infrastructure-as-code deployment. The entire stack (frontend, backend, AI services) is defined in TypeScript and deployed automatically via Git-based CI/CD.
+Nazar AI uses **AWS Amplify Gen 2** for infrastructure-as-code deployment. The entire stack (frontend, backend, AI services) is defined in TypeScript and deployed automatically via Git-based CI/CD. The MVP is currently deployed in ap-south-1 (Mumbai) with email-based auth, 5 DynamoDB data models, and AppSync GraphQL API.
 
 **Deployment Architecture:**
 ```
@@ -111,8 +115,8 @@ aws sts get-caller-identity
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/diabetcare-ai.git
-cd diabetcare-ai
+git clone https://github.com/brainupgrade-in/aiforbharat2.git
+cd aiforbharat2
 
 # Install dependencies
 npm install
@@ -162,36 +166,38 @@ VITE_GOOGLE_OAUTH_CLIENT_ID=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleuserconten
 ### 2. Amplify Project Structure
 
 ```
-diabetcare-ai/
+ai-for-bharat-2/
 ├── amplify/
 │   ├── auth/
-│   │   └── resource.ts          # Cognito User/Identity Pools
+│   │   └── resource.ts          # Cognito User Pool (email login)
 │   ├── data/
-│   │   └── resource.ts          # AppSync GraphQL schema + DynamoDB
-│   ├── storage/
-│   │   └── resource.ts          # S3 buckets (retina images, meal photos)
-│   ├── functions/
-│   │   ├── auth-service/
-│   │   │   ├── handler.ts       # Pre-signup, post-confirmation triggers
-│   │   │   └── package.json
-│   │   ├── glucose-api/
-│   │   │   ├── handler.ts       # Glucose CRUD, trend analysis
-│   │   │   └── package.json
-│   │   ├── dr-processor/
-│   │   │   ├── handler.py       # Rekognition DR detection
-│   │   │   └── requirements.txt
-│   │   ├── chatbot/
-│   │   │   ├── handler.py       # Bedrock chatbot
-│   │   │   └── requirements.txt
-│   │   └── meal-analyzer/
-│   │       ├── handler.py       # Bedrock Nova meal analysis
-│   │       └── requirements.txt
-│   ├── backend.ts               # Amplify backend definition
+│   │   └── resource.ts          # AppSync GraphQL + DynamoDB (5 models)
+│   ├── backend.ts               # Amplify backend composition (auth + data)
 │   └── package.json
-├── src/                          # React frontend
-├── public/
-├── .env.local                    # Local environment variables
-├── vite.config.ts
+├── src/                          # React 18 frontend (Nazar AI)
+│   ├── main.jsx                 # Entry point (Amplify config + BrowserRouter)
+│   ├── App.jsx                  # Auth gate + routing
+│   ├── index.css                # TailwindCSS + Nazar design system
+│   ├── pages/
+│   │   ├── NazarApp.jsx         # Main app shell with bottom tab nav
+│   │   ├── NazarHome.jsx        # Home dashboard
+│   │   ├── NazarScan.jsx        # DR scan workflow
+│   │   ├── NazarResult.jsx      # Results (patient + doctor modes)
+│   │   └── NazarCommunity.jsx   # Community impact dashboard
+│   ├── components/
+│   │   ├── NazarAuthScreen.jsx  # Branded login screen
+│   │   ├── LotusSeverity.jsx    # DR severity indicator
+│   │   ├── IrisLoader.jsx       # Loading spinner
+│   │   ├── MarigoldCelebration.jsx  # No DR celebration
+│   │   └── NearbyDoctors.jsx    # GPS doctor finder
+│   └── lib/
+│       ├── i18n.js              # Translations (EN, HI, KN)
+│       └── location.js          # Geolocation + maps
+├── docs/                         # Original HTML wireframes
+├── index.html                    # Vite entry point
+├── vite.config.js
+├── tailwind.config.js
+├── amplify_outputs.json          # Deployed Amplify config
 ├── package.json
 └── README.md
 ```
@@ -212,32 +218,20 @@ const backend = defineBackend({
 });
 ```
 
-**amplify/auth/resource.ts** (Cognito):
+**amplify/auth/resource.ts** (Cognito — Deployed):
 ```typescript
 import { defineAuth } from '@aws-amplify/backend';
 
 export const auth = defineAuth({
   loginWith: {
-    email: true,
-    phone: true,
-    externalProviders: {
-      google: {
-        clientId: process.env.GOOGLE_OAUTH_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET!,
-      },
-    },
-  },
-  multifactor: {
-    mode: 'OPTIONAL',
-    sms: true,
-    totp: true,
-  },
-  userAttributes: {
-    email: { required: true, mutable: true },
-    phone_number: { required: false, mutable: true },
-    name: { required: true, mutable: true },
+    email: true,  // Email + password login (currently deployed)
   },
 });
+// Deployed User Pool: ap-south-1_kbmI8hA9b
+// App Client: 6901ubh8f4aoboq5emdrotvm3c
+// Identity Pool: ap-south-1:7f1b41d4-5786-4246-85b9-fa7ab00b8d83
+// MFA: Disabled (planned for Phase 2)
+// Phone OTP, Google OAuth: Planned for Phase 2
 ```
 
 **amplify/data/resource.ts** (GraphQL schema):
@@ -857,6 +851,6 @@ aws s3api put-bucket-lifecycle-configuration \
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2026-01-25
-**Authors:** DiabetCare AI Team
+**Version:** 2.0
+**Last Updated:** 2026-03-08
+**Authors:** TheHealthGheware (Nazar AI Team)
