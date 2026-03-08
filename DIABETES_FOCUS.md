@@ -2,8 +2,8 @@
 
 ## Project Scope: DiabetCare AI
 
-**Last Updated:** 2026-01-25
-**Status:** Active Development
+**Last Updated:** 2026-03-08
+**Status:** React MVP Deployed — [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
 **Target NCD:** Diabetes Mellitus (Type 1 & Type 2) ONLY
 
 ---
@@ -38,16 +38,19 @@ The following NCDs and conditions have been **explicitly removed** from the proj
 
 ## In-Scope Diabetes Features
 
-### Primary Features (MVP - 7 Weeks)
+### Primary Features (MVP)
 
-1. **Diabetic Retinopathy (DR) Screening** ✅
-   - Smartphone camera fundus image upload
-   - AI-based detection (Amazon Rekognition Custom Labels)
-   - Risk classification: No DR, Mild, Moderate, Severe, Proliferative
-   - Sensitivity >92%, Specificity >88% (target based on AIDRSS study)
-   - Recommendation engine: "Consult ophthalmologist within X days"
+1. **Diabetic Retinopathy (DR) Screening** ✅ IMPLEMENTED
+   - Smartphone camera fundus image capture with optical guide overlay
+   - Multi-step workflow: patient ID → camera → quality check → analysis → results
+   - Risk classification: No DR, Mild NPDR, Moderate NPDR, Severe NPDR, Proliferative DR
+   - Patient mode (simplified) + Doctor mode (clinical details with lesion analysis)
+   - Lotus flower severity indicator (0-4 petals)
+   - GPS-based nearby doctor finder + WhatsApp result sharing
+   - AI analysis pipeline: Amazon Rekognition Custom Labels (integration in progress)
+   - Target: Sensitivity >92%, Specificity >88% (based on AIDRSS study)
 
-2. **Glucose Tracker** ✅
+2. **Glucose Tracker** ✅ DATA MODEL READY
    - Manual blood glucose entry (fasting, post-meal, random)
    - HbA1c estimation from average glucose
    - Trend visualization (7-day, 30-day, 90-day)

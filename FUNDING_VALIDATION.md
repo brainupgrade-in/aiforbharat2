@@ -1,8 +1,9 @@
 # Funding Slide Validation Report
 
-**Date:** 2026-01-25
+**Date:** 2026-01-25 (analysis) | Updated: 2026-03-08
 **Document:** funding-slide.svg
 **Purpose:** Investor pitch deck for seed round
+**Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
 
 ---
 

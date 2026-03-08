@@ -2,7 +2,10 @@
 
 ## Overview
 
-DiabetCare AI is a mobile-first Progressive Web Application (PWA) that provides comprehensive diabetes management through AI-powered features. The system leverages AWS cloud services to deliver diabetic retinopathy screening, glucose tracking, meal analysis, and personalized diabetes guidance to India's 89.8 million diabetic population.
+Nazar AI (DiabetCare AI) is a mobile-first Progressive Web Application (PWA) that provides comprehensive diabetes management through AI-powered features. The system leverages AWS cloud services to deliver diabetic retinopathy screening, glucose tracking, meal analysis, and personalized diabetes guidance to India's 89.8 million diabetic population.
+
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Status:** React MVP deployed with authentication, DR screening workflow, multilingual support (EN/HI/KN), community dashboard, GPS-based doctor finder. AI model integration in progress.
 
 The platform addresses critical healthcare gaps by providing accessible, affordable diabetes care through smartphone technology, reducing the need for specialist consultations while enabling early detection of complications.
 
@@ -16,10 +19,10 @@ The system follows a serverless, cloud-native architecture built on AWS services
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Frontend Layer (PWA)                          │
 │  ┌────────────────────────────────────────────────────────┐    │
-│  │  ReactJS 18 + TypeScript + Vite                       │    │
-│  │  - TailwindCSS + shadcn/ui (responsive design)        │    │
-│  │  - Service Worker (offline functionality)             │    │
-│  │  - IndexedDB (local data caching)                     │    │
+│  │  React 18.3.1 + Vite 6.0 (JavaScript)                 │    │
+│  │  - TailwindCSS 3.4 + Nazar Design System             │    │
+│  │  - Custom i18n (EN, HI, KN)                          │    │
+│  │  - Geolocation + Google Maps + WhatsApp              │    │
 │  │  - PWA capabilities (installable)                     │    │
 │  └────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
@@ -82,141 +85,150 @@ The system follows a serverless, cloud-native architecture built on AWS services
 
 ### Frontend Components
 
-#### Core React Components
+#### Implemented React Components (Live in MVP)
 
-**1. Authentication Components**
-- `LoginForm`: Email/phone + OTP authentication
-- `SignupForm`: User registration with profile setup
-- `ProfileManager`: User profile and preferences management
+**1. Authentication Components** ✅
+- `NazarAuthScreen`: Branded login screen with animated eye SVG, impact stats (89M diabetics, 43% undiagnosed, 90% blindness preventable), rotating testimonial carousel, and Amplify Authenticator integration
+- `App.jsx`: Auth gate that shows NazarAuthScreen if unauthenticated, NazarApp if authenticated
 
-**2. Dashboard Components**
-- `HealthDashboard`: Overview of glucose trends, DR status, risk scores
-- `GlucoseChart`: Interactive charts for glucose history visualization
-- `MetricsCards`: HbA1c estimate, time in range, days since last DR scan
+**2. App Shell & Navigation** ✅
+- `NazarApp`: Main app shell with sticky header (logo, language switcher, high-contrast toggle, sign-out) and bottom tab navigation (Home, Scan, Results, Community)
 
-**3. Glucose Tracking Components**
-- `GlucoseLogger`: Manual glucose entry form with meal context
-- `GlucoseHistory`: Tabular and chart views of historical readings
-- `PatternDetector`: Visual indicators for hypo/hyperglycemia patterns
-- `AlertManager`: Critical glucose level notifications
+**3. Home Dashboard** ✅
+- `NazarHome`: Animated greeting, scan CTA button, last scan card with LotusSeverity indicator, streak counter with fire animation, 7-day blood sugar sparkline chart (custom SVG), community stats with location-aware user count
 
-**4. DR Screening Components**
-- `CameraCapture`: Fundus image capture using device camera
-- `ImageUploader`: File upload with quality validation
-- `DRResults`: Display of AI analysis results with recommendations
-- `ScanHistory`: Historical DR screening results
+**4. DR Screening Components** ✅
+- `NazarScan`: Multi-step workflow — patient ID entry → live camera feed with optical guide overlay (concentric circles for fundus positioning) → photo capture/upload → quality assessment → AI analysis simulation (3-second loading)
+- `NazarResult`: Dual-mode result display:
+  - **Patient mode**: Big color-coded result card, animated eye icon, LotusSeverity indicator (0-4 petals), outcome message (localized), next scan timing card, NearbyDoctors component
+  - **Doctor mode**: Clinical header, DR grade & confidence grid, lesion analysis (microaneurysms, hemorrhages, neovascularization, NVD), doctor action buttons (Refer, Review Later, Mark Normal), Export to EHR button
 
-**5. Meal Analysis Components**
-- `MealPhotoCapture`: Camera interface for meal photography
-- `FoodRecognition`: Display of identified food items
-- `NutritionDisplay`: Carbohydrate content and glycemic index information
-- `MealLogger`: Manual meal entry and editing interface
+**5. Community Dashboard** ✅
+- `NazarCommunity`: Animated total scans counter (284,720+), state leaderboard (top 10 Indian states with multilingual names), village/local stats with PIN code, success stories with multilingual testimonials
 
-**6. Chatbot Components**
-- `ChatInterface`: Conversational UI with message bubbles
-- `LanguageSelector`: Switch between supported languages
-- `ChatHistory`: Previous conversation access
-- `TypingIndicator`: Real-time response status
+**6. Reusable Components** ✅
+- `LotusSeverity`: SVG lotus flower with 0-4 petals indicating DR severity (green → kumkum red)
+- `IrisLoader`: Eye-themed loading spinner with concentric rings and heartbeat animation
+- `MarigoldCelebration`: 20 animated falling marigold flowers for No DR celebration
+- `NearbyDoctors`: GPS-based doctor finder using browser geolocation + OpenStreetMap Nominatim reverse geocoding, Google Maps search/directions links, WhatsApp result sharing
+
+**7. Utility Libraries** ✅
+- `lib/i18n.js`: Translation system for EN, Hindi (हिन्दी), Kannada (ಕನ್ನಡ) with variable interpolation — covers all screens
+- `lib/location.js`: GPS detection, reverse geocoding, 30-min cache in localStorage, Google Maps URL generation, WhatsApp deeplinks
+
+#### Planned Components (Phase 2)
+- `GlucoseTracker`: Manual glucose logging with trend charts (data model ready in Amplify)
+- `MealAnalyzer`: Photo-based Indian food recognition (AWS Bedrock Nova Pro integration)
+- `Chatbot`: AI diabetes advisor (AWS Bedrock Claude 3 Haiku integration)
+- `Dashboard`: Health metrics overview with HbA1c, time in range
 
 #### PWA Infrastructure
 
 **Service Worker Strategy**
-- Cache-First: Static assets (CSS, JS, images)
-- Network-First: API calls with offline fallback
-- Background Sync: Queue data uploads when offline
+- Service worker scaffolding in docs/ folder (basic offline fallback)
+- Production PWA capabilities planned for Phase 2
 
 **Offline Data Management**
-- IndexedDB for glucose readings, meal logs, chat history
-- Automatic sync when connectivity restored
-- Conflict resolution for concurrent edits
+- Location data cached in localStorage (30-min TTL)
+- Full IndexedDB offline sync planned for Phase 2
 
 ### Backend Services
 
-#### AWS Amplify Data Schema
+#### AWS Amplify Data Schema (Deployed)
 
-**User Model**
+The following 5 models are deployed in ap-south-1 via Amplify Gen 2 with AppSync GraphQL and DynamoDB:
+
+**UserProfile Model** ✅ Deployed
 ```typescript
-User {
-  userId: ID!
-  name: String!
-  age: Int
-  gender: Gender
-  diabetesType: DiabetesType
-  diagnosisDate: AWSDate
-  targetGlucose: Int
-  language: String
-  abhaId: String
-  createdAt: AWSDateTime!
+UserProfile {
+  name: string
+  age: integer
+  diabetesType: string        // Type 1, Type 2, Pre-diabetic, Gestational
+  diagnosedYear: integer
+  medications: json
+  targetFasting: integer      // mg/dL
+  targetPostMeal: integer     // mg/dL
+  language: string            // en, hi, ta, te, bn
 }
+// Authorization: owner-only access
 ```
 
-**GlucoseReading Model**
+**GlucoseReading Model** ✅ Deployed
 ```typescript
 GlucoseReading {
-  id: ID!
-  userId: ID!
-  value: Int! // mg/dL
-  timestamp: AWSDateTime!
-  mealContext: MealContext
-  notes: String
-  syncStatus: SyncStatus
+  value: integer              // mg/dL
+  context: string             // Fasting, Before meal, After meal, Random, Bedtime
+  notes: string
+  readingAt: datetime
+  status: string              // normal, high, low
 }
+// Authorization: owner-only access
 ```
 
-**DRScreening Model**
+**RetinaScan Model** ✅ Deployed
 ```typescript
-DRScreening {
-  id: ID!
-  userId: ID!
-  imageUrl: String!
-  scanDate: AWSDateTime!
-  riskLevel: DRRiskLevel
-  confidence: Float
-  findings: String
-  recommendations: String
-  reviewedByDoctor: Boolean
+RetinaScan {
+  imageKey: string            // S3 key for fundus image
+  classification: string     // No DR, Mild NPDR, Moderate NPDR, Severe NPDR, PDR
+  confidence: float           // AI confidence %
+  riskLevel: string           // low, moderate, high
+  findings: json              // Detailed lesion analysis
+  recommendations: json       // Referral suggestions
 }
+// Authorization: owner-only access
 ```
 
-**MealLog Model**
+**MealLog Model** ✅ Deployed
 ```typescript
 MealLog {
-  id: ID!
-  userId: ID!
-  timestamp: AWSDateTime!
-  imageUrl: String
-  foodItems: [String!]
-  estimatedCarbs: Int
-  glycemicIndex: Int
-  aiAnalysis: AWSJSON
+  name: string                // Meal name
+  photoKey: string            // S3 key for meal image
+  totalCarbs: integer
+  glycemicLoad: string        // High, Medium, Low
+  healthScore: integer
+  items: json                 // Food items array
+  aiSuggestions: json
 }
+// Authorization: owner-only access
 ```
 
-#### Lambda Functions
+**ChatMessage Model** ✅ Deployed
+```typescript
+ChatMessage {
+  role: string                // user, assistant
+  content: string
+  sessionId: string
+}
+// Authorization: owner-only access
+```
 
-**1. DR Analysis Function**
-- Triggers on S3 fundus image upload
-- Calls Rekognition Custom Labels for classification
-- Uses Bedrock for patient-friendly explanation
-- Stores results in DynamoDB
+**Backend API Endpoint:**
+- GraphQL: `https://i7ntbxsdmjda5c2asxjppckzbm.appsync-api.ap-south-1.amazonaws.com/graphql`
+- Auth: AMAZON_COGNITO_USER_POOLS
+- User Pool: `ap-south-1_kbmI8hA9b`
+- Identity Pool: `ap-south-1:7f1b41d4-5786-4246-85b9-fa7ab00b8d83`
 
-**2. Meal Analysis Function**
-- Processes meal photos using Bedrock Nova Pro
-- Queries PostgreSQL Indian Food Database for nutritional data
-- Calculates predicted glucose impact
-- Returns structured meal analysis
+#### Lambda Functions (Planned)
 
-**3. Chatbot Handler Function**
-- Processes user messages through Bedrock Claude 3 Haiku
-- Maintains conversation context
-- Implements RAG using Bedrock Knowledge Bases
-- Supports multilingual responses
+**1. DR Analysis Function** 📋 Planned
+- Will trigger on S3 fundus image upload
+- Call Rekognition Custom Labels for classification
+- Use Bedrock for patient-friendly explanation
+- Store results in DynamoDB
 
-**4. Risk Calculator Function**
-- Analyzes glucose patterns for complication risk
-- Calculates HbA1c estimates from glucose data
-- Generates personalized health insights
-- Triggers alerts for high-risk conditions
+**2. Meal Analysis Function** 📋 Planned
+- Process meal photos using Bedrock Nova Pro
+- Query Indian food database for nutritional data
+- Calculate predicted glucose impact
+
+**3. Chatbot Handler Function** 📋 Planned
+- Process user messages through Bedrock Claude 3 Haiku
+- Maintain conversation context using ChatMessage model
+- Implement RAG using Bedrock Knowledge Bases
+
+**4. Risk Calculator Function** 📋 Planned
+- Analyze glucose patterns for complication risk
+- Calculate HbA1c estimates from glucose data
 
 ### External Integrations
 

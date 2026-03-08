@@ -1,10 +1,12 @@
-# DiabetCare AI - PWA Wireframes
+# Nazar AI (DiabetCare AI) - Original PWA Wireframes
 
-Mobile-first Progressive Web App wireframes for the DiabetCare AI diabetes management platform.
+Mobile-first Progressive Web App wireframes for the Nazar AI (DiabetCare AI) diabetes management platform.
+
+**Note:** These are the original HTML/CSS wireframes created during the idea submission phase. The **React MVP** has since been built and is deployed at [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/). The React app source code is in the `src/` directory.
 
 ## Overview
 
-These wireframes demonstrate the complete user interface and navigation flow for DiabetCare AI, built as a fully functional Progressive Web App (PWA) with offline support, mobile-first responsive design, and native app-like features.
+These wireframes demonstrate the initial user interface design and navigation flow for Nazar AI, built as a fully functional Progressive Web App (PWA) with offline support, mobile-first responsive design, and native app-like features.
 
 ## Features
 

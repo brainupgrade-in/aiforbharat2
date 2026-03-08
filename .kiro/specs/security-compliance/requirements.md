@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document defines the security and compliance requirements for the DiabetCare AI platform, which handles Protected Health Information (PHI) and Personally Identifiable Information (PII) for diabetes patients in India.
+This document defines the security and compliance requirements for the Nazar AI (DiabetCare AI) platform, which handles Protected Health Information (PHI) and Personally Identifiable Information (PII) for diabetes patients in India.
+
+**Current Status:** MVP deployed with Cognito email auth, owner-based DynamoDB authorization, TLS 1.3 via CloudFront.
 
 ## Regulatory Compliance Requirements
 

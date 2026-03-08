@@ -1,194 +1,169 @@
-# DiabetCare AI - Mobile App Screenshots
+# Nazar AI (DiabetCare AI) - Screenshots & Demo
 
-Mobile app screenshots showcasing key features of the DiabetCare AI platform.
+Screenshots and visual documentation for the Nazar AI platform.
+
+**Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
+
+---
+
+## React MVP Screenshots (Live App)
+
+The React MVP is deployed on AWS Amplify Hosting. Below are the key screens:
+
+### 1. Branded Auth Screen (Login)
+**Features Shown:**
+- Animated eye SVG with AI scan line effect
+- Impact stats: 89M diabetics, 43% undiagnosed, 90% blindness preventable
+- Rotating testimonial carousel (English, Hindi, Kannada)
+- Email-based signup/login via Amazon Cognito
+- Hindi tagline: "आँखों से प्यार झलकना चाहिए, बीमारी नहीं"
+- Security footer: End-to-end encrypted, HIPAA compliant
+
+### 2. Home Dashboard
+**Features Shown:**
+- Animated greeting message (localized)
+- Prominent "Scan" CTA button
+- Last scan card with Lotus severity indicator
+- Streak counter with fire animation
+- 7-day blood sugar sparkline chart (fasting + post-meal)
+- Community stats with location-aware user count
+- Bottom tab navigation (Home, Scan, Results, Community)
+
+### 3. Retina Scan - Camera Capture
+**Features Shown:**
+- Patient ID input (name or Aadhar last 4 digits)
+- Live camera feed with optical guide overlay (concentric circles)
+- "Take Photo" and "Upload from Gallery" buttons
+- Photo quality assessment badge
+- Retake button for re-capture
+
+### 4. Retina Scan - AI Analysis
+**Features Shown:**
+- IrisLoader custom spinner animation
+- "Analyzing..." message with heartbeat effect
+- Eye-themed loading UI
+
+### 5. Results - Patient Mode
+**Features Shown:**
+- Big result card (color-coded by severity)
+- Animated eye icon SVG
+- Lotus flower severity indicator (0-4 petals)
+- Outcome message (localized): "Eyes Are Healthy" / "See a Doctor"
+- Next scan timing card (12, 6, 3, 1, 0 months based on grade)
+- Marigold celebration animation (for No DR results)
+- "Scan Another Patient" button
+
+### 6. Results - Doctor Mode
+**Features Shown:**
+- Clinical header with patient ID, scan date, severity
+- DR grade & confidence grid
+- Lesion analysis: microaneurysms, hemorrhages, neovascularization
+- Doctor action buttons: Refer, Review Later, Mark Normal
+- Export to EHR button (ABDM integration)
+
+### 7. Nearby Doctors (GPS-Based)
+**Features Shown:**
+- Detected location display (town, district, PIN code)
+- "Find Eye Doctors Nearby" button (Google Maps)
+- "Find Eye Hospitals" button (Google Maps)
+- "Get Directions" button (navigation)
+- WhatsApp share button with scan result + location
+
+### 8. Community Dashboard
+**Features Shown:**
+- Total scans counter (animated: 284,720+)
+- State leaderboard (top 10 Indian states)
+- Village/local stats with location detection
+- Success stories with multilingual testimonials
+
+### 9. Language Switcher & Accessibility
+**Features Shown:**
+- Language toggle: EN / हिंदी / ಕನ್ನಡ
+- High contrast mode toggle
+- Sign-out button
+
+---
+
+## Original Wireframe Screenshots (HTML/CSS)
 
 **Location:** `./screenshots/` folder
 
-## Screenshot Overview
-
-All screenshots captured at **390x844px** (iPhone 12/13 viewport) with 2x device scale factor for crisp, high-resolution images.
-
-**Type:** Full-page screenshots - Shows complete scrollable content of each page on mobile devices.
+All screenshots captured at **390x844px** (iPhone 12/13 viewport) with 2x device scale factor.
 
 **Method:** Puppeteer with `fullPage: true` and `captureBeyondViewport: true` options.
-
-## Regenerate Screenshots
-
-To recapture full-page screenshots after making wireframe changes:
-
-```bash
-# Full-page screenshots using Puppeteer (RECOMMENDED)
-node capture-fullpage-screenshots.js
-
-# This will:
-# - Launch headless Chrome browser
-# - Set mobile viewport (390x844, iPhone 12/13)
-# - Load each page and wait for JavaScript
-# - Capture complete scrollable content
-# - Save high-res PNG files in ./screenshots/
-```
 
 ### Quick View
 
 ```
 screenshots/
-├── screenshot-01-landing-page.png     (683 KB) ✓ Full-page
-├── screenshot-02-dashboard.png        (624 KB) ✓ Full-page
-├── screenshot-03-glucose-tracker.png  (340 KB) ✓ Full-page
-├── screenshot-04-meal-analyzer.png    (418 KB) ✓ Full-page
-├── screenshot-05-retina-scan.png      (767 KB) ✓ Full-page
-└── screenshot-06-ai-advisor.png       (625 KB) ✓ Full-page
+├── screenshot-01-landing-page.png     (683 KB) - Full-page
+├── screenshot-02-dashboard.png        (624 KB) - Full-page
+├── screenshot-03-glucose-tracker.png  (340 KB) - Full-page
+├── screenshot-04-meal-analyzer.png    (418 KB) - Full-page
+├── screenshot-05-retina-scan.png      (767 KB) - Full-page
+└── screenshot-06-ai-advisor.png       (625 KB) - Full-page
 
 Total: 6 screenshots, 3.4 MB (full scrollable content)
 ```
 
-### 1. Landing Page
-**File:** `screenshots/screenshot-01-landing-page.png`
+### Regenerate Wireframe Screenshots
 
-**Features Shown:**
-- Hero section with gradient background
-- Key value propositions (AI-powered, affordable, multilingual)
-- Call-to-action buttons (Get Started, Learn More)
-- Feature highlights with icons
-- Premium design system with glass-morphism effects
+```bash
+# Full-page screenshots using Puppeteer (RECOMMENDED)
+node capture-fullpage-screenshots.js
+```
 
 ---
 
-### 2. Dashboard
-**File:** `screenshots/screenshot-02-dashboard.png`
+## Design System
 
-**Features Shown:**
-- Latest glucose reading with visual indicator
-- HbA1c and blood pressure stats
-- Glucose trend chart placeholder (7-day view)
-- Quick action cards (Log Glucose, Analyze Meal, Scan Retina, Ask AI)
-- AI insights with recommendations
-- Upcoming medication reminders
-- Bottom navigation bar
+### Brand Colors (Nazar Design System)
+- **Teal:** #0A6E6E (deep), #0E8C8C (medium), #12ABAB (light), #E0F5F5 (pale)
+- **Amber:** #F5A623 (warm), #FFF3DC (light), #E09000 (deep)
+- **Mango Green:** #4CAF50
+- **Kumkum Red:** #D32F2F
+- **Ivory:** #FAF7F2
+- **Ink:** #1A1A2E
 
----
+### Typography
+- **Display:** Baloo 2 (cursive, for headings)
+- **Body:** Noto Sans (sans-serif, for text)
+- **Mono:** IBM Plex Mono (for data/numbers)
 
-### 3. Glucose Tracker
-**File:** `screenshots/screenshot-03-glucose-tracker.png`
+### Custom Components
+- **LotusSeverity** — 0-4 petal flower indicating DR severity
+- **IrisLoader** — Eye-themed loading spinner
+- **MarigoldCelebration** — Falling marigold flowers for No DR celebration
+- **NearbyDoctors** — GPS-based doctor finder with maps + WhatsApp
+- **NazarAuthScreen** — Branded login with animated eye hero
 
-**Features Shown:**
-- Manual glucose entry form with validation
-- Reading type selector (Fasting, Post-meal, Random)
-- DateTime picker
-- Form validation hints
-- Recent readings history with trend indicators
-- Reading badges (Normal, High, Low)
-- Chart visualization placeholder
-- Enhanced form UX with proper contrast
-
----
-
-### 4. Meal Analyzer
-**File:** `screenshots/screenshot-04-meal-analyzer.png`
-
-**Features Shown:**
-- Camera upload section for meal photos
-- Dual upload options (Take Photo, Choose from Gallery)
-- Example AI analysis results
-- Detected food items list with carb breakdown
-- Nutrition summary cards (Total Carbs, Glycemic Load)
-- Diabetes health score with progress bar
-- AI suggestions box with recommendations
-- Recent meal logs with thumbnails
-
----
-
-### 5. Retina Scan (DR Screening)
-**File:** `screenshots/screenshot-05-retina-scan.png`
-
-**Features Shown:**
-- Educational info section about diabetic retinopathy
-- Fundus photo upload interface
-- Smartphone camera compatibility note (no special equipment needed)
-- Example AI analysis result
-- Risk level assessment (Mild DR with 87% confidence)
-- Detailed findings from AI analysis
-- Clinical recommendations
-- **Enhanced white text disclaimer** (highly visible)
-- Screening history with previous scan results
-- Optional fundus camera accessories section
-- Download report and share with doctor buttons
-
----
-
-### 6. AI Advisor (Chatbot)
-**File:** `screenshots/screenshot-06-ai-advisor.png`
-
-**Features Shown:**
-- Conversational AI interface
-- Chat bubbles with user/AI distinction
-- AI avatar and user avatar
-- Fasting glucose range reference info box
-- Quick reply suggestions
-- Chat input with send button
-- "How it works" information section
-- **Enhanced white text disclaimer** (highly visible)
-- Fixed chat input at bottom
-- Premium chat UI with proper spacing and contrast
-
----
-
-## Design Highlights
-
-### Visual Features
-- ✅ **Premium Design System** - Glass-morphism, gradients, shadows
-- ✅ **WCAG AA Compliant** - All text meets 4.5:1+ contrast ratios
-- ✅ **Mobile-First** - Optimized for 390px width (mobile devices)
-- ✅ **Consistent Branding** - Blue primary (#2563EB), green accent (#10B981)
-- ✅ **Icon System** - Emoji icons with ARIA labels (SVG system available)
-- ✅ **Responsive Cards** - Elevated cards with hover effects
-- ✅ **Enhanced Disclaimers** - White text on dark red backgrounds with floating warning badges
-
-### Accessibility Features
-- ✅ **High Contrast Text** - 7.1:1 to 16.1:1 ratios across all components
-- ✅ **ARIA Labels** - All icons properly labeled for screen readers
-- ✅ **Focus States** - Clear focus indicators for keyboard navigation
-- ✅ **Semantic HTML** - Proper heading hierarchy and structure
-- ✅ **Touch Targets** - 48x48px minimum for all interactive elements
-
-### Technical Features
-- ✅ **Progressive Web App** - Service workers, offline support, installable
-- ✅ **Dark Mode Ready** - Theme toggle with localStorage persistence
-- ✅ **Multilingual** - Language switcher (EN, HI, TA, TE, BN)
-- ✅ **Form Validation** - Real-time validation with visual feedback
-- ✅ **Loading States** - Skeleton screens and pull-to-refresh
+### Accessibility
+- High contrast mode toggle
+- WCAG AA compliant text contrast ratios
+- 48x48px minimum touch targets
+- ARIA labels on all interactive elements
+- Safe area padding for mobile notches
 
 ---
 
 ## Usage
 
 ### For Presentations
-Use these screenshots in:
+Use screenshots in:
 - Hackathon pitch decks (PowerPoint/Google Slides)
 - GitHub README.md (showcase features)
 - Documentation and user guides
-- Marketing materials
 - Demo videos and walkthroughs
 
 ### For Development Reference
-These screenshots serve as:
-- Visual reference for React implementation
-- Design QA baseline (ensure React matches wireframes)
+Screenshots serve as:
+- Visual reference for feature verification
+- Design QA baseline
 - Feature completeness checklist
 - UX flow documentation
 
 ---
 
-## Next Steps
-
-1. **Add to README.md** - Embed screenshots in project README
-2. **Create Pitch Deck** - Use screenshots in hackathon presentation
-3. **React Implementation** - Use as design reference for building actual app
-4. **User Testing** - Share screenshots for early feedback
-
----
-
-**Generated:** 2026-01-25
-**Viewport:** 390x844px (iPhone 12/13)
-**Scale Factor:** 2x (Retina)
-**Total Screenshots:** 6
+**Generated:** 2026-03-08
+**Live URL:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Total Wireframe Screenshots:** 6

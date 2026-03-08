@@ -2,10 +2,12 @@
 
 ## DiabetCare AI: Intelligent Diabetes Screening & Management Platform
 
-**Submission Date:** January 25, 2026
+**Submission Date:** January 25, 2026 (Idea Phase) | March 8, 2026 (Prototype Phase)
 **Hackathon:** AWS AI for Bharat
 **Problem Statement Category:** Healthcare & Life Sciences
 **Focus Area:** Diabetes Management & Complication Prevention
+**Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
+**GitHub:** [https://github.com/brainupgrade-in/aiforbharat2](https://github.com/brainupgrade-in/aiforbharat2)
 
 ---
 

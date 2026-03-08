@@ -1,4 +1,8 @@
-# DiabetCare AI - Architecture Documentation
+# Nazar AI (DiabetCare AI) - Architecture Documentation
+
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Region:** ap-south-1 (Mumbai, India)
+**Status:** React MVP deployed with Amplify Gen 2 (Cognito + AppSync + DynamoDB). AI services integration in progress.
 
 ## Table of Contents
 - [Overview](#overview)

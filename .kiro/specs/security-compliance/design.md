@@ -1,4 +1,7 @@
-# DiabetCare AI - Security Documentation
+# Nazar AI (DiabetCare AI) - Security Documentation
+
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Status:** MVP deployed with Cognito email auth, owner-based row-level authorization, TLS 1.3. Advanced security (MFA, WAF, CloudTrail) planned for Phase 2.
 
 ## Table of Contents
 - [Security Overview](#security-overview)

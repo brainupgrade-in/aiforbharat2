@@ -2,11 +2,14 @@
 
 ## Introduction
 
-DiabetCare AI is a mobile-first Progressive Web App (PWA) designed to prevent diabetes complications and blindness in India's 89.8 million diabetics through AI-powered diabetic retinopathy screening, glucose tracking, meal analysis, and personalized diabetes guidance using AWS AI services.
+Nazar AI (DiabetCare AI) is a mobile-first Progressive Web App (PWA) designed to prevent diabetes complications and blindness in India's 89.8 million diabetics through AI-powered diabetic retinopathy screening, glucose tracking, meal analysis, and personalized diabetes guidance using AWS AI services.
+
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Status:** React MVP deployed with Requirement 1 (auth), Requirement 3 (DR screening UI), Requirement 6 (dashboard), and multilingual support implemented. AI model integration in progress.
 
 ## Glossary
 
-- **DiabetCare_System**: The complete diabetes management platform including PWA, backend services, and AI components
+- **NazarAI_System** (also DiabetCare_System): The complete diabetes management platform including PWA, backend services, and AI components
 - **DR_Scanner**: The diabetic retinopathy detection module using Amazon Rekognition Custom Labels
 - **Glucose_Tracker**: The blood glucose monitoring and trend analysis component
 - **Meal_Analyzer**: The AI-powered food recognition and carbohydrate estimation system using AWS Bedrock Nova Pro

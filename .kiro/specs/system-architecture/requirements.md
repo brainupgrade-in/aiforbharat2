@@ -2,7 +2,10 @@
 
 ## Overview
 
-This document defines the architectural requirements for the DiabetCare AI platform - a serverless, cloud-native healthcare application for diabetes management and diabetic retinopathy screening.
+This document defines the architectural requirements for the Nazar AI (DiabetCare AI) platform - a serverless, cloud-native healthcare application for diabetes management and diabetic retinopathy screening.
+
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Current Status:** React MVP deployed with auth, DR screening UI, multilingual support, community dashboard. AI integration in progress.
 
 ## Functional Requirements
 
@@ -127,6 +130,6 @@ This document defines the architectural requirements for the DiabetCare AI platf
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2026-02-03
-**Status:** Approved
+**Version:** 2.0
+**Last Updated:** 2026-03-08
+**Status:** MVP Deployed

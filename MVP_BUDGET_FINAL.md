@@ -4,6 +4,8 @@
 **Total Cost:** ₹87,000
 **Team:** Volunteer (Hackathon Participants)
 **Funding:** Bootstrapped
+**Status:** React MVP deployed — [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
+**Last Updated:** 2026-03-08
 
 ---
 

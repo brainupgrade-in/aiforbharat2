@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document defines the deployment and infrastructure requirements for the DiabetCare AI platform using AWS Amplify Gen 2 and supporting AWS services.
+This document defines the deployment and infrastructure requirements for the Nazar AI (DiabetCare AI) platform using AWS Amplify Gen 2 and supporting AWS services.
+
+**Current Status:** MVP deployed at https://main.d3vwqyp1h0elbo.amplifyapp.com/ (ap-south-1, India)
 
 ## Functional Requirements
 
@@ -105,6 +107,6 @@ This document defines the deployment and infrastructure requirements for the Dia
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2026-02-03
-**Status:** Approved
+**Version:** 2.0
+**Last Updated:** 2026-03-08
+**Status:** MVP Deployed

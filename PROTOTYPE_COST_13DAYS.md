@@ -3,6 +3,8 @@
 **Hackathon Timeline:** 13 Days (Rapid Prototype)
 **Deliverable:** Working MVP with core AI features
 **Target:** AWS AI for Bharat Hackathon 2026
+**Status:** React MVP deployed — [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
+**Last Updated:** 2026-03-08
 
 ---
 

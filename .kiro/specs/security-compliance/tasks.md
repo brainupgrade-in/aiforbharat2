@@ -2,7 +2,9 @@
 
 ## Overview
 
-Implementation tasks for DiabetCare AI security controls and regulatory compliance.
+Implementation tasks for Nazar AI (DiabetCare AI) security controls and regulatory compliance.
+
+**Current Status:** MVP deployed with email auth + owner-based authorization. Advanced security controls planned for Phase 2.
 
 ## Task Status Legend
 - [ ] Not Started
@@ -14,11 +16,12 @@ Implementation tasks for DiabetCare AI security controls and regulatory complian
 ## Phase 1: Authentication & Authorization
 
 ### Cognito User Pool Configuration
-- [ ] Enable email and phone login
-- [ ] Configure password policy (8+ chars, mixed case, numbers, symbols)
-- [ ] Enable MFA (SMS OTP, TOTP)
-- [ ] Set temporary password validity to 3 days
-- [ ] Configure account recovery (email and phone)
+- [x] Enable email login ✅ (deployed: ap-south-1_kbmI8hA9b)
+- [x] Configure password policy (8+ chars, mixed case, numbers, symbols) ✅
+- [ ] Enable phone login — Phase 2
+- [ ] Enable MFA (SMS OTP, TOTP) — Phase 2
+- [ ] Set temporary password validity to 3 days — Phase 2
+- [ ] Configure account recovery (email and phone) — Phase 2
 
 ### OAuth Federation
 - [ ] Register Google OAuth application

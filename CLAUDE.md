@@ -26,12 +26,20 @@ Design an AI solution that improves efficiency, understanding, or support within
 
 ## Project Status
 
-- **Idea submitted** to AWS AI for Bharat Hackathon
-- **Wireframes built** and hosted via GitHub Pages (`docs/` folder)
-- **Screenshots captured** of all wireframe pages
-- **Architecture diagrams** created (logical, technical, use-case, cost, funding)
-- **Kiro specs** defined for deployment, platform, security, and architecture
-- **Next phase:** MVP development with React + AWS Amplify
+- **Idea submitted** to AWS AI for Bharat Hackathon ✅
+- **Wireframes built** and hosted in `docs/` folder ✅
+- **Screenshots captured** of all wireframe pages ✅
+- **Architecture diagrams** created (logical, technical, use-case, cost, funding) ✅
+- **Kiro specs** defined for deployment, platform, security, and architecture ✅
+- **React MVP built and deployed** on AWS Amplify Hosting ✅
+  - Live at: https://main.d3vwqyp1h0elbo.amplifyapp.com/
+  - GitHub: https://github.com/brainupgrade-in/aiforbharat2
+  - Auth: Amazon Cognito (email-based login)
+  - Backend: Amplify Gen 2 with 5 data models (DynamoDB + AppSync GraphQL)
+  - Region: ap-south-1 (Mumbai, India)
+- **App name evolved** to "Nazar AI" (with DiabetCare AI as secondary name)
+- **Features implemented:** DR screening workflow, multilingual (EN/HI/KN), community dashboard, GPS doctor finder, WhatsApp sharing, high-contrast mode
+- **Next phase:** AWS Bedrock + Rekognition AI integration
 
 ## Repository Structure
 
@@ -39,6 +47,7 @@ Design an AI solution that improves efficiency, understanding, or support within
 ai-for-bharat-2/
 ├── README.md                           # Comprehensive problem analysis and solution roadmap
 ├── CLAUDE.md                          # This file - guidance for Claude Code
+├── PROJECT_SUMMARY.md                 # Hackathon submission summary
 ├── TECH_STACK.md                      # Detailed technical stack documentation
 ├── DIABETES_FOCUS.md                  # Diabetes-only scope documentation
 ├── IDEA_SUBMISSION.md                 # Hackathon idea submission content
@@ -48,8 +57,34 @@ ai-for-bharat-2/
 ├── PROTOTYPE_COST_BREAKDOWN.md        # Detailed prototype cost analysis
 ├── PROTOTYPE_COST_13DAYS.md           # 13-day prototype cost plan
 ├── SCREENSHOTS.md                     # Screenshot documentation
-├── template.md                        # Slide/document template
-├── docs/                              # GitHub Pages wireframes (HTML/CSS/JS)
+├── template.md                        # Quick reference card
+│
+├── src/                               # React MVP source code
+│   ├── main.jsx                      # Entry point (Amplify config + BrowserRouter)
+│   ├── App.jsx                       # Auth gate + routing
+│   ├── index.css                     # TailwindCSS + Nazar design system
+│   ├── pages/
+│   │   ├── NazarApp.jsx              # Main app shell with bottom tab nav
+│   │   ├── NazarHome.jsx             # Home dashboard
+│   │   ├── NazarScan.jsx             # Retina scan capture workflow
+│   │   ├── NazarResult.jsx           # DR results (patient + doctor modes)
+│   │   └── NazarCommunity.jsx        # Community impact dashboard
+│   ├── components/
+│   │   ├── NazarAuthScreen.jsx       # Branded login with animated eye
+│   │   ├── LotusSeverity.jsx         # DR severity flower indicator
+│   │   ├── IrisLoader.jsx            # Eye-themed loading spinner
+│   │   ├── MarigoldCelebration.jsx   # No DR celebration animation
+│   │   └── NearbyDoctors.jsx         # GPS-based doctor finder
+│   └── lib/
+│       ├── i18n.js                   # Translations (EN, HI, KN)
+│       └── location.js              # Geolocation + maps utilities
+│
+├── amplify/                           # AWS Amplify Gen 2 backend
+│   ├── backend.ts                    # Backend composition (auth + data)
+│   ├── auth/resource.ts             # Cognito auth configuration
+│   └── data/resource.ts             # AppSync data models (5 models)
+│
+├── docs/                              # Original HTML/CSS wireframes
 │   ├── index.html                    # Landing page wireframe
 │   ├── dashboard.html                # Dashboard wireframe
 │   ├── glucose-tracker.html          # Glucose tracker wireframe
@@ -57,62 +92,50 @@ ai-for-bharat-2/
 │   ├── retina-scan.html              # Retina scan wireframe
 │   ├── chatbot.html                  # AI chatbot wireframe
 │   ├── offline.html                  # Offline fallback page
-│   ├── chart-demo.html              # Chart component demo
-│   ├── contrast-audit.html          # Accessibility contrast audit
-│   ├── empty-states-demo.html       # Empty state UI demos
-│   ├── icon-system-demo.html        # Icon system demo
-│   ├── skeleton-demo.html           # Skeleton loading demo
-│   ├── manifest.json                # PWA manifest
-│   ├── service-worker.js            # Service worker for offline support
-│   ├── BRAND_GUIDELINES.md          # Brand design guidelines
-│   ├── IMPROVEMENTS_SUMMARY.md      # UI improvements log
-│   ├── PREMIUM_DESIGN_SUMMARY.md    # Premium design decisions
-│   ├── css/
-│   │   ├── wireframe.css            # Base wireframe styling
-│   │   └── premium-wireframe.css    # Premium/polished styling
-│   ├── js/
-│   │   └── wireframe.js             # Wireframe interactivity
+│   ├── css/                          # Wireframe styles
+│   ├── js/                           # Wireframe interactivity
 │   ├── images/                       # Wireframe image assets
 │   └── templates/                    # Reusable HTML templates
-│       ├── header.html              # Shared header component
-│       └── footer.html              # Shared footer component
+│
 ├── screenshots/                       # Captured wireframe screenshots
 │   ├── screenshot-01-landing-page.png
 │   ├── screenshot-02-dashboard.png
 │   ├── screenshot-03-glucose-tracker.png
 │   ├── screenshot-04-meal-analyzer.png
 │   ├── screenshot-05-retina-scan.png
-│   ├── screenshot-06-ai-advisor.png
-│   └── README.md
+│   └── screenshot-06-ai-advisor.png
+│
 ├── research/                          # Research documentation
 │   ├── diabetes-ncds-ai-mobile-research.md
 │   └── diabetes-ncds-validation-report.md
+│
 ├── .kiro/                             # Kiro AI specs
-│   ├── steering.md
-│   └── specs/
-│       ├── deployment-infrastructure/
-│       ├── diabetes-management-platform/
-│       ├── security-compliance/
-│       └── system-architecture/
-├── logical-architecture.svg/.png      # Logical architecture diagram
-├── technical-architecture.svg/.png    # Technical architecture diagram
-├── use-case-diagram.svg/.png          # Use case diagram
-├── estimated-cost.svg/.png            # Cost estimation diagram
-├── funding-slide.svg/.png             # Funding slide visual
-├── prototype-cost-slide.svg/.png      # Prototype cost slide visual
+├── index.html                         # Vite entry point
+├── package.json                       # Node.js dependencies
+├── vite.config.js                     # Vite build config
+├── tailwind.config.js                 # TailwindCSS design system
+├── postcss.config.js                  # PostCSS config
+├── amplify_outputs.json               # Amplify deployment outputs
+│
+├── logical-architecture.svg/.png      # Architecture diagrams
+├── technical-architecture.svg/.png
+├── use-case-diagram.svg/.png
+├── estimated-cost.svg/.png
+├── funding-slide.svg/.png
+├── prototype-cost-slide.svg/.png
+│
+├── Idea Submission _ AWS AI for Bharat Hackathon.pptx                            # Idea phase deck
+├── Idea Submission _ AWS AI for Bharat Hackathon_DiabetCareAI.pdf                # Idea phase PDF
+├── Prototype Development Submission _ AWS AI for Bharat Hackathon_DiabetCareAI.pptx  # Prototype deck
+│
 ├── capture-fullpage-screenshots.js    # Puppeteer screenshot script
-├── capture-screenshots.sh             # Screenshot capture shell script
-├── capture-screenshots-improved.js    # Improved screenshot script
-├── capture-firefox-screenshots.sh     # Firefox screenshot script
-├── package.json                       # Node.js deps (puppeteer for screenshots)
-├── Idea Submission _ AWS AI for Bharat Hackathon.pptx   # Presentation deck
-├── Idea Submission _ AWS AI for Bharat Hackathon_DiabetCareAI.pdf  # PDF version
 ├── .claude/                           # Claude Code configuration
 ├── .gitignore                         # Git ignore rules
 └── .claudeignore                      # Claude Code ignore rules
 ```
 
-**NOTE:** Only the `docs/` folder is pushed to GitHub for wireframe hosting via GitHub Pages.
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**GitHub:** https://github.com/brainupgrade-in/aiforbharat2
 
 ## Selected Use Case: Diabetes Screening ✅
 
@@ -383,38 +406,28 @@ npm install
 # Start local development server
 npm run dev                            # Vite dev server on localhost:5173
 
-# AWS Amplify setup
-npm create amplify@latest             # Initialize new Amplify project
-npx ampx sandbox                      # Run local Amplify sandbox (auth, data, storage)
-
-# Deploy to Amplify cloud
-npx ampx sandbox --once               # Deploy cloud sandbox
-git push origin main                  # Triggers Amplify CI/CD
+# AWS Amplify sandbox (local backend with auth, data)
+npx ampx sandbox                      # Run local Amplify sandbox
 
 # Build for production
 npm run build                         # Creates dist/ folder
 npm run preview                       # Preview production build locally
 
-# Testing
-npm run test                          # Run Jest unit tests
-npm run test:e2e                      # Run Playwright E2E tests
-npm run lint                          # ESLint check
+# Deploy (automatic on git push to main)
+git push origin main                  # Triggers Amplify CI/CD → builds → deploys
+
+# Live prototype URL
+# https://main.d3vwqyp1h0elbo.amplifyapp.com/
 ```
 
-### Wireframe Development (GitHub Pages)
+### Wireframe Development (Original HTML/CSS)
 ```bash
-# Create wireframes in docs/ folder
+# View original wireframes locally
 cd docs
-python -m http.server 8000            # Test wireframes locally at http://localhost:8000
+python -m http.server 8000            # Test wireframes at http://localhost:8000
 
-# Push to GitHub (only docs/ folder)
-git add docs/
-git commit -m "Add wireframes"
-git push origin main
-
-# Enable GitHub Pages
-# Go to: Settings → Pages → Source: Deploy from branch → Branch: main → Folder: /docs
-# Access at: https://main.d3vwqyp1h0elbo.amplifyapp.com/
+# Capture wireframe screenshots
+node capture-fullpage-screenshots.js  # Puppeteer-based screenshot capture
 ```
 
 ### AWS Bedrock (AI Development)
@@ -667,3 +680,5 @@ python scripts/generate_manifest.py \
 **Last Updated:** 2026-03-08
 **Hackathon:** AWS AI for Bharat
 **Focus:** Mobile-first AI healthcare solutions for India
+**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**GitHub:** https://github.com/brainupgrade-in/aiforbharat2

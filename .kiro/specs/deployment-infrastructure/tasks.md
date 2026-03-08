@@ -2,7 +2,9 @@
 
 ## Overview
 
-Implementation tasks for setting up DiabetCare AI deployment infrastructure using AWS Amplify Gen 2.
+Implementation tasks for setting up Nazar AI (DiabetCare AI) deployment infrastructure using AWS Amplify Gen 2.
+
+**Current Status:** MVP deployed at https://main.d3vwqyp1h0elbo.amplifyapp.com/ (ap-south-1)
 
 ## Task Status Legend
 - [ ] Not Started
@@ -26,9 +28,9 @@ Implementation tasks for setting up DiabetCare AI deployment infrastructure usin
 - [ ] Set up billing alerts for cost monitoring
 
 ### Repository Setup
-- [ ] Clone repository from GitHub
-- [ ] Run `npm install` to install dependencies
-- [ ] Verify `.gitignore` excludes sensitive files
+- [x] Clone repository from GitHub (brainupgrade-in/aiforbharat2)
+- [x] Run `npm install` to install dependencies
+- [x] Verify `.gitignore` excludes sensitive files
 
 ---
 
@@ -56,22 +58,23 @@ Implementation tasks for setting up DiabetCare AI deployment infrastructure usin
 ## Phase 3: Amplify Project Configuration
 
 ### Backend Configuration (amplify/backend.ts)
-- [ ] Define auth resource (Cognito)
-- [ ] Define data resource (AppSync + DynamoDB)
-- [ ] Define storage resource (S3 buckets)
-- [ ] Configure Lambda functions
+- [x] Define auth resource (Cognito) ✅
+- [x] Define data resource (AppSync + DynamoDB) ✅
+- [ ] Define storage resource (S3 buckets) — Phase 2
+- [ ] Configure Lambda functions — Phase 3
 
 ### Auth Configuration (amplify/auth/resource.ts)
-- [ ] Enable email/phone login
-- [ ] Configure Google OAuth (client ID/secret)
-- [ ] Set password policy (8+ chars, mixed case, symbols)
-- [ ] Enable optional MFA (SMS, TOTP)
+- [x] Enable email login ✅ (deployed: ap-south-1_kbmI8hA9b)
+- [ ] Enable phone login — Phase 2
+- [ ] Configure Google OAuth (client ID/secret) — Phase 2
+- [ ] Enable optional MFA (SMS, TOTP) — Phase 2
 
 ### Data Configuration (amplify/data/resource.ts)
-- [ ] Define User model with owner authorization
-- [ ] Define GlucoseReading model with timestamp sort key
-- [ ] Define DRScan model with severity enum
-- [ ] Configure GSI for common queries
+- [x] Define UserProfile model with owner authorization ✅
+- [x] Define GlucoseReading model ✅
+- [x] Define RetinaScan model with classification enum ✅
+- [x] Define MealLog model ✅
+- [x] Define ChatMessage model ✅
 
 ### Storage Configuration (amplify/storage/resource.ts)
 - [ ] Create retina-images bucket
@@ -90,9 +93,9 @@ Implementation tasks for setting up DiabetCare AI deployment infrastructure usin
 ## Phase 4: CI/CD Pipeline
 
 ### GitHub Integration
-- [ ] Connect GitHub repository to Amplify Console
-- [ ] Authorize AWS Amplify GitHub App
-- [ ] Select repository and branch (main)
+- [x] Connect GitHub repository to Amplify Console ✅
+- [x] Authorize AWS Amplify GitHub App ✅
+- [x] Select repository and branch (main) ✅
 
 ### Build Configuration (amplify.yml)
 - [ ] Configure backend build phase (npm ci, ampx pipeline-deploy)
@@ -211,5 +214,5 @@ Implementation tasks for setting up DiabetCare AI deployment infrastructure usin
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2026-02-03
+**Version:** 2.0
+**Last Updated:** 2026-03-08

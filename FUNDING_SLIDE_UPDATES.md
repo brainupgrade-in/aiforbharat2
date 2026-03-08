@@ -1,8 +1,9 @@
 # Funding Slide Updates - Change Log
 
-**Date:** 2026-01-25
+**Date:** 2026-01-25 (original) | Updated: 2026-03-08
 **File:** funding-slide.svg
 **Version:** 2.0 (Updated)
+**Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
 
 ---
 
