@@ -247,7 +247,14 @@ export default function NazarAuthScreen({ children }) {
               <span className="text-[11px] text-ink-muted">End-to-end encrypted • HIPAA compliant</span>
             </div>
             <p className="text-[10px] text-ink-muted/60">
-              AWS AI for Bharat Hackathon • Made in India 🇮🇳
+              AWS AI for Bharat • Made in India 🇮🇳
+            </p>
+            <p className="text-[10px] text-ink-muted/60">
+              Built by{' '}
+              <a href="https://health.gheware.com" target="_blank" rel="noopener noreferrer" className="text-teal-deep hover:underline">
+                Gheware
+              </a>{' '}
+              with <span className="text-kumkum-red">&#10084;</span>
             </p>
           </div>
         </div>
@@ -317,7 +324,8 @@ export default function NazarAuthScreen({ children }) {
         }
 
         .nazar-auth-wrapper .amplify-button--primary {
-          background: linear-gradient(135deg, #0A6E6E 0%, #0E8C8C 100%);
+          background: linear-gradient(135deg, #0A6E6E 0%, #0E8C8C 100%) !important;
+          color: #FFFFFF !important;
           border-radius: 0.875rem;
           font-family: 'Baloo 2', cursive;
           font-weight: 700;
@@ -327,14 +335,22 @@ export default function NazarAuthScreen({ children }) {
           box-shadow: 0 4px 14px rgba(10, 110, 110, 0.3);
           transition: all 150ms ease;
           letter-spacing: 0.01em;
+          opacity: 1 !important;
+          visibility: visible !important;
         }
         .nazar-auth-wrapper .amplify-button--primary:hover {
-          background: linear-gradient(135deg, #0E8C8C 0%, #12ABAB 100%);
+          background: linear-gradient(135deg, #0E8C8C 0%, #12ABAB 100%) !important;
+          color: #FFFFFF !important;
           box-shadow: 0 6px 20px rgba(10, 110, 110, 0.4);
           transform: translateY(-1px);
         }
         .nazar-auth-wrapper .amplify-button--primary:active {
           transform: scale(0.98);
+        }
+        .nazar-auth-wrapper .amplify-button--primary:disabled {
+          background: linear-gradient(135deg, #0A6E6E 0%, #0E8C8C 100%) !important;
+          color: #FFFFFF !important;
+          opacity: 0.6 !important;
         }
 
         .nazar-auth-wrapper .amplify-button--link {
