@@ -38,8 +38,16 @@ Design an AI solution that improves efficiency, understanding, or support within
   - Backend: Amplify Gen 2 with 5 data models (DynamoDB + AppSync GraphQL)
   - Region: ap-south-1 (Mumbai, India)
 - **App name evolved** to "Nazar AI" (with DiabetCare AI as secondary name)
-- **Features implemented:** DR screening workflow, multilingual (EN/HI/KN), community dashboard, GPS doctor finder, WhatsApp sharing, high-contrast mode
-- **Next phase:** AWS Bedrock + Rekognition AI integration
+- **Features implemented:** DR screening workflow, multilingual (EN/HI/KN), community dashboard, GPS doctor finder, WhatsApp sharing, high-contrast mode, glucose tracker, AI chatbot
+- **AI Chatbot deployed** via AWS Bedrock (Amazon Nova Micro) ✅
+  - Lambda Function URL: public endpoint for chatbot inference
+  - Model: `apac.amazon.nova-micro-v1:0` (APAC inference profile)
+  - Supports English, Hindi, Kannada responses
+  - India-specific diabetes advisor system prompt
+- **E2E Integration Tests** — 14/14 passing (Vitest) ✅
+  - Cognito auth, AppSync GraphQL CRUD, Bedrock chatbot, live site health check
+  - Test user: `testuser@nazarai.test`
+- **Next phase:** Amazon Rekognition Custom Labels for DR screening, meal photo analysis
 
 ## Repository Structure
 
@@ -79,10 +87,18 @@ ai-for-bharat-2/
 │       ├── i18n.js                   # Translations (EN, HI, KN)
 │       └── location.js              # Geolocation + maps utilities
 │
+├── tests/                             # E2E integration tests (Vitest)
+│   └── e2e.test.js                  # 14 tests: auth, GraphQL, chatbot, site
+├── vitest.config.js                   # Vitest test configuration
+├── .env.example                       # Environment variable template
+│
 ├── amplify/                           # AWS Amplify Gen 2 backend
-│   ├── backend.ts                    # Backend composition (auth + data)
+│   ├── backend.ts                    # Backend composition (auth + data + chatbot Lambda)
 │   ├── auth/resource.ts             # Cognito auth configuration
-│   └── data/resource.ts             # AppSync data models (5 models)
+│   ├── data/resource.ts             # AppSync data models (5 models)
+│   └── functions/chatbot/           # Bedrock AI chatbot Lambda
+│       ├── resource.ts              # Lambda function definition
+│       └── handler.ts               # Bedrock InvokeModel handler (Nova/Claude)
 │
 ├── docs/                              # Original HTML/CSS wireframes
 │   ├── index.html                    # Landing page wireframe
@@ -162,7 +178,7 @@ ai-for-bharat-2/
 - **AI Diabetic Retinopathy Screening** - Smartphone camera-based fundus image analysis
 - **Smart Glucose Tracker** - Manual logging with trend analysis and pattern detection
 - **AI Meal Analyzer** - Photo-based food recognition with carb estimation for Indian foods
-- **Diabetes Advisor Chatbot** - 24/7 AI guidance using AWS Bedrock Claude 3 Haiku
+- **Diabetes Advisor Chatbot** - 24/7 AI guidance using AWS Bedrock Amazon Nova Micro
 - **Complication Risk Assessment** - DR, diabetic foot ulcer, nephropathy, CVD risk
 
 **Advanced Features (Phase 2):**
@@ -236,10 +252,10 @@ The following NCDs and conditions have been **removed** from the project scope:
 
 ### AI/ML - AWS Bedrock + Amazon Rekognition
 - **Primary AI:** AWS Bedrock Foundation Models
-  - **Claude 3 Haiku** - Diabetes advisor chatbot (fast, cost-effective)
-  - **Claude 3 Sonnet** - Complex medical explanations, weekly reports
-  - **Amazon Nova Pro** - Meal photo analysis and food recognition
-  - **Bedrock Knowledge Bases** - RAG for diabetes education content
+  - **Amazon Nova Micro** - Diabetes advisor chatbot (deployed, live via Lambda Function URL)
+  - **Claude 3 Haiku/Sonnet** - Complex medical explanations, weekly reports (planned)
+  - **Amazon Nova Pro** - Meal photo analysis and food recognition (planned)
+  - **Bedrock Knowledge Bases** - RAG for diabetes education content (planned)
 - **Computer Vision:** Amazon Rekognition Custom Labels
   - Diabetic retinopathy detection from fundus images
   - Custom model trained on Kaggle DR dataset (35K images)
@@ -357,14 +373,18 @@ The following NCDs and conditions have been **removed** from the project scope:
 
 ## Testing Strategy
 
-### Unit Testing
-- **Framework:** Jest + React Testing Library for React, pytest for Python
+### E2E Integration Tests (Implemented)
+- **Framework:** Vitest (native to Vite)
+- **Test file:** `tests/e2e.test.js` — 14 tests, all passing
+- **Coverage:** Cognito auth, AppSync GraphQL CRUD (GlucoseReading, UserProfile, ChatMessage), Bedrock chatbot (EN + Hindi), live site health check
+- **Run:** `npm test` or `npx vitest run`
+
+### Unit Testing (Planned)
+- **Framework:** Vitest + React Testing Library
 - **Coverage:** Minimum 80% code coverage
-- **AI Models:** Test accuracy, precision, recall, F1-score
 
 ### Integration Testing
-- **API Testing:** Postman/Newman for REST APIs
-- **Database:** Test data integrity and migrations
+- **Current:** Vitest E2E suite covers Cognito → AppSync → Bedrock → Amplify Hosting
 - **Cloud Services:** Test AWS service integrations
 
 ### User Acceptance Testing
@@ -413,8 +433,12 @@ npx ampx sandbox                      # Run local Amplify sandbox
 npm run build                         # Creates dist/ folder
 npm run preview                       # Preview production build locally
 
-# Deploy (automatic on git push to main)
-git push origin main                  # Triggers Amplify CI/CD → builds → deploys
+# Deploy (manual — not git-connected)
+npm run build                         # Build dist/
+# Upload dist/ zip via Amplify CreateDeployment API
+
+# Run E2E integration tests
+npm test                              # Vitest — 14 tests (auth, GraphQL, chatbot, site)
 
 # Live prototype URL
 # https://main.d3vwqyp1h0elbo.amplifyapp.com/
@@ -430,20 +454,20 @@ python -m http.server 8000            # Test wireframes at http://localhost:8000
 node capture-fullpage-screenshots.js  # Puppeteer-based screenshot capture
 ```
 
-### AWS Bedrock (AI Development)
+### AWS Bedrock (AI Chatbot — Deployed)
 ```bash
-# Install AWS SDK
-npm install @aws-sdk/client-bedrock-runtime
+# Chatbot Lambda Function URL (public, no auth)
+# POST https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/
+# Body: { "message": "What is diabetes?", "lang": "en" }
 
-# Test Bedrock model from CLI
-aws bedrock-runtime invoke-model \
-  --model-id anthropic.claude-3-haiku-20240307-v1:0 \
-  --body '{"anthropic_version":"bedrock-2023-05-31","max_tokens":1024,"messages":[{"role":"user","content":"Explain diabetes in simple terms"}]}' \
-  --cli-binary-format raw-in-base64-out \
-  output.json
+# Test chatbot from CLI
+curl -X POST https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/ \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"What is a normal fasting blood sugar?","lang":"en"}'
 
-# View response
-cat output.json | jq -r '.content[0].text'
+# Model: apac.amazon.nova-micro-v1:0 (APAC inference profile, ap-south-1)
+# Handler: amplify/functions/chatbot/handler.ts
+# Supports: EN, HI, KN — auto-detects from lang parameter
 ```
 
 ### Amazon Rekognition (DR Detection)
