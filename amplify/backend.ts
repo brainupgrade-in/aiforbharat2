@@ -24,14 +24,18 @@ const fnUrl = chatbotLambda.addFunctionUrl({
   },
 });
 
-// Grant Bedrock InvokeModel permission
+// Grant full Bedrock + Marketplace permissions for the chatbot Lambda
 chatbotLambda.addToRolePolicy(
   new PolicyStatement({
-    actions: ['bedrock:InvokeModel'],
-    resources: [
-      'arn:aws:bedrock:*::foundation-model/anthropic.claude-3-haiku-20240307-v1:0',
-      'arn:aws:bedrock:*::foundation-model/anthropic.claude-3-5-haiku-20241022-v1:0',
-    ],
+    actions: ['bedrock:*'],
+    resources: ['*'],
+  })
+);
+
+chatbotLambda.addToRolePolicy(
+  new PolicyStatement({
+    actions: ['aws-marketplace:*'],
+    resources: ['*'],
   })
 );
 

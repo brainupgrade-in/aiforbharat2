@@ -3,10 +3,9 @@ import {
   InvokeModelCommand,
 } from '@aws-sdk/client-bedrock-runtime';
 
-const BEDROCK_REGION = process.env.BEDROCK_REGION || 'us-east-1';
+const BEDROCK_REGION = process.env.BEDROCK_REGION || 'ap-south-1';
 const MODEL_ID =
-  process.env.BEDROCK_MODEL_ID ||
-  'anthropic.claude-3-haiku-20240307-v1:0';
+  process.env.BEDROCK_MODEL_ID || 'apac.amazon.nova-micro-v1:0';
 
 const client = new BedrockRuntimeClient({ region: BEDROCK_REGION });
 
@@ -63,6 +62,45 @@ function corsHeaders() {
   };
 }
 
+// Build request body based on model type
+function buildRequestBody(modelId: string, systemPrompt: string, message: string) {
+  // Amazon Nova models use a different format than Anthropic Claude
+  if (modelId.includes('nova') || modelId.includes('amazon')) {
+    return JSON.stringify({
+      system: [{ text: systemPrompt }],
+      messages: [{ role: 'user', content: [{ text: message }] }],
+      inferenceConfig: {
+        maxTokens: 1024,
+        temperature: 0.7,
+      },
+    });
+  }
+
+  // Anthropic Claude format
+  return JSON.stringify({
+    anthropic_version: 'bedrock-2023-05-31',
+    max_tokens: 1024,
+    temperature: 0.7,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: message }],
+  });
+}
+
+// Parse response based on model type
+function parseResponse(modelId: string, responseBody: Record<string, unknown>): string {
+  // Amazon Nova response format
+  if (modelId.includes('nova') || modelId.includes('amazon')) {
+    const output = responseBody.output as Record<string, unknown>;
+    const msg = output?.message as Record<string, unknown>;
+    const content = msg?.content as Array<Record<string, string>>;
+    return content?.[0]?.text || 'I could not generate a response.';
+  }
+
+  // Anthropic Claude response format
+  const content = responseBody.content as Array<Record<string, string>>;
+  return content?.[0]?.text || 'I could not generate a response.';
+}
+
 export const handler = async (event: FunctionUrlEvent) => {
   // Handle CORS preflight
   const method =
@@ -104,18 +142,12 @@ export const handler = async (event: FunctionUrlEvent) => {
     // Build prompt with language instruction
     const systemPrompt = `${SYSTEM_PROMPT}\n\n${getLanguageInstruction(lang)}`;
 
-    // Call Bedrock Claude 3 Haiku
+    // Call Bedrock model
     const command = new InvokeModelCommand({
       modelId: MODEL_ID,
       contentType: 'application/json',
       accept: 'application/json',
-      body: JSON.stringify({
-        anthropic_version: 'bedrock-2023-05-31',
-        max_tokens: 1024,
-        temperature: 0.7,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: message }],
-      }),
+      body: buildRequestBody(MODEL_ID, systemPrompt, message),
     });
 
     const bedrockResponse = await client.send(command);
@@ -123,8 +155,7 @@ export const handler = async (event: FunctionUrlEvent) => {
       new TextDecoder().decode(bedrockResponse.body)
     );
 
-    const aiResponse =
-      responseBody.content?.[0]?.text || 'I could not generate a response.';
+    const aiResponse = parseResponse(MODEL_ID, responseBody);
 
     return {
       statusCode: 200,
@@ -146,7 +177,7 @@ export const handler = async (event: FunctionUrlEvent) => {
         headers: corsHeaders(),
         body: JSON.stringify({
           error:
-            'Bedrock model access not enabled. Please enable Claude 3 Haiku in AWS Bedrock console.',
+            'Bedrock model access not enabled. Please enable the model in AWS Bedrock console.',
         }),
       };
     }

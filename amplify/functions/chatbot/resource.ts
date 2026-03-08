@@ -6,7 +6,7 @@ export const chatbotFunction = defineFunction({
   timeoutSeconds: 30,
   memoryMB: 256,
   environment: {
-    BEDROCK_REGION: 'us-east-1',
-    BEDROCK_MODEL_ID: 'anthropic.claude-3-haiku-20240307-v1:0',
+    BEDROCK_REGION: 'ap-south-1',
+    BEDROCK_MODEL_ID: 'apac.amazon.nova-micro-v1:0',
   },
 });
