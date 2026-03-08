@@ -5,7 +5,7 @@ This file provides project-level guidance for AI assistants working on this code
 **Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
 **GitHub:** https://github.com/brainupgrade-in/aiforbharat2
 **Region:** ap-south-1 (Mumbai, India)
-**Status:** React MVP deployed with auth, DR screening workflow, AI chatbot (Bedrock-ready with demo fallback), glucose tracker (DynamoDB-wired), multilingual (EN/HI/KN), community dashboard, PWA with service worker. AI model integration (Bedrock endpoint, Rekognition Custom Labels) in progress.
+**Status:** React MVP deployed with auth, DR screening workflow, AI chatbot (Amazon Nova Micro via Lambda Function URL — LIVE), glucose tracker (DynamoDB-wired), multilingual (EN/HI/KN), community dashboard, PWA with service worker. 14/14 E2E integration tests passing (Vitest). Rekognition Custom Labels for DR screening in progress.
 
 ## Table of Contents
 - [AWS Well-Architected Framework](#aws-well-architected-framework)
@@ -326,7 +326,7 @@ aws logs put-retention-policy \
 **Naming Conventions**
 ```typescript
 // ✅ GOOD
-const BEDROCK_MODEL_ID = 'anthropic.claude-3-haiku-20240307-v1:0';  // UPPER_SNAKE_CASE for constants
+const BEDROCK_MODEL_ID = 'apac.amazon.nova-micro-v1:0';  // UPPER_SNAKE_CASE for constants
 class UserProfile { }                                                // PascalCase for classes
 function calculateHbA1c(avgGlucose: number): number { }             // camelCase for functions
 interface GlucoseReading { }                                        // PascalCase for interfaces
@@ -556,7 +556,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Testing Practices
 
-### 1. Unit Testing (Jest)
+### 1. Unit Testing (Vitest)
 
 **Test Coverage Target: ≥80%**
 ```typescript
@@ -627,29 +627,36 @@ describe('POST /glucose/readings', () => {
 });
 ```
 
-### 3. E2E Testing (Playwright)
+### 3. E2E Integration Testing (Vitest — 14/14 Passing)
 
-**Critical User Journeys**
-```typescript
-import { test, expect } from '@playwright/test';
+**Test File:** `tests/e2e.test.js` — Tests live AWS services end-to-end
 
-test('user can log glucose reading', async ({ page }) => {
-  // Login
-  await page.goto('https://diabetcare.ai/login');
-  await page.fill('input[name="email"]', 'test@example.com');
-  await page.fill('input[name="password"]', 'Test1234!');
-  await page.click('button[type="submit"]');
+**Test Coverage:**
+- Cognito auth (sign in, reject invalid credentials)
+- AppSync GraphQL CRUD (GlucoseReading, UserProfile, ChatMessage — create, list, delete)
+- Bedrock chatbot Lambda (English response, Hindi response, empty message rejection, CORS)
+- Live site health check (HTTP 200)
 
-  // Navigate to glucose tracker
-  await page.click('text=Log Glucose');
+**Run Tests:**
+```bash
+npm test                    # Run all 14 E2E tests
+npx vitest run              # Same, explicit
+```
 
-  // Fill form
-  await page.fill('input[name="glucose"]', '142');
-  await page.selectOption('select[name="mealContext"]', 'POST_MEAL');
-  await page.click('button[type="submit"]');
+**Test User:** `testuser@nazarai.test` / `TestPass@9876`
 
-  // Verify success
-  await expect(page.locator('text=Glucose logged!')).toBeVisible();
+**Example Test (Chatbot):**
+```javascript
+import { describe, it, expect } from 'vitest';
+
+it('should return a response in English', async () => {
+  const res = await fetch(CHATBOT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: 'What is a normal fasting blood sugar?', lang: 'en' }),
+  });
+  const data = await res.json();
+  expect(data.response.length).toBeGreaterThan(20);
 });
 ```
 
@@ -850,11 +857,11 @@ SYSTEM_PROMPT = "You help people with diabetes."
 
 ```python
 # ✅ GOOD: Use cheapest model that meets requirements
-# Chatbot: Claude 3 Haiku ($0.25/$1.25 per 1M tokens)
+# Chatbot: Amazon Nova Micro (APAC profile, cost-effective)
 # Complex analysis: Claude 3 Sonnet ($3/$15 per 1M tokens)
 
 if task == 'simple_qa':
-    model_id = 'anthropic.claude-3-haiku-20240307-v1:0'
+    model_id = 'apac.amazon.nova-micro-v1:0'  # Deployed, live
 elif task == 'complex_medical_summary':
     model_id = 'anthropic.claude-3-sonnet-20240229-v1:0'
 

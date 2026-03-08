@@ -2,7 +2,7 @@
 
 **Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
 **Region:** ap-south-1 (Mumbai, India)
-**Status:** React MVP deployed with Amplify Gen 2 (Cognito + AppSync + DynamoDB), AI chatbot (Bedrock-ready + demo fallback), glucose tracker (DynamoDB-wired), PWA with Workbox service worker. AI model endpoint integration in progress.
+**Status:** React MVP deployed with Amplify Gen 2 (Cognito + AppSync + DynamoDB + chatbot Lambda), AI chatbot (Amazon Nova Micro — LIVE via Lambda Function URL), glucose tracker (DynamoDB-wired), PWA with Workbox service worker. 14/14 E2E tests passing (Vitest). Rekognition Custom Labels for DR screening in progress.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -129,7 +129,7 @@ DiabetCare AI is built on a **serverless, cloud-native architecture** using AWS 
                          ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                   AI/ML SERVICES LAYER                           │
-│  Bedrock (Claude 3 Haiku) │ Bedrock (Nova Pro) │ Rekognition    │
+│  Bedrock (Nova Micro)     │ Bedrock (Nova Pro) │ Rekognition    │
 │  Bedrock Knowledge Base   │ SageMaker          │ Translate      │
 └────────────────────────┬────────────────────────────────────────┘
                          │
@@ -165,7 +165,7 @@ App (Root)
     ├── Bottom Tab Navigation (5 tabs)
     │   ├── Home → NazarHome (greeting, scan CTA, sparkline, community stats)
     │   ├── Scan → NazarScan (camera capture, demo mode) → NazarResult (patient/doctor modes)
-    │   ├── AI Chat → NazarChat (Bedrock-ready chatbot + demo fallback)
+    │   ├── AI Chat → NazarChat (Amazon Nova Micro chatbot — LIVE + demo fallback)
     │   ├── Glucose → NazarGlucose (DynamoDB-wired tracker with Recharts trend)
     │   └── Community → NazarCommunity (state leaderboard, village stats)
     └── Shared Components
@@ -257,13 +257,15 @@ The MVP uses **AppSync GraphQL only** — no REST API Gateway endpoints exist. A
 - Chat messages: `createChatMessage` (GraphQL)
 - User profiles: `createUserProfile`, `getUserProfile` (GraphQL)
 
-**AI Chatbot Endpoint:**
-- `VITE_BEDROCK_ENDPOINT` (configurable REST endpoint for Bedrock proxy Lambda — planned)
-- Currently uses demo fallback responses in `NazarChat.jsx`
+**AI Chatbot Endpoint (DEPLOYED):**
+- Lambda Function URL: `https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/`
+- Model: Amazon Nova Micro (`apac.amazon.nova-micro-v1:0` — APAC inference profile)
+- Handler: `amplify/functions/chatbot/handler.ts` (256MB, 30s timeout)
+- Frontend calls via `VITE_BEDROCK_ENDPOINT` env var
+- Demo mode fallback when endpoint unavailable
 
 **Planned REST Endpoints (Phase 2):**
 ```
-POST   /chatbot/message         # Bedrock Claude 3 Haiku proxy
 POST   /dr-scan/analyze         # Rekognition Custom Labels inference
 POST   /meal/analyze            # Bedrock Nova Pro vision model
 GET    /abdm/link               # Link ABHA ID
@@ -275,20 +277,27 @@ GET    /abdm/link               # Link ABHA ID
 
 ### 3. Application Layer
 
-#### Current Architecture (MVP — No Lambda Functions)
+#### Current Architecture (MVP — Chatbot Lambda Deployed)
 
-The MVP uses a **simplified serverless architecture** without Lambda functions:
+The MVP uses a **serverless architecture** with one deployed Lambda function:
+
+**AI Chatbot (DEPLOYED):**
+- Frontend (`NazarChat.jsx`) → Lambda Function URL → AWS Bedrock Amazon Nova Micro
+- Lambda: `amplify/functions/chatbot/handler.ts` (256MB, 30s timeout, Node.js 18)
+- Model: `apac.amazon.nova-micro-v1:0` (APAC inference profile, ap-south-1)
+- Endpoint: `https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/`
+- Public HTTP endpoint with CORS, no auth required
+- Supports English, Hindi, Kannada (auto-detected from `lang` parameter)
+- India-specific diabetes advisor system prompt
+- Demo mode fallback when Bedrock unavailable
+- E2E tested: 4 tests covering EN/HI responses, error handling, CORS
 
 **Glucose Tracking:**
 - Frontend (`NazarGlucose.jsx`) → Direct AppSync GraphQL → DynamoDB `GlucoseReading` model
 - Uses `aws-amplify/data` client (dynamic import) for CRUD operations
 - Trend calculation done client-side (Recharts visualization of last 8 readings)
 - Status determination client-side: High (>140 mg/dL), Low (<70), Normal
-
-**AI Chatbot:**
-- Frontend (`NazarChat.jsx`) → Configurable `VITE_BEDROCK_ENDPOINT` REST endpoint
-- When endpoint not configured: rich demo responses (5 categories: glucose, breakfast, exercise, retina, general)
-- "DEMO MODE" badge clearly shown in UI
+- E2E tested: create, list, delete via AppSync GraphQL
 
 **DR Screening:**
 - Frontend (`NazarScan.jsx`) → Simulated analysis (demo mode)
@@ -297,13 +306,7 @@ The MVP uses a **simplified serverless architecture** without Lambda functions:
 
 #### Planned Lambda Functions (Phase 2-3)
 
-**3.1 Chatbot Bedrock Proxy** 📋 Planned
-- Process user messages through Bedrock Claude 3 Haiku
-- System prompt: diabetes advisor, multilingual, India-specific
-- Frontend ready: `NazarChat.jsx` calls `VITE_BEDROCK_ENDPOINT`
-- RAG via Bedrock Knowledge Bases (planned)
-
-**3.2 DR Processor** 📋 Planned
+**3.1 DR Processor** 📋 Planned
 - S3 fundus image upload → Rekognition Custom Labels inference
 - Result parsing and severity classification
 - Patient-friendly explanation via Bedrock
@@ -315,33 +318,34 @@ The MVP uses a **simplified serverless architecture** without Lambda functions:
 
 ### 4. AI/ML Services Layer
 
-#### 4.1 AWS Bedrock (Claude 3 Haiku)
+#### 4.1 AWS Bedrock (Amazon Nova Micro — DEPLOYED)
 **Use Cases:**
-- Diabetes advisor chatbot
-- Weekly health report generation
-- Glucose trend interpretation
+- Diabetes advisor chatbot (LIVE)
+- Weekly health report generation (planned)
+- Glucose trend interpretation (planned)
 
-**Configuration:**
-```python
-bedrock_client = boto3.client('bedrock-runtime', region_name='us-east-1')
-response = bedrock_client.invoke_model(
-    modelId='anthropic.claude-3-haiku-20240307-v1:0',
-    body=json.dumps({
-        'anthropic_version': 'bedrock-2023-05-31',
-        'max_tokens': 1024,
-        'temperature': 0.7,
-        'messages': [
-            {'role': 'user', 'content': user_message}
-        ],
-        'system': SYSTEM_PROMPT
-    })
-)
+**Deployed Configuration (Lambda handler.ts):**
+```typescript
+const bedrockClient = new BedrockRuntimeClient({ region: 'ap-south-1' });
+const response = await bedrockClient.send(new InvokeModelCommand({
+    modelId: 'apac.amazon.nova-micro-v1:0',  // APAC inference profile
+    body: JSON.stringify({
+        inferenceConfig: { maxTokens: 1024, temperature: 0.7, topP: 0.9 },
+        messages: [{ role: 'user', content: [{ text: userMessage }] }],
+        system: [{ text: SYSTEM_PROMPT }],
+    }),
+    contentType: 'application/json',
+    accept: 'application/json',
+}));
 ```
 
+**Endpoint:** `https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/`
+
 **Cost Optimization:**
-- Use Haiku (cheapest) for chatbot (not Sonnet/Opus)
+- Use Nova Micro (cheapest, fast) for chatbot
+- APAC inference profile for ap-south-1 region
 - Limit max_tokens to 1024 (reduce output cost)
-- Cache conversation context in Redis (reduce input tokens)
+- Public Function URL (no API Gateway cost)
 
 #### 4.2 AWS Bedrock (Amazon Nova Pro)
 **Use Cases:**
@@ -579,19 +583,15 @@ User → PWA → API Gateway → Lambda (DR Processor)
   Lambda (Notification Service) → SNS (SMS/Email to doctor)
 ```
 
-#### 3. Chatbot Interaction Flow
+#### 3. Chatbot Interaction Flow (DEPLOYED)
 ```
-User → PWA → WebSocket (API Gateway) → Lambda (Chatbot)
+User → PWA (NazarChat.jsx) → Lambda Function URL (HTTPS POST)
   ↓
-  ElastiCache (Fetch conversation context)
+  Lambda (amplify/functions/chatbot/handler.ts)
   ↓
-  Bedrock Knowledge Base (RAG query for clinical questions)
+  Bedrock Amazon Nova Micro (apac.amazon.nova-micro-v1:0)
   ↓
-  Bedrock Claude 3 Haiku (Generate response)
-  ↓
-  Lambda → WebSocket → PWA (Stream response)
-  ↓
-  DynamoDB (Save message to ChatHistory)
+  Lambda → JSON response → PWA (display in chat UI)
 ```
 
 ### Data Retention Policy
@@ -772,7 +772,7 @@ PWA connects to Twilio Room (peer-to-peer video)
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2026-01-25
+**Version:** 2.1
+**Last Updated:** 2026-03-08
 **Authors:** TheHealthGheware (Nazar AI Team)
 **Reviewers:** AWS AI for Bharat Hackathon Submission

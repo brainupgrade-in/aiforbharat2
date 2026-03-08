@@ -5,7 +5,7 @@
 Nazar AI (DiabetCare AI) is a mobile-first Progressive Web App (PWA) designed to prevent diabetes complications and blindness in India's 89.8 million diabetics through AI-powered diabetic retinopathy screening, glucose tracking, meal analysis, and personalized diabetes guidance using AWS AI services.
 
 **Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
-**Status:** React MVP deployed with Requirement 1 (auth), Requirement 3 (DR screening UI), Requirement 6 (dashboard), and multilingual support implemented. AI model integration in progress.
+**Status:** React MVP deployed with Requirement 1 (auth), Requirement 2 (glucose tracker — DynamoDB), Requirement 3 (DR screening UI), Requirement 5 (chatbot — Amazon Nova Micro LIVE), Requirement 6 (dashboard), and multilingual support. 14/14 E2E tests passing (Vitest). Rekognition Custom Labels for DR screening in progress.
 
 ## Glossary
 
@@ -13,7 +13,7 @@ Nazar AI (DiabetCare AI) is a mobile-first Progressive Web App (PWA) designed to
 - **DR_Scanner**: The diabetic retinopathy detection module using Amazon Rekognition Custom Labels
 - **Glucose_Tracker**: The blood glucose monitoring and trend analysis component
 - **Meal_Analyzer**: The AI-powered food recognition and carbohydrate estimation system using AWS Bedrock Nova Pro
-- **Diabetes_Advisor**: The multilingual chatbot using AWS Bedrock Claude 3 Haiku
+- **Diabetes_Advisor**: The multilingual chatbot using AWS Bedrock Amazon Nova Micro (APAC inference profile, DEPLOYED via Lambda Function URL)
 - **User**: A diabetic patient, pre-diabetic individual, or healthcare professional using the system
 - **Fundus_Image**: A photograph of the retina used for diabetic retinopathy screening
 - **HbA1c**: Hemoglobin A1c, a measure of average blood glucose over 2-3 months
@@ -78,7 +78,7 @@ Nazar AI (DiabetCare AI) is a mobile-first Progressive Web App (PWA) designed to
 
 #### Acceptance Criteria
 
-1. WHEN a user sends a message to the chatbot, THE Diabetes_Advisor SHALL respond using AWS Bedrock Claude 3 Haiku within 5 seconds
+1. WHEN a user sends a message to the chatbot, THE Diabetes_Advisor SHALL respond using AWS Bedrock Amazon Nova Micro within 5 seconds
 2. WHERE a user selects Hindi as their language, THE Diabetes_Advisor SHALL respond in Hindi using appropriate medical terminology
 3. WHEN providing medical information, THE Diabetes_Advisor SHALL cite sources from the Bedrock Knowledge Base containing diabetes guidelines
 4. WHEN a user asks for medical diagnosis, THE Diabetes_Advisor SHALL decline and display a disclaimer directing them to consult healthcare professionals

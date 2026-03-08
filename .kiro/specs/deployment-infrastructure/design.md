@@ -29,10 +29,10 @@ Git Repository (GitHub)
 AWS Amplify (CI/CD)
   ↓ (build & deploy)
 ├── Frontend: React PWA → CloudFront + S3
-├── Backend: Lambda + AppSync + API Gateway
+├── Backend: Lambda (chatbot) + AppSync + DynamoDB
 ├── Auth: Cognito User/Identity Pools
 ├── Data: DynamoDB + S3 Storage
-└── AI: Bedrock + Rekognition (manual setup)
+└── AI: Bedrock Nova Micro chatbot (DEPLOYED) + Rekognition (planned)
 ```
 
 **Deployment Environments:**
@@ -92,7 +92,8 @@ npm install -g @aws-amplify/cli@latest
 ```bash
 # Enable Bedrock model access in AWS Console
 # Navigate to: Bedrock → Model access → Request model access
-# Enable: Claude 3 Haiku, Amazon Nova Pro, Titan Embeddings G1
+# Enabled: Amazon Nova Micro (APAC inference profile) ✅ DEPLOYED
+# Planned: Amazon Nova Pro, Titan Embeddings G1
 ```
 
 ### 3. AWS CLI Configuration
@@ -158,7 +159,7 @@ VITE_APPSYNC_ENDPOINT=https://XXXXXXXXXXXXXXXXXXXXXX.appsync-api.ap-south-1.amaz
 VITE_S3_BUCKET=amplify-diabetcare-dev-XXXXX-retinaimages
 
 # Custom variables (add manually)
-VITE_BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307-v1:0
+VITE_BEDROCK_MODEL_ID=apac.amazon.nova-micro-v1:0
 VITE_REKOGNITION_PROJECT_ARN=arn:aws:rekognition:ap-south-1:123456789012:project/dr-detection/version/1
 VITE_GOOGLE_OAUTH_CLIENT_ID=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com
 ```
@@ -183,7 +184,7 @@ ai-for-bharat-2/
 │   │   ├── NazarHome.jsx        # Home dashboard
 │   │   ├── NazarScan.jsx        # DR scan workflow (demo mode)
 │   │   ├── NazarResult.jsx      # Results (patient + doctor modes, demo mode)
-│   │   ├── NazarChat.jsx        # AI chatbot (Bedrock-ready + demo fallback)
+│   │   ├── NazarChat.jsx        # AI chatbot (Amazon Nova Micro — LIVE)
 │   │   ├── NazarGlucose.jsx     # Glucose tracker (DynamoDB-wired)
 │   │   └── NazarCommunity.jsx   # Community impact dashboard
 │   ├── components/
@@ -211,12 +212,15 @@ ai-for-bharat-2/
 import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
+import { chatbot } from './functions/chatbot/resource';
 
 const backend = defineBackend({
   auth,
   data,
+  chatbot,
 });
-// Note: S3 storage not yet configured. Planned for Phase 2 (fundus images, meal photos).
+// Chatbot Lambda deployed with public Function URL (Amazon Nova Micro)
+// S3 storage not yet configured. Planned for Phase 2 (fundus images, meal photos).
 ```
 
 **amplify/auth/resource.ts** (Cognito — Deployed):
@@ -317,7 +321,7 @@ frontend:
 ```
 GOOGLE_OAUTH_CLIENT_ID=XXXXXX.apps.googleusercontent.com
 GOOGLE_OAUTH_CLIENT_SECRET=GOCSPX-XXXXXXXXXXXXXXXXXXXXXXXX
-BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307-v1:0
+BEDROCK_MODEL_ID=apac.amazon.nova-micro-v1:0
 REKOGNITION_PROJECT_ARN=arn:aws:rekognition:ap-south-1:123456789012:project/dr-detection/version/1
 ABDM_CLIENT_ID=SBX_XXXXXX
 ABDM_CLIENT_SECRET=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
@@ -525,7 +529,7 @@ frontend:
     build:
       commands:
         - npm run lint       # ESLint
-        - npm run test       # Jest unit tests
+        - npm run test       # Vitest E2E tests (14/14 passing)
         - npm run build      # Vite build
   artifacts:
     baseDirectory: dist

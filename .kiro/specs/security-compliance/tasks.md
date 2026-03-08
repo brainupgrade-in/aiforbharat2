@@ -4,7 +4,7 @@
 
 Implementation tasks for Nazar AI (DiabetCare AI) security controls and regulatory compliance.
 
-**Current Status:** MVP deployed with email auth + owner-based authorization. Advanced security controls planned for Phase 2.
+**Current Status:** MVP deployed with email auth + owner-based authorization + chatbot Lambda (public Function URL with CORS). E2E tested (14/14 Vitest). Advanced security controls planned for Phase 2.
 
 ## Task Status Legend
 - [ ] Not Started
@@ -245,5 +245,5 @@ Implementation tasks for Nazar AI (DiabetCare AI) security controls and regulato
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2026-02-03
+**Version:** 2.0
+**Last Updated:** 2026-03-08

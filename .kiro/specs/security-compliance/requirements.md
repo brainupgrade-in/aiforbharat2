@@ -4,7 +4,7 @@
 
 This document defines the security and compliance requirements for the Nazar AI (DiabetCare AI) platform, which handles Protected Health Information (PHI) and Personally Identifiable Information (PII) for diabetes patients in India.
 
-**Current Status:** MVP deployed with Cognito email auth, owner-based DynamoDB authorization, TLS 1.3 via CloudFront.
+**Current Status:** MVP deployed with Cognito email auth, owner-based DynamoDB authorization, TLS 1.3 via CloudFront, chatbot Lambda with public Function URL (CORS enabled). 14/14 E2E tests passing.
 
 ## Regulatory Compliance Requirements
 
@@ -183,7 +183,7 @@ This document defines the security and compliance requirements for the Nazar AI 
 
 ---
 
-**Version:** 1.0
-**Last Updated:** 2026-02-03
+**Version:** 2.0
+**Last Updated:** 2026-03-08
 **Status:** Approved
-**Next Review:** Quarterly (2026-05-03)
+**Next Review:** Quarterly (2026-06-08)

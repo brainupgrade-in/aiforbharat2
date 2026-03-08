@@ -5,7 +5,7 @@
 This document defines the architectural requirements for the Nazar AI (DiabetCare AI) platform - a serverless, cloud-native healthcare application for diabetes management and diabetic retinopathy screening.
 
 **Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
-**Current Status:** React MVP deployed with auth, DR screening UI, multilingual support, community dashboard. AI integration in progress.
+**Current Status:** React MVP deployed with auth, DR screening UI, glucose tracker (DynamoDB), AI chatbot (Amazon Nova Micro — LIVE), multilingual support, community dashboard. 14/14 E2E tests passing (Vitest).
 
 ## Functional Requirements
 
@@ -37,7 +37,7 @@ This document defines the architectural requirements for the Nazar AI (DiabetCar
 - **FR-5.4**: The system SHALL use ElastiCache Redis for session and API caching
 
 ### FR-6: AI/ML Architecture
-- **FR-6.1**: The system SHALL use AWS Bedrock (Claude 3 Haiku) for chatbot functionality
+- **FR-6.1**: The system SHALL use AWS Bedrock (Amazon Nova Micro, APAC inference profile) for chatbot functionality ✅ DEPLOYED
 - **FR-6.2**: The system SHALL use AWS Bedrock (Nova Pro) for meal photo analysis
 - **FR-6.3**: The system SHALL use Amazon Rekognition Custom Labels for DR detection
 - **FR-6.4**: The system SHALL use Bedrock Knowledge Base for RAG-based diabetes education

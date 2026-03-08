@@ -81,14 +81,17 @@
   - Calculate predicted glucose impact based on meal composition
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [x] 7. Implement multilingual diabetes advisor chatbot ✅ UI COMPLETE (Bedrock endpoint pending)
+- [x] 7. Implement multilingual diabetes advisor chatbot ✅ DEPLOYED (Amazon Nova Micro LIVE)
   - ✅ Created `NazarChat.jsx` with full chat interface, message history, typing indicators
-  - ✅ Bedrock integration ready via configurable `VITE_BEDROCK_ENDPOINT` env var
-  - ✅ Demo mode with 5 rich response categories (glucose, breakfast, exercise, retina, general)
-  - ✅ Clear "DEMO MODE" badge when Bedrock not connected
-  - ✅ Multilingual greetings and suggested questions (EN, HI, KN)
-  - ✅ Safety disclaimer in chat UI
-  - Note: Lambda function for Bedrock endpoint + Knowledge Bases RAG planned for Phase 2
+  - ✅ AWS Bedrock Amazon Nova Micro deployed via Lambda Function URL (APAC inference profile `apac.amazon.nova-micro-v1:0`)
+  - ✅ Lambda: `amplify/functions/chatbot/handler.ts` (256MB, 30s timeout, public Function URL with CORS)
+  - ✅ Endpoint: `https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/`
+  - ✅ Supports English, Hindi, Kannada — auto-detected from `lang` parameter
+  - ✅ India-specific diabetes advisor system prompt (costs in INR, Indian foods, government schemes)
+  - ✅ Safety disclaimers (no prescriptions, emergency glucose <50 or >400 → call 108)
+  - ✅ Demo mode fallback when Bedrock unavailable
+  - ✅ E2E tested: English response, Hindi response, empty message rejection, CORS preflight
+  - Note: Knowledge Bases RAG planned for Phase 2
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
 - [ ]* 7.1 Write property test for multilingual response consistency

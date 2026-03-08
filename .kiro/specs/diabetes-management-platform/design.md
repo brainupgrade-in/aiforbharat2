@@ -5,7 +5,7 @@
 Nazar AI (DiabetCare AI) is a mobile-first Progressive Web Application (PWA) that provides comprehensive diabetes management through AI-powered features. The system leverages AWS cloud services to deliver diabetic retinopathy screening, glucose tracking, meal analysis, and personalized diabetes guidance to India's 89.8 million diabetic population.
 
 **Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
-**Status:** React MVP deployed with authentication, DR screening workflow (demo mode), AI chatbot (Bedrock-ready with demo fallback), glucose tracker (DynamoDB-wired), multilingual support (EN/HI/KN), community dashboard, GPS-based doctor finder, PWA with Workbox service worker. AI model endpoint integration in progress.
+**Status:** React MVP deployed with authentication, DR screening workflow (demo mode), AI chatbot (Amazon Nova Micro — LIVE via Lambda Function URL), glucose tracker (DynamoDB-wired), multilingual support (EN/HI/KN), community dashboard, GPS-based doctor finder, PWA with Workbox service worker. 14/14 E2E tests passing (Vitest). Rekognition Custom Labels for DR screening in progress.
 
 The platform addresses critical healthcare gaps by providing accessible, affordable diabetes care through smartphone technology, reducing the need for specialist consultations while enabling early detection of complications.
 
@@ -47,7 +47,7 @@ The system follows a serverless, cloud-native architecture built on AWS services
 │                    AI/ML Services Layer                          │
 │  ┌──────────────────────────────────────────────────────┐      │
 │  │  AWS Bedrock                                         │      │
-│  │  - Claude 3 Haiku (Diabetes Advisor Chatbot)        │      │
+│  │  - Amazon Nova Micro (Diabetes Advisor Chatbot — DEPLOYED)        │      │
 │  │  - Amazon Nova Pro (Meal Photo Analysis)            │      │
 │  │  - Knowledge Bases (RAG for medical information)    │      │
 │  └──────────────────────────────────────────────────────┘      │
@@ -117,7 +117,7 @@ The system follows a serverless, cloud-native architecture built on AWS services
 - `lib/location.js`: GPS detection, reverse geocoding, 30-min cache in localStorage, Google Maps URL generation, WhatsApp deeplinks
 
 **8. AI Chatbot** ✅
-- `NazarChat`: AI diabetes advisor chatbot in Nazar design system with Bedrock integration endpoint (`VITE_BEDROCK_ENDPOINT` env var) + demo fallback with 5 rich response categories (glucose, breakfast, exercise, retina, general). Shows "DEMO MODE" badge when Bedrock not connected. Multilingual greetings and suggested questions (EN/HI/KN).
+- `NazarChat`: AI diabetes advisor chatbot DEPLOYED with Amazon Nova Micro via Lambda Function URL (`VITE_BEDROCK_ENDPOINT` env var). Supports English, Hindi, Kannada with auto-detection. India-specific diabetes advisor system prompt. Demo fallback with 5 rich response categories when Bedrock unavailable. E2E tested (EN + Hindi responses, error handling, CORS).
 
 **9. Glucose Tracker** ✅
 - `NazarGlucose`: Full glucose tracker wired to DynamoDB via Amplify Data (dynamic import of `aws-amplify/data`). Cloud sync status indicator (green = DynamoDB, amber = local only). Recharts trend chart with reference lines at 100/140 mg/dL. Status badges (High/Low/Normal). Multilingual contexts, labels, tips (EN/HI/KN).
@@ -221,13 +221,13 @@ ChatMessage {
 **Current Architecture (MVP):**
 The MVP uses a simplified architecture without Lambda functions. Key integrations:
 - **Glucose Tracker** → Direct AppSync GraphQL → DynamoDB (via Amplify Data client in `NazarGlucose.jsx`)
-- **AI Chatbot** → Configurable REST endpoint (`VITE_BEDROCK_ENDPOINT`) → Bedrock Claude 3 Haiku (when deployed). Falls back to demo mode with rich local responses.
+- **AI Chatbot** → Lambda Function URL (`VITE_BEDROCK_ENDPOINT`) → Bedrock Amazon Nova Micro (DEPLOYED, LIVE). Falls back to demo mode when endpoint unavailable.
 - **DR Screening** → Demo mode with simulated results. UI complete with patient/doctor modes.
 
 **Planned Lambda Functions (Phase 2-3):**
 
 **1. Chatbot Bedrock Endpoint** 📋 Planned
-- Lambda function to proxy Bedrock Claude 3 Haiku API calls
+- Lambda function proxying Bedrock Amazon Nova Micro API calls (DEPLOYED via Function URL)
 - System prompt: diabetes advisor, multilingual, India-specific
 - Frontend ready: `NazarChat.jsx` calls `VITE_BEDROCK_ENDPOINT`
 
@@ -714,7 +714,7 @@ Together, these approaches provide comprehensive coverage where unit tests valid
 ### Unit Testing Framework
 
 **Frontend Testing (React)**
-- **Framework**: Jest + React Testing Library
+- **Framework**: Vitest + React Testing Library
 - **Coverage Target**: >80% code coverage
 - **Focus Areas**:
   - Component rendering and user interactions
@@ -723,8 +723,8 @@ Together, these approaches provide comprehensive coverage where unit tests valid
   - PWA service worker behavior
 
 **Backend Testing (Lambda Functions)**
-- **Framework**: Jest + AWS SDK mocks
-- **Coverage Target**: >85% code coverage  
+- **Framework**: Vitest + AWS SDK mocks
+- **Coverage Target**: >85% code coverage
 - **Focus Areas**:
   - API endpoint functionality
   - Database operations (DynamoDB, PostgreSQL)
@@ -777,15 +777,20 @@ test('authentication succeeds for any valid credentials', () => {
 
 ### Integration Testing
 
-**End-to-End Testing**
-- **Framework**: Playwright for cross-browser testing
-- **Scenarios**: Complete user workflows from registration to health monitoring
-- **Devices**: Mobile and desktop browsers, PWA installation testing
+**End-to-End Integration Testing (IMPLEMENTED — 14/14 passing)**
+- **Framework**: Vitest (native to Vite, `tests/e2e.test.js`)
+- **Test Coverage**:
+  - Cognito auth (sign in, reject invalid credentials)
+  - AppSync GraphQL CRUD (GlucoseReading, UserProfile, ChatMessage — create, list, delete)
+  - Bedrock chatbot Lambda (English response, Hindi response, empty message rejection, CORS)
+  - Live site health check (HTTP 200)
+- **Run**: `npm test` or `npx vitest run`
+- **Test User**: `testuser@nazarai.test` / `TestPass@9876`
 
 **API Testing**
-- **Framework**: Supertest for HTTP API testing
-- **Coverage**: All GraphQL mutations and queries
-- **Authentication**: Test with various user roles and permissions
+- **Framework**: Vitest with direct HTTP/GraphQL calls
+- **Coverage**: All GraphQL mutations and queries, Lambda Function URL
+- **Authentication**: Cognito USER_PASSWORD_AUTH flow with AWS SDK v3
 
 **Performance Testing**
 - **Framework**: Artillery for load testing

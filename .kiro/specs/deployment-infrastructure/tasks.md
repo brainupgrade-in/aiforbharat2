@@ -23,7 +23,8 @@ Implementation tasks for setting up Nazar AI (DiabetCare AI) deployment infrastr
 
 ### AWS Account Preparation
 - [ ] Enable required AWS services (Amplify, Lambda, DynamoDB, etc.)
-- [ ] Request Bedrock model access (Claude 3 Haiku, Nova Pro, Titan Embeddings)
+- [x] Request Bedrock model access — Amazon Nova Micro (APAC profile) ✅ DEPLOYED
+- [ ] Request Bedrock model access — Nova Pro, Titan Embeddings (Phase 2)
 - [ ] Verify IAM permissions for Amplify deployment
 - [ ] Set up billing alerts for cost monitoring
 
@@ -82,11 +83,13 @@ Implementation tasks for setting up Nazar AI (DiabetCare AI) deployment infrastr
 - [ ] Configure access rules (authenticated users only)
 
 ### Lambda Functions
-- [ ] Create glucose-api function (Node.js 20)
+- [x] Create chatbot function (Node.js 18, TypeScript) ✅ DEPLOYED
+  - `amplify/functions/chatbot/handler.ts` — Bedrock Amazon Nova Micro proxy
+  - Public Function URL with CORS, 256MB, 30s timeout
+  - IAM policy: `bedrock:InvokeModel` for `apac.amazon.nova-micro-v1:0`
 - [ ] Create dr-processor function (Python 3.11)
-- [ ] Create chatbot function (Python 3.11)
 - [ ] Create meal-analyzer function (Python 3.11)
-- [ ] Configure environment variables for each function
+- [ ] Configure environment variables for remaining functions
 
 ---
 

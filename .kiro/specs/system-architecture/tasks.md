@@ -38,11 +38,15 @@ Implementation tasks for the Nazar AI (DiabetCare AI) system architecture. Tasks
 ## Phase 2: Application Layer (Week 3-4)
 
 ### Lambda Functions
-**Note:** MVP uses direct AppSync→DynamoDB for glucose and demo mode for AI features. Lambda functions needed only for AI service proxies.
-- [ ] Create chatbot-bedrock Lambda (Bedrock Claude 3 Haiku proxy) — Frontend ready (`NazarChat.jsx` calls `VITE_BEDROCK_ENDPOINT`)
+**Note:** Chatbot Lambda deployed with Amazon Nova Micro. Glucose uses direct AppSync→DynamoDB. DR screening and meal analysis Lambda functions planned.
+- [x] Create chatbot Lambda (Bedrock Amazon Nova Micro proxy) ✅ DEPLOYED
+  - Handler: `amplify/functions/chatbot/handler.ts` (256MB, 30s timeout)
+  - Model: `apac.amazon.nova-micro-v1:0` (APAC inference profile)
+  - Endpoint: `https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/`
+  - Public Function URL with CORS, supports EN/HI/KN
 - [ ] Create dr-processor Lambda (Rekognition Custom Labels inference)
 - [ ] Create meal-analyzer Lambda (Bedrock Nova Pro vision model)
-- [ ] Configure Lambda environment variables and IAM roles
+- [ ] Configure Lambda environment variables and IAM roles for remaining functions
 
 ### Event-Driven Workflows
 - [ ] Set up EventBridge event bus for DiabetCare events
@@ -55,10 +59,11 @@ Implementation tasks for the Nazar AI (DiabetCare AI) system architecture. Tasks
 ## Phase 3: AI/ML Services Layer (Week 5)
 
 ### AWS Bedrock Setup
-- [ ] Request model access for Claude 3 Haiku, Nova Pro, Titan Embeddings
+- [x] Request model access for Amazon Nova Micro (APAC inference profile) ✅ DEPLOYED
+- [x] Configure prompt templates for diabetes advisor ✅ (India-specific system prompt in handler.ts)
+- [ ] Request model access for Nova Pro, Titan Embeddings
 - [ ] Create Bedrock Knowledge Base with diabetes guidelines (S3 → OpenSearch)
 - [ ] Implement chatbot RAG pipeline
-- [ ] Configure prompt templates for diabetes advisor
 
 ### Amazon Rekognition
 - [ ] Prepare Kaggle DR dataset (35K images, 5 classes)
@@ -131,9 +136,12 @@ Implementation tasks for the Nazar AI (DiabetCare AI) system architecture. Tasks
 - [ ] Implement health record fetch in FHIR R4 format
 
 ### Testing
-- [ ] Write unit tests (Jest) with 80%+ coverage
-- [ ] Create integration tests for API endpoints
-- [ ] Set up E2E tests (Playwright) for critical journeys
+- [ ] Write unit tests (Vitest) with 80%+ coverage
+- [x] Create E2E integration tests (Vitest) — 14/14 passing ✅
+  - Cognito auth (sign in, reject invalid)
+  - AppSync GraphQL CRUD (GlucoseReading, UserProfile, ChatMessage)
+  - Bedrock chatbot Lambda (EN, Hindi, error handling, CORS)
+  - Live site health check
 - [ ] Perform load testing (target: 10,000 concurrent users)
 
 ### Monitoring
