@@ -1,20 +1,36 @@
 {
-  "name": "ai-for-bharat-2",
-  "version": "1.0.0",
-  "description": "**Team Name:** [To be filled] **Problem Statement:** Design an AI solution that improves efficiency, understanding, or support within healthcare ecosystems **Team Leader Name:** [To be filled] **Focus Area:** Diabetes Management & Screening",
-  "main": "capture-fullpage-screenshots.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "name": "diabetcare-ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "DiabetCare AI - AI-powered diabetes management and retinopathy screening PWA",
   "scripts": {
-    "screenshots": "node capture-fullpage-screenshots.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "screenshots": "node capture-fullpage-screenshots.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "dependencies": {
+    "@aws-amplify/ui-react": "^6.15.1",
+    "aws-amplify": "^6.16.2",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "recharts": "^2.15.0",
+    "tailwind-merge": "^2.6.0"
+  },
   "devDependencies": {
-    "puppeteer": "^24.36.0"
+    "@aws-amplify/backend": "^1.21.0",
+    "@aws-amplify/backend-cli": "^1.8.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "puppeteer": "^24.36.0",
+    "tailwindcss": "^3.4.16",
+    "vite": "^6.0.0"
   }
 }

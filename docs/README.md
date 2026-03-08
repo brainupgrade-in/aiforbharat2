@@ -64,7 +64,7 @@ git push origin main
 # Set source to: main branch / docs folder
 ```
 
-Access at: `https://<username>.github.io/ai-for-bharat-2/`
+Access at: `https://main.d3vwqyp1h0elbo.amplifyapp.com/`
 
 ## PWA Installation
 

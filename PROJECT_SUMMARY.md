@@ -28,7 +28,7 @@ India has 89.8 million diabetics — the world's second-largest population — y
 6. **Offline-First Architecture** — Core features (glucose tracking, chatbot, meal analysis) work without internet on 2G/3G networks via service workers and cache-first strategy. Background sync when connection is available.
 
 ### Live Prototype
-**URL:** https://brainupgrade-in.github.io/aiforbharat2
+**URL:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
 **GitHub:** https://github.com/brainupgrade-in/aiforbharat2
 
 ## Why AI is Required

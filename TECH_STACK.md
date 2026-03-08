@@ -784,7 +784,7 @@ jobs:
           publish_dir: ./docs
 ```
 
-**Access URL:** `https://<username>.github.io/ai-for-bharat-2/`
+**Access URL:** `https://main.d3vwqyp1h0elbo.amplifyapp.com/`
 
 ---
 
@@ -805,7 +805,7 @@ Local Development → Git Push → Amplify CI/CD → Preview Branch
 | **Development** | `dev` | `dev.diabetcare.amplifyapp.com` | Active development |
 | **Staging** | `staging` | `staging.diabetcare.amplifyapp.com` | Pre-production testing |
 | **Production** | `main` | `diabetcare.in` | Live app for users |
-| **Wireframes** | `main` (docs/) | `<user>.github.io/ai-for-bharat-2` | Static wireframes |
+| **Wireframes** | `main` (docs/) | `main.d3vwqyp1h0elbo.amplifyapp.com` | Static wireframes |
 
 ---
 

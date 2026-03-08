@@ -1,0 +1,16 @@
+{
+  "name": "Nazar AI — Aankhon Ki Raksha",
+  "short_name": "Nazar AI",
+  "description": "AI-powered diabetic retinopathy screening for Bharat",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#0A6E6E",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

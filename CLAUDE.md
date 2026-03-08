@@ -414,7 +414,7 @@ git push origin main
 
 # Enable GitHub Pages
 # Go to: Settings → Pages → Source: Deploy from branch → Branch: main → Folder: /docs
-# Access at: https://<username>.github.io/ai-for-bharat-2/
+# Access at: https://main.d3vwqyp1h0elbo.amplifyapp.com/
 ```
 
 ### AWS Bedrock (AI Development)
