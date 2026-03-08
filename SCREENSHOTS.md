@@ -27,7 +27,7 @@ The React MVP is deployed on AWS Amplify Hosting. Below are the key screens:
 - Streak counter with fire animation
 - 7-day blood sugar sparkline chart (fasting + post-meal)
 - Community stats with location-aware user count
-- Bottom tab navigation (Home, Scan, Results, Community)
+- Bottom tab navigation (Home, Scan, Chat, Glucose, Community)
 
 ### 3. Retina Scan - Camera Capture
 **Features Shown:**
@@ -81,6 +81,31 @@ The React MVP is deployed on AWS Amplify Hosting. Below are the key screens:
 - Language toggle: EN / हिंदी / ಕನ್ನಡ
 - High contrast mode toggle
 - Sign-out button
+
+---
+
+## Live App Screenshots (React MVP)
+
+**Location:** `./app-screenshots/` folder
+
+All screenshots captured at **393x852px** (iPhone 14 Pro viewport) with 2x device scale factor using Puppeteer. Authenticated via test user against the live Amplify deployment.
+
+**Method:** `node capture-app-screenshots.js` — logs into live app via Cognito, navigates each tab.
+
+### Screens Captured
+
+```
+app-screenshots/
+├── 01-auth-screen.png     (255 KB) - Branded login with animated eye, impact stats, Cognito form
+├── 02-home.png            (144 KB) - Hindi dashboard, glucose sparkline, scan status, streak
+├── 03-scan.png            (106 KB) - Retina scan camera UI with optical guide overlay
+├── 04-chat.png            (120 KB) - AI chatbot (Bedrock Nova Micro), Hindi welcome message
+├── 05-glucose.png         (112 KB) - Sugar tracker with DynamoDB sync, reading tips
+├── 06-community.png       (216 KB) - Impact dashboard, state leaderboard, success stories
+└── 07-high-contrast.png   (144 KB) - Home in high-contrast accessibility mode
+
+Total: 7 screenshots, ~1.1 MB
+```
 
 ---
 
@@ -166,4 +191,5 @@ Screenshots serve as:
 
 **Generated:** 2026-03-08
 **Live URL:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
-**Total Wireframe Screenshots:** 6
+**Total App Screenshots:** 7 (in `app-screenshots/`)
+**Total Wireframe Screenshots:** 6 (in `screenshots/`)

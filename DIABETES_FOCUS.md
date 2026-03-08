@@ -50,7 +50,7 @@ The following NCDs and conditions have been **explicitly removed** from the proj
    - AI analysis pipeline: Amazon Rekognition Custom Labels (integration in progress)
    - Target: Sensitivity >92%, Specificity >88% (based on AIDRSS study)
 
-2. **Glucose Tracker** ✅ DATA MODEL READY
+2. **Glucose Tracker** ✅ IMPLEMENTED (DynamoDB + AppSync GraphQL)
    - Manual blood glucose entry (fasting, post-meal, random)
    - HbA1c estimation from average glucose
    - Trend visualization (7-day, 30-day, 90-day)
@@ -64,11 +64,10 @@ The following NCDs and conditions have been **explicitly removed** from the proj
    - Post-meal glucose prediction
    - Nutrition tracking
 
-4. **AI Diabetes Advisor Chatbot** ✅
-   - AWS Bedrock Claude 3 Haiku
-   - Multilingual (English + Hindi minimum)
-   - 24/7 diabetes education and guidance
-   - Medication reminders
+4. **AI Diabetes Advisor Chatbot** ✅ DEPLOYED
+   - AWS Bedrock Amazon Nova Micro via Lambda Function URL
+   - Multilingual (English, Hindi, Kannada)
+   - 24/7 diabetes education and guidance — India-specific system prompt
    - **NOT a replacement for doctors** (clear disclaimers)
 
 5. **Complication Risk Assessment** ✅
@@ -224,10 +223,9 @@ The following NCDs and conditions have been **explicitly removed** from the proj
    - **Prediction:** Post-meal glucose at 1-hour, 2-hour
    - **Deployment:** On-device (TensorFlow Lite) for offline capability
 
-4. **Diabetes Chatbot:**
-   - **Platform:** AWS Bedrock - Claude 3 Haiku (fast, cost-effective)
-   - **RAG:** Bedrock Knowledge Bases with diabetes education content
-   - **Languages:** English, Hindi (Phase 1), +8 regional languages (Phase 2)
+4. **Diabetes Chatbot:** ✅ DEPLOYED
+   - **Platform:** AWS Bedrock - Amazon Nova Micro (`apac.amazon.nova-micro-v1:0`) via Lambda Function URL
+   - **Languages:** English, Hindi, Kannada (deployed), +7 regional languages (Phase 2)
    - **Capabilities:**
      - Diabetes education ("What is diabetes?", "How to control blood sugar?")
      - Medication adherence coaching

@@ -36,11 +36,15 @@ India has 89.8 million diabetics — the world's second-largest population — y
 
 8. **Home Dashboard** — Animated greeting, scan CTA, last scan card, streak counter, 7-day blood sugar sparkline chart, community stats.
 
+9. **Smart Glucose Tracker** — Manual logging with trend analysis, DynamoDB-backed via AppSync GraphQL. Fasting/post-meal context, notes, status tracking.
+
+10. **AI Diabetes Advisor Chatbot** — 24/7 AI guidance using AWS Bedrock Amazon Nova Micro via Lambda Function URL. Supports English, Hindi, Kannada. India-specific diabetes system prompt with diet, exercise, and retinopathy awareness.
+
+11. **E2E Integration Tests** — 14/14 Vitest tests passing: Cognito auth, AppSync GraphQL CRUD (GlucoseReading, UserProfile, ChatMessage), Bedrock chatbot (EN + Hindi), live site health check.
+
 ### Planned Features (Phase 2)
 
-- **Smart Glucose Tracker** — Manual logging with trend analysis (data model ready in Amplify)
 - **AI Meal Analyzer** — Photo-based Indian food recognition with carb estimation (AWS Bedrock Nova Pro)
-- **Diabetes Advisor Chatbot** — 24/7 AI guidance using AWS Bedrock Claude 3 Haiku
 - **Complication Risk Assessment** — DR, diabetic foot ulcer, nephropathy, CVD risk
 - **CGM Integration** — Abbott FreeStyle Libre, Dexcom, BeatO
 - **ABDM Integration** — ABHA-compatible health records
@@ -60,12 +64,12 @@ India has 89.8 million diabetics — the world's second-largest population — y
 | **Amazon DynamoDB** | User profiles, glucose readings, scan results, chat history | ✅ Schema deployed |
 | **AWS AppSync** | GraphQL API layer (auto-generated, real-time) | ✅ Live |
 | **CloudFront CDN** | Low-latency PWA delivery across India | ✅ Live |
+| **AWS Bedrock — Amazon Nova Micro** | 24/7 multilingual diabetes advisor chatbot (EN/HI/KN) | ✅ Deployed |
+| **AWS Lambda** | Chatbot handler (Bedrock InvokeModel) with Function URL | ✅ Deployed |
 | **Amazon Rekognition Custom Labels** | Diabetic retinopathy detection from fundus images | 🔄 Planned |
-| **AWS Bedrock — Claude 3 Haiku** | 24/7 multilingual diabetes advisor chatbot | 🔄 Planned |
 | **AWS Bedrock — Amazon Nova Pro** | Photo-based Indian meal analysis with carb estimation | 🔄 Planned |
 | **AWS Bedrock Knowledge Bases** | RAG-powered diabetes education content retrieval | 🔄 Planned |
 | **Amazon S3** | Retina scan and meal photo storage | 🔄 Planned |
-| **AWS Lambda** | Serverless business logic (meal analyzer, DR risk calculator) | 🔄 Planned |
 | **AWS CloudTrail** | Audit logging for healthcare compliance | 🔄 Planned |
 
 ## Technology Stack (Implemented)

@@ -17,9 +17,10 @@ AI-powered diabetic retinopathy screening PWA that brings specialist-level eye c
 
 ## Tech Stack
 - React 18.3.1 + Vite + TailwindCSS
-- AWS Amplify Gen 2 (Cognito, DynamoDB, AppSync)
-- AWS Bedrock (Claude 3 Haiku, Nova Pro) — planned
+- AWS Amplify Gen 2 (Cognito, DynamoDB, AppSync GraphQL)
+- AWS Bedrock Amazon Nova Micro (chatbot) — deployed via Lambda Function URL
 - Amazon Rekognition Custom Labels — planned
+- Vitest E2E integration tests — 14/14 passing
 - Multilingual: EN, HI, KN
 
 ## Features (Implemented)
@@ -29,12 +30,14 @@ AI-powered diabetic retinopathy screening PWA that brings specialist-level eye c
 - Lotus severity indicator (0-4 petals)
 - GPS-based doctor finder + WhatsApp sharing
 - Community impact dashboard
+- AI chatbot (Bedrock Nova Micro, EN/HI/KN)
+- Glucose tracker (DynamoDB + AppSync)
 - Multilingual support (3 languages)
 - High contrast accessibility mode
+- 5-tab navigation (Home, Scan, Chat, Glucose, Community)
 
 ## Features (Planned)
-- AI chatbot (Bedrock Claude 3 Haiku)
 - Meal analyzer (Bedrock Nova Pro)
-- Glucose tracker
+- Rekognition Custom Labels DR detection
 - CGM integration
 - ABDM/ABHA integration

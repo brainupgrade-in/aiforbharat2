@@ -278,29 +278,22 @@ Target scores:
 
 ## Next Steps for Production
 
-### High Priority
-1. **Create app icons** (8 sizes for manifest.json)
-2. **Add real chart library** (Chart.js, Recharts, or D3.js)
-3. **Implement camera API** for meal photos and retina scans
-4. **Connect AWS Amplify backend** (API Gateway, Lambda, DynamoDB)
-5. **Add authentication** (Amazon Cognito)
-6. **Integrate AWS Bedrock** for chatbot (Claude 3 Haiku)
-7. **Integrate Amazon Rekognition** for DR screening
+### Completed (in React MVP) ✅
+1. ~~**Connect AWS Amplify backend**~~ — Amplify Gen 2 with Cognito, DynamoDB, AppSync GraphQL
+2. ~~**Add authentication**~~ — Amazon Cognito email-based login with branded auth screen
+3. ~~**Integrate AWS Bedrock**~~ — Amazon Nova Micro chatbot via Lambda Function URL
+4. ~~**Add real chart library**~~ — Recharts for glucose sparklines
+5. ~~**Add multilingual support**~~ — English, Hindi, Kannada
+6. ~~**Add unit tests**~~ — Vitest E2E integration suite (14/14 passing)
+7. ~~**Implement camera API**~~ — Camera capture for retina scans
+8. ~~**Add animations**~~ — IrisLoader, MarigoldCelebration, LotusSeverity
 
-### Medium Priority
-8. Add form validation and error handling
-9. Implement actual IndexedDB CRUD operations
-10. Add push notification functionality
-11. Implement background sync for offline data
-12. Add unit tests (Jest, Vitest)
-13. Add E2E tests (Playwright, Cypress)
-
-### Low Priority
-14. Add animations and micro-interactions
-15. Implement dark mode toggle
-16. Add multilingual support (Hindi, Tamil, Telugu, Bengali)
-17. Performance optimizations (lazy loading, code splitting)
-18. Add analytics (Google Analytics, Mixpanel)
+### Remaining
+- Integrate Amazon Rekognition Custom Labels for DR screening
+- Bedrock Nova Pro for meal photo analysis
+- Push notifications
+- CGM integration
+- Performance optimizations (lazy loading, code splitting)
 
 ---
 
@@ -308,4 +301,4 @@ Target scores:
 
 *Empowering India's 89.8 million diabetics with AI-powered mobile-first healthcare*
 
-**Last Updated:** 2026-01-25
+**Last Updated:** 2026-03-08

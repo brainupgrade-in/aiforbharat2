@@ -12,12 +12,12 @@
 
 Nazar AI (DiabetCare AI) is a **mobile-first progressive web application (PWA)** built using React 18.3.1 that provides AI-powered diabetic retinopathy screening and diabetes management for India's 89.8 million diabetic population. The solution leverages AWS Amplify Gen 2 for rapid full-stack development and AWS Bedrock for generative AI capabilities.
 
-**Current Status:** React MVP deployed on AWS Amplify Hosting (ap-south-1, India) with authentication, DR screening workflow, multilingual support (EN/HI/KN), and community features. AI model integration (Bedrock, Rekognition) in progress.
+**Current Status:** React MVP deployed on AWS Amplify Hosting (ap-south-1, India) with authentication, DR screening workflow, AI chatbot (Bedrock Nova Micro via Lambda Function URL), glucose tracker (DynamoDB + AppSync), multilingual support (EN/HI/KN), community features, and 14/14 E2E integration tests passing.
 
 **Key Decisions:**
 - ✅ **ReactJS PWA** instead of native Flutter app (faster development, no app store deployment)
 - ✅ **AWS Amplify Gen 2** for complete backend infrastructure (auth, database, APIs, hosting) — deployed
-- ✅ **AWS Bedrock** for AI/ML capabilities (no custom model training required) — integration planned
+- ✅ **AWS Bedrock** (Amazon Nova Micro) for AI chatbot — deployed via Lambda Function URL
 - ✅ **TailwindCSS** with custom Nazar design system (teal/amber palette, Baloo 2 + Noto Sans fonts)
 - ✅ **AWS Amplify Hosting** for live prototype deployment with CloudFront CDN
 
@@ -61,10 +61,9 @@ Nazar AI (DiabetCare AI) is a **mobile-first progressive web application (PWA)**
 │                                                                  │
 │  ┌──────────────────────────────────────────────────────┐      │
 │  │  Amazon Bedrock Foundation Models                    │      │
-│  │  - Claude 3 Sonnet/Haiku (conversational AI)         │      │
-│  │  - Titan Multimodal (image analysis)                 │      │
-│  │  - Bedrock Agents (diabetes advisor chatbot)         │      │
-│  │  - Bedrock Knowledge Bases (medical info retrieval)  │      │
+│  │  - Amazon Nova Micro (chatbot) ✅ DEPLOYED            │      │
+│  │  - Amazon Nova Pro (meal analysis) — planned         │      │
+│  │  - Bedrock Knowledge Bases (RAG) — planned           │      │
 │  └──────────────────────────────────────────────────────┘      │
 │                                                                  │
 │  ┌──────────────────────────────────────────────────────┐      │
@@ -191,17 +190,23 @@ import { useTranslation } from 'react-i18next';
 
 #### Amplify Architecture
 ```typescript
-// amplify/backend.ts (Amplify Gen 2 schema)
+// amplify/backend.ts (Amplify Gen 2 — actual deployed configuration)
 import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
-import { storage } from './storage/resource';
+import { chatbotFunction } from './functions/chatbot/resource';
+import { FunctionUrlAuthType, HttpMethod } from 'aws-cdk-lib/aws-lambda';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
-export const backend = defineBackend({
-  auth,
-  data,
-  storage,
+const backend = defineBackend({ auth, data, chatbotFunction });
+
+// Lambda Function URL for chatbot (public, no auth — hackathon demo)
+const chatbotLambda = backend.chatbotFunction.resources.lambda;
+chatbotLambda.addFunctionUrl({
+  authType: FunctionUrlAuthType.NONE,
+  cors: { allowedOrigins: ['*'], allowedMethods: [HttpMethod.POST, HttpMethod.GET] },
 });
+chatbotLambda.addToRolePolicy(new PolicyStatement({ actions: ['bedrock:*'], resources: ['*'] }));
 ```
 
 #### Data Schema (DynamoDB via Amplify Data)
@@ -370,10 +375,10 @@ export const handler = async (event) => {
 
 | Model | Use Case | Cost | Latency |
 |-------|----------|------|---------|
-| **Claude 3 Haiku** | Diabetes chatbot, meal analysis | $0.25/1M input tokens | <2s |
-| **Claude 3 Sonnet** | Complex medical explanations, reports | $3/1M input tokens | <3s |
-| **Titan Multimodal Embeddings** | Retina image analysis | $0.0008/image | <1s |
-| **Amazon Nova Pro** | Food recognition from photos | $0.80/1M tokens | <2s |
+| **Amazon Nova Micro** ✅ | Diabetes chatbot (deployed) | $0.035/1M input tokens | <2s |
+| **Amazon Nova Pro** | Food recognition from photos (planned) | $0.80/1M tokens | <2s |
+| **Claude 3 Haiku** | Complex medical explanations (planned) | $0.25/1M input tokens | <2s |
+| **Claude 3 Sonnet** | Weekly health reports (planned) | $3/1M input tokens | <3s |
 
 #### Bedrock Use Cases
 
@@ -774,6 +779,8 @@ src/
 │   ├── NazarHome.jsx       # Home dashboard
 │   ├── NazarScan.jsx       # Retina scan capture workflow
 │   ├── NazarResult.jsx     # DR results (patient + doctor modes)
+│   ├── NazarChat.jsx       # AI chatbot (Bedrock Nova Micro)
+│   ├── NazarGlucose.jsx    # Glucose tracker (DynamoDB)
 │   └── NazarCommunity.jsx  # Community impact dashboard
 ├── components/
 │   ├── NazarAuthScreen.jsx # Branded login with animated eye
@@ -1015,14 +1022,18 @@ npm run test:load
 - [x] Define Amplify Data schema (5 models deployed)
 - [x] Create architecture diagrams and presentation decks
 
+### Recently Completed ✅
+- [x] Integrate AWS Bedrock (Amazon Nova Micro) for diabetes chatbot — Lambda Function URL, EN/HI/KN
+- [x] Build glucose tracker with Amplify Data mutations (DynamoDB + AppSync GraphQL)
+- [x] E2E integration test suite — 14/14 passing (Vitest: auth, GraphQL CRUD, chatbot, site)
+- [x] App screenshots captured (7 screens: auth, home, scan, chat, glucose, community, high-contrast)
+
 ### In Progress 🔄
-- [ ] Integrate AWS Bedrock (Claude 3 Haiku) for diabetes chatbot
 - [ ] Integrate Bedrock Nova Pro for meal photo analysis
 - [ ] Train Rekognition Custom Labels on Kaggle DR dataset
 - [ ] Connect camera capture to real AI analysis pipeline
 
 ### Planned 📋
-- [ ] Build glucose tracker with Amplify Data mutations
 - [ ] CGM integration (Abbott FreeStyle Libre, Dexcom, BeatO)
 - [ ] ABDM integration (ABHA-compatible health records)
 - [ ] User testing with 20+ diabetic patients

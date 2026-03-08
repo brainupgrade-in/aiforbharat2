@@ -24,7 +24,7 @@ A mobile-first progressive web application (PWA) that provides AI-powered diabet
 **Tech Stack (Implemented):**
 - Frontend: React 18.3.1 PWA + Vite + TailwindCSS (mobile-first, multilingual, high-contrast mode)
 - Backend: AWS Amplify Gen 2 (Cognito auth, DynamoDB, AppSync GraphQL, S3) — deployed in ap-south-1
-- AI: AWS Bedrock (Claude 3 Haiku for chatbot, Nova Pro for meal analysis) — planned integration
+- AI: AWS Bedrock (Amazon Nova Micro for chatbot via Lambda Function URL) — deployed; Nova Pro for meal analysis — planned
 - Computer Vision: Amazon Rekognition Custom Labels (DR detection) — planned integration
 - Multilingual: English, Hindi, Kannada (extensible i18n system)
 - Geolocation: GPS-based doctor finder with Google Maps + WhatsApp sharing
@@ -84,7 +84,7 @@ An AI-powered mobile progressive web app that provides:
 - **AI Diabetic Retinopathy Screening** - Smartphone camera-based fundus image analysis
 - **Smart Glucose Tracker** - Manual logging with trend analysis and pattern detection
 - **AI Meal Analyzer** - Photo-based food recognition with carb estimation for Indian foods
-- **Diabetes Advisor Chatbot** - 24/7 AI guidance using AWS Bedrock Claude 3
+- **Diabetes Advisor Chatbot** - 24/7 AI guidance using AWS Bedrock Amazon Nova Micro
 - **Multilingual Support** - Hindi, English, + 10 regional languages
 - **Offline Functionality** - Core features work without internet
 
@@ -183,7 +183,7 @@ An AI-powered mobile progressive web app that provides:
 - **Indian Food Database:** 100+ traditional foods with GI data (roti, rice, dal, sabzi, etc.)
 
 **4. AI Diabetes Advisor Chatbot**
-- AWS Bedrock Claude 3 Haiku (multilingual: English + Hindi)
+- AWS Bedrock Amazon Nova Micro (multilingual: English, Hindi, Kannada)
 - 24/7 conversational support
 - Personalized diabetes education:
   - What is diabetes? (in simple Hindi/English)
@@ -326,7 +326,7 @@ User takes meal photo → S3 Storage → Bedrock Nova Pro (food recognition)
 
 **3. Chatbot Flow:**
 ```
-User question → AppSync GraphQL → Lambda → Bedrock Claude 3 Haiku
+User question → Lambda Function URL → Bedrock Amazon Nova Micro
                                            ↓
                                    AI response (Hindi/English)
                                            ↓
@@ -349,7 +349,7 @@ User question → AppSync GraphQL → Lambda → Bedrock Claude 3 Haiku
 - [x] Implement Amplify Auth (email-based login with Cognito)
 - [x] Build branded auth screen (NazarAuthScreen) with animated eye, impact stats, testimonials
 - [x] Build responsive React UI with TailwindCSS (custom Nazar design system)
-- [x] Create bottom-tab navigation (Home, Scan, Results, Community)
+- [x] Create bottom-tab navigation (Home, Scan, Chat, Glucose, Community)
 - [x] Define Amplify Data schema (5 models: GlucoseReading, MealLog, RetinaScan, ChatMessage, UserProfile)
 - [x] Implement multilingual support (English, Hindi, Kannada)
 - [x] Implement high-contrast accessibility mode
@@ -367,21 +367,22 @@ User question → AppSync GraphQL → Lambda → Bedrock Claude 3 Haiku
 - [x] GPS-based nearby doctor finder (Google Maps + WhatsApp integration)
 - [x] Community impact dashboard (state leaderboard, village stats, success stories)
 
-### Phase 3: AI Integration 🔄 IN PROGRESS
-- [ ] Integrate AWS Bedrock (Claude 3 Haiku) for diabetes chatbot
+### Phase 3: AI Integration 🔄 PARTIALLY COMPLETE
+- [x] Integrate AWS Bedrock (Amazon Nova Micro) for diabetes chatbot — deployed via Lambda Function URL
+- [x] Build glucose tracker with Amplify Data mutations (DynamoDB + AppSync)
 - [ ] Integrate Bedrock Nova Pro for meal photo analysis
 - [ ] Train Rekognition Custom Labels on Kaggle DR dataset (35K images)
 - [ ] Connect camera capture to real AI analysis pipeline
 - [ ] Implement S3 upload for retina scan and meal images
 
 ### Phase 4: Full Features 📋 PLANNED
-- [ ] Build glucose tracker with Amplify Data mutations
 - [ ] CGM integration (Abbott FreeStyle Libre, Dexcom, BeatO)
 - [ ] Doctor dashboard (telemedicine, prescription management)
 - [ ] ASHA worker dashboard (population-level monitoring)
 - [ ] ABDM integration (ABHA-compatible health records)
 
-### Phase 5: Testing & Launch 📋 PLANNED
+### Phase 5: Testing & Launch 🔄 IN PROGRESS
+- [x] E2E integration test suite — 14/14 tests passing (Vitest: Cognito auth, AppSync GraphQL CRUD, Bedrock chatbot EN/HI, live site health check)
 - [ ] User testing with 20+ diabetic patients
 - [ ] Performance optimization (Lighthouse >90)
 - [ ] Security audit (OWASP checklist)
@@ -765,4 +766,4 @@ DiabetCare AI is not just an app - it's a movement to democratize diabetes care,
 
 ---
 
-**Note:** The React MVP is deployed and functional with authentication, DR screening workflow, multilingual support, and community features. AI model integration (Bedrock, Rekognition) is in progress. Clinical validation, regulatory approval, and pilot testing are required before public deployment. Data, metrics, and projections are based on validated research (IDF Atlas, Lancet, JMIR studies).
+**Note:** The React MVP is deployed and functional with authentication, DR screening workflow, AI chatbot (Bedrock Nova Micro), glucose tracker (DynamoDB), multilingual support (EN/HI/KN), and community features. E2E integration tests (14/14 passing) cover auth, GraphQL CRUD, chatbot, and site health. Rekognition Custom Labels integration and clinical validation are next. Data, metrics, and projections are based on validated research (IDF Atlas, Lancet, JMIR studies).
