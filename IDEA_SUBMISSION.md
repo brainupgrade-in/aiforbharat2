@@ -24,7 +24,7 @@ A mobile-first progressive web application (PWA) that provides AI-powered diabet
 India has **89.8 million diabetics** (world's 2nd largest population) but faces:
 - **Severe specialist shortage:** Only 1 endocrinologist per 100,000 diabetics (need 1:5,000)
 - **High complication rate:** 16.9% diabetic retinopathy prevalence (3 million with vision-threatening DR)
-- **Access barriers:** 60-70% diagnosed at advanced stages; only 45.2% rural individuals have adequate care
+- **Access barriers:** 43% undiagnosed ([IDF 2025](https://diabetesatlas.org/)); only 45.2% rural individuals have adequate care
 - **Financial catastrophe:** 38% of diabetic households face catastrophic health expenditure
 - **₹2-3 lakh crore annual economic burden** from preventable complications
 
@@ -57,11 +57,11 @@ A **comprehensive diabetes management platform** leveraging AWS AI services:
 ### Why This Matters
 Every day in India:
 - **917 people die from diabetes**
-- **Thousands lose vision** due to undetected diabetic retinopathy (80% preventable)
+- **Thousands lose vision** due to undetected diabetic retinopathy (up to 90% preventable with timely screening)
 - **Millions struggle** with ₹3,000-5,000 specialist consultation fees (unaffordable for most)
 - **Families face financial ruin** (10% pushed below poverty line)
 
-**We have the technology. We have 750 million smartphones. We just need to build the bridge.**
+**We have the technology. We have 659+ million smartphones. We just need to build the bridge.**
 
 ---
 
@@ -71,7 +71,7 @@ Every day in India:
 
 **Massive Disease Burden:**
 - **89.8 million diabetics** (2024 IDF Atlas 11th Edition) - world's 2nd largest diabetes population after China
-- **156.7 million projected by 2050** - growing at alarming rate (74% increase)
+- **156.7 million projected by 2050** - growing at alarming rate (75% increase, [IDF Atlas 11th Edition, 2025](https://diabetesatlas.org/))
 - **334,922 diabetes deaths in 2024**
 - **941,000 Type 1 diabetes cases** (children, adolescents, young adults requiring insulin)
 - **Urban: 11.2% prevalence vs Rural: 5.2%** - stark disparity with rapid urbanization
@@ -80,22 +80,22 @@ Every day in India:
 - **16.9% diabetic retinopathy (DR) prevalence** (National Survey 2015-19)
   - 3 million people with vision-threatening DR
   - Leading cause of blindness in working-age adults
-  - **80% of blindness preventable** with early detection
+  - **Up to 90% of DR blindness preventable** with timely screening and treatment ([WHO](https://www.emro.who.int/noncommunicable-diseases/highlights/eyes-on-diabetes.html))
 - **30.2% diabetic nephropathy** (kidney disease)
 - **26.8% peripheral neuropathy** (nerve damage)
 - **25.8% coronary heart disease**
 - **28% peripheral vascular disease** (leading to amputations)
-- **50%+ rural diabetes cases undiagnosed** vs. 30% urban
+- **37% rural diabetes cases undiagnosed** vs. 23% urban ([SMART India study, Lancet Global Health 2022](https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(22)00411-9/fulltext))
 
 ### 2.2 Healthcare System Failures
 
 **Severe Manpower Crisis:**
 - Only **1 endocrinologist per 100,000 diabetics** (need 1:5,000 ratio)
-  - Required: 17,960 endocrinologists
-  - Available: ~898 endocrinologists
-  - **Shortage: 17,062 specialists (95%)**
-- **5,000 ophthalmologists** for 89.8M diabetics at risk of blindness
-  - 1 ophthalmologist per 17,960 diabetics
+  - Required: ~17,960 endocrinologists
+  - Available: ~1 per million population (~1,400 estimated)
+  - **Shortage: ~16,500+ specialists (>90%)**
+- Only **~1,400 retina specialists** (out of ~20,944 total ophthalmologists) for 89.8M diabetics at risk of blindness ([AIIMS Survey](https://www.outlookindia.com/healthcare-spotlight/aiims-survey-flags-alarming-shortage-of-eye-specialists-puts-indias-vision-goals-in-focus))
+  - 1 retina specialist per ~64,000 diabetics
 - **80% doctors in urban areas** serving only 35% population
 - **80% deficit in Community Health Centers (CHCs)** in rural India
   - **4,413 specialist doctors** vs. required 21,964 in rural CHCs
@@ -108,7 +108,7 @@ Every day in India:
 - **Fundus photography (DR screening): ₹500-1,500 per eye** at private facilities
 - **Limited DR screening in rural areas** (65% population)
   - Almost no systematic DR screening in public health system
-- **60-70% diabetes cases diagnosed at advanced stages** (complications already present)
+- **43% of Indian diabetics undiagnosed** (38.6 million — [IDF Atlas 11th Edition, 2025](https://diabetesatlas.org/)); many first diagnosed when complications are already present
 - Only **45.2% rural individuals** have access to adequate diabetes care vs. **68.5% urban**
 - **2-6 week wait times** for endocrinologist appointments in cities
 - **3-6 month wait times** for ophthalmologist in rural government hospitals
@@ -127,7 +127,7 @@ Every day in India:
 
 **GDP Burden:**
 - **₹2-3 lakh crore annual economic impact** in India
-- **Global burden:** INT$ 1.6 trillion (excluding informal care), INT$ 11.4 trillion (including informal care) - Nature Medicine January 2025
+- **India's burden:** INT$ 1.6 trillion (excluding informal care), INT$ 11.4 trillion (including informal care) — world's 2nd highest after the US (INT$ 2.5 trillion) — [Nature Medicine, 2025](https://www.nature.com/articles/s41591-025-04027-5)
 - **Direct medical costs:** 54.65% of total burden
 - **Indirect costs (productivity loss):** 39.09%
 - **Direct non-medical costs (transportation, caregiving):** 6.26%
@@ -143,7 +143,7 @@ Every day in India:
 | Solution Type | Limitations | Gap Addressed by DiabetCare AI |
 |--------------|-------------|--------------------------------|
 | **Traditional Care** | ₹3,000-5,000 per consultation, 2-6 week wait, urban-only | ₹0-99/month, instant 24/7 access, rural reach |
-| **BeatO** | No DR screening, expensive CGM (₹5,999/month) | Free DR screening, affordable premium (₹999/year) |
+| **BeatO** | No DR screening, expensive CGM (₹3,000-5,000/15-day sensor) | Free DR screening, affordable premium (₹999/year) |
 | **Fitterfly** | ₹15,000-30,000 per program, no DR screening | 15-30x cheaper, integrated DR + glucose + meals |
 | **Sugar.fit** | Premium pricing, limited offline, no DR | Free tier, offline-first, smartphone camera DR |
 | **Remidio** | Requires ₹2.75-4.5 lakh fundus camera device | Smartphone camera-based, ₹0 hardware cost |
@@ -151,10 +151,10 @@ Every day in India:
 
 **Market Opportunity:**
 - **225 million total addressable market** (89.8M diabetics + 136M pre-diabetics)
-- **750+ million smartphone users** with cameras (fundus imaging potential)
+- **659+ million smartphone users** ([Statista, 2025](https://www.statista.com/statistics/467163/forecast-of-smartphone-users-in-india/)) with cameras (fundus imaging potential)
 - **Only 5-10% penetration** of existing diabetes apps
 - **90%+ free tier potential** (accessibility focus)
-- **Government alignment:** NPCDCS (National Programme for Diabetes, CVD & Stroke) in 500+ districts
+- **Government alignment:** NP-NCD (formerly NPCDCS) with 682 District NCD Clinics across India ([NHM](https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=1048&lid=604))
 
 ---
 
@@ -184,7 +184,7 @@ A mobile-first progressive web application (PWA) that provides:
 ✅ **Only solution** with smartphone camera-based DR screening (no expensive fundus camera hardware)
 ✅ **Only solution** optimized for Indian food database (100+ traditional foods with GI data)
 ✅ **Most affordable** comprehensive diabetes platform (₹999/year vs. ₹15,000-30,000 competitors)
-✅ **Offline-first** architecture for rural India (30% intermittent connectivity)
+✅ **Offline-first** architecture for rural India (only 3.8% rural households have fiber optic access — [PIB](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2040566))
 ✅ **ABDM-ready** for government integration (NPCDCS, NPCB programs)
 
 **Key Differentiators:**
@@ -230,7 +230,7 @@ A mobile-first progressive web application (PWA) that provides:
 **For Patients:**
 - **Access:** 24/7 AI guidance vs. 2-6 week endocrinologist wait
 - **Affordability:** ₹0-99/month vs. ₹3,000-5,000 per consultation (30-50x cheaper)
-- **Early Detection:** DR screening before vision loss (80% blindness preventable)
+- **Early Detection:** DR screening before vision loss (up to 90% of DR blindness preventable — [WHO](https://www.emro.who.int/noncommunicable-diseases/highlights/eyes-on-diabetes.html))
 - **Rural Reach:** Works offline, accessible from villages
 - **Empowerment:** Knowledge and tools for self-management
 
@@ -992,7 +992,7 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
 
 **1. Smartphone Camera-Based DR Screening**
 - **Innovation:** No expensive fundus camera required (₹2.75-4.5 lakhs)
-- **How:** Leverages smartphone cameras (750M+ devices in India) + Amazon Rekognition Custom Labels
+- **How:** Leverages smartphone cameras (659M+ devices in India) + Amazon Rekognition Custom Labels
 - **Accuracy:** Target 92%+ sensitivity, 88%+ specificity (comparable to traditional screening)
 - **Impact:** 95% cost reduction (₹50 vs. ₹1,000 per screening), 10x accessibility
 
@@ -1008,7 +1008,7 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
 **3. Offline-First Architecture for Rural India**
 - **Innovation:** Core features work 100% without internet
 - **How:** IndexedDB (local storage) + Service Workers (PWA) + background sync
-- **Why Critical:** 30% of rural India has intermittent connectivity
+- **Why Critical:** Only 3.8% of rural households have fiber optic access, and rural wireless tele-density is just 57.89% vs 124.31% urban ([PIB](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2040566))
 - **Features Offline:** Glucose tracking, basic chatbot responses, Indian food GI lookup
 - **Impact:** 3x higher engagement in rural areas (no frustration from connectivity issues)
 
@@ -1070,7 +1070,7 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
 **3. Government Integration (ABDM, NPCDCS, NPCB)**
 - **Innovation:** Private platform aligned with public health programs
 - **ABDM:** ABHA login, HIE/HIP/HIU compliance (interoperable health records)
-- **NPCDCS:** DR screening for 500+ district NCD clinics
+- **NP-NCD (formerly NPCDCS):** DR screening for 682 District NCD Clinics
 - **NPCB:** Diabetic retinopathy detection (synergy with blindness control)
 - **Impact:** Government credibility + scale (500K users via NPCDCS in Year 1)
 
@@ -1082,7 +1082,7 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
 
 | Competitor | Focus | Strengths | Limitations | Our Advantage |
 |------------|-------|-----------|-------------|---------------|
-| **BeatO** | Glucose monitoring + coaching | Smart glucometers, CGM ecosystem, 24x7 support | ❌ No DR screening<br>❌ Expensive CGM (₹5,999/month)<br>❌ Limited AI | ✅ Free DR screening<br>✅ AI meal analysis<br>✅ 10x cheaper (₹999/year) |
+| **BeatO** | Glucose monitoring + coaching | Smart glucometers, CGM ecosystem, 24x7 support | ❌ No DR screening<br>❌ Expensive CGM (₹3,000-5,000/15-day sensor)<br>❌ Limited AI | ✅ Free DR screening<br>✅ AI meal analysis<br>✅ 10x cheaper (₹999/year) |
 | **Fitterfly** | Digital therapeutics (DTx) | ✅ Clinical results (1.96% HbA1c reduction)<br>✅ JMIR published | ❌ Expensive (₹15,000-30,000/program)<br>❌ No DR screening<br>❌ Premium-only | ✅ 15-30x cheaper<br>✅ Free tier<br>✅ AI-powered DR detection |
 | **Sugar.fit** | CGM + nutrition coaching | ✅ Abbott partnership<br>✅ Personalized plans | ❌ Premium pricing<br>❌ Limited offline<br>❌ No DR screening | ✅ Free tier<br>✅ Offline-first<br>✅ Smartphone DR screening |
 | **Remidio** | AI DR screening only | ✅ CDSCO approved (Sept 2024)<br>✅ Clinical validation | ❌ Requires ₹2.75-4.5 lakh fundus camera<br>❌ No glucose/meal tracking | ✅ Smartphone camera (₹0 hardware)<br>✅ Integrated platform |
@@ -1104,7 +1104,7 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
    - First-mover advantage (only Remidio approved as of Sept 2024)
 
 3. **Government Partnerships (Distribution Moat)**
-   - NPCDCS integration (500+ districts)
+   - NP-NCD (formerly NPCDCS) integration (682 District NCD Clinics)
    - ASHA worker network (10 lakh workers)
    - ABDM compliance (ABHA, HIE/HIP/HIU)
    - 12-24 months to establish (bureaucracy, pilots, contracts)
@@ -1453,8 +1453,8 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
   - QR-based health record sharing
 - **Impact:** Strengthens ABDM ecosystem with diabetes-focused app
 
-**2. National Programme for Prevention and Control of Cancer, Diabetes, CVD and Stroke (NPCDCS)**
-- **Goal:** Diabetes screening and management in 500+ districts
+**2. National Programme for Non-Communicable Diseases (NP-NCD, formerly NPCDCS)**
+- **Goal:** Diabetes screening and management across 682 District NCD Clinics
 - **DiabetCare AI Integration:**
   - DR screening for 89.8M diabetics (NPCDCS target population)
   - Digital health records (continuity of care)
@@ -1465,10 +1465,10 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
 **3. National Programme for Control of Blindness and Visual Impairment (NPCB)**
 - **Goal:** Reduce blindness from diabetic retinopathy
 - **DiabetCare AI Integration:**
-  - Smartphone-based DR screening (accessible to 750M+ smartphone users)
+  - Smartphone-based DR screening (accessible to 659M+ smartphone users)
   - Triage: Identify referable DR → refer to ophthalmologists
   - Synergy with NPCDCS: Diabetes detection → DR screening
-- **Impact:** Prevent 100+ blindness cases in Year 1 (80% of DR blindness is preventable)
+- **Impact:** Prevent 100+ blindness cases in Year 1 (up to 90% of DR blindness is preventable — [WHO](https://www.emro.who.int/noncommunicable-diseases/highlights/eyes-on-diabetes.html))
 
 **4. Digital India Initiative**
 - **Goal:** Digital empowerment of citizens
@@ -1511,7 +1511,7 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
 
 **2. People at Risk of Blindness (3 Million with Vision-Threatening DR)**
 - **Benefit:** Early DR detection (before vision loss)
-- **Impact:** 80% of blindness preventable, 100+ cases saved in Year 1
+- **Impact:** Up to 90% of DR blindness preventable with timely screening, 100+ cases saved in Year 1
 
 **3. Rural Population (65% of India, 910 Million)**
 - **Benefit:** 30% of DiabetCare AI users rural (vs. <5% access to specialists)
@@ -1645,10 +1645,10 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
    - 4.18 lakh health facilities registered
    - Source: MoHFW official website, PIB
 
-2. **NPCDCS (National Programme for Diabetes, CVD & Stroke)**
-   - 500+ districts covered
+2. **NP-NCD (formerly NPCDCS — National Programme for Non-Communicable Diseases)**
+   - 682 District NCD Clinics and 5,408 CHC NCD Clinics established
    - Budget: ₹1,600 crore (2021-2026)
-   - Source: PIB, MoHFW
+   - Source: PIB, MoHFW, [NHM](https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=1048&lid=604)
 
 3. **Digital Personal Data Protection Act 2023**
    - Act enacted: August 11, 2023
@@ -1671,7 +1671,7 @@ User asks: "मुझे डायबिटीज़ में क्या ख�
 
 2. **Smartphone Fundus Cameras**
    - Remidio FOP: ₹2.75-4.5 lakhs
-   - Smartphone penetration: 750+ million users
+   - Smartphone penetration: 659+ million users ([Statista, 2025](https://www.statista.com/statistics/467163/forecast-of-smartphone-users-in-india/))
    - Source: IndiaMART, BioSpectrum India
 
 3. **AWS Bedrock & Rekognition**

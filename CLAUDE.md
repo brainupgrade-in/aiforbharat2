@@ -21,8 +21,17 @@ Design an AI solution that improves efficiency, understanding, or support within
 1. **High GDP Burden**: ₹15-20 lakh crore annual healthcare costs (12-15% of India's GDP)
 2. **Manpower Crisis**: 20+ lakh healthcare professional shortage across all categories
 3. **Access Inequality**: 80% doctors in urban areas serving only 35% population
-4. **Late Detection**: 60-70% disease cases diagnosed at advanced stages
+4. **Late Detection**: 43% of Indian diabetics undiagnosed (IDF Atlas 11th Edition, 2025); many diagnosed only when complications are present
 5. **Treatment Gap**: 83% mental health treatment gap, 60% TB detection gap
+
+## Project Status
+
+- **Idea submitted** to AWS AI for Bharat Hackathon
+- **Wireframes built** and hosted via GitHub Pages (`docs/` folder)
+- **Screenshots captured** of all wireframe pages
+- **Architecture diagrams** created (logical, technical, use-case, cost, funding)
+- **Kiro specs** defined for deployment, platform, security, and architecture
+- **Next phase:** MVP development with React + AWS Amplify
 
 ## Repository Structure
 
@@ -31,6 +40,15 @@ ai-for-bharat-2/
 ├── README.md                           # Comprehensive problem analysis and solution roadmap
 ├── CLAUDE.md                          # This file - guidance for Claude Code
 ├── TECH_STACK.md                      # Detailed technical stack documentation
+├── DIABETES_FOCUS.md                  # Diabetes-only scope documentation
+├── IDEA_SUBMISSION.md                 # Hackathon idea submission content
+├── FUNDING_VALIDATION.md              # Funding validation analysis
+├── FUNDING_SLIDE_UPDATES.md           # Funding slide update notes
+├── MVP_BUDGET_FINAL.md                # Final MVP budget breakdown
+├── PROTOTYPE_COST_BREAKDOWN.md        # Detailed prototype cost analysis
+├── PROTOTYPE_COST_13DAYS.md           # 13-day prototype cost plan
+├── SCREENSHOTS.md                     # Screenshot documentation
+├── template.md                        # Slide/document template
 ├── docs/                              # GitHub Pages wireframes (HTML/CSS/JS)
 │   ├── index.html                    # Landing page wireframe
 │   ├── dashboard.html                # Dashboard wireframe
@@ -38,14 +56,60 @@ ai-for-bharat-2/
 │   ├── meal-analyzer.html            # Meal analysis wireframe
 │   ├── retina-scan.html              # Retina scan wireframe
 │   ├── chatbot.html                  # AI chatbot wireframe
+│   ├── offline.html                  # Offline fallback page
+│   ├── chart-demo.html              # Chart component demo
+│   ├── contrast-audit.html          # Accessibility contrast audit
+│   ├── empty-states-demo.html       # Empty state UI demos
+│   ├── icon-system-demo.html        # Icon system demo
+│   ├── skeleton-demo.html           # Skeleton loading demo
+│   ├── manifest.json                # PWA manifest
+│   ├── service-worker.js            # Service worker for offline support
+│   ├── BRAND_GUIDELINES.md          # Brand design guidelines
+│   ├── IMPROVEMENTS_SUMMARY.md      # UI improvements log
+│   ├── PREMIUM_DESIGN_SUMMARY.md    # Premium design decisions
 │   ├── css/
-│   │   └── wireframe.css            # Wireframe styling
+│   │   ├── wireframe.css            # Base wireframe styling
+│   │   └── premium-wireframe.css    # Premium/polished styling
 │   ├── js/
 │   │   └── wireframe.js             # Wireframe interactivity
-│   └── images/                       # Wireframe assets
+│   ├── images/                       # Wireframe image assets
+│   └── templates/                    # Reusable HTML templates
+│       ├── header.html              # Shared header component
+│       └── footer.html              # Shared footer component
+├── screenshots/                       # Captured wireframe screenshots
+│   ├── screenshot-01-landing-page.png
+│   ├── screenshot-02-dashboard.png
+│   ├── screenshot-03-glucose-tracker.png
+│   ├── screenshot-04-meal-analyzer.png
+│   ├── screenshot-05-retina-scan.png
+│   ├── screenshot-06-ai-advisor.png
+│   └── README.md
+├── research/                          # Research documentation
+│   ├── diabetes-ncds-ai-mobile-research.md
+│   └── diabetes-ncds-validation-report.md
+├── .kiro/                             # Kiro AI specs
+│   ├── steering.md
+│   └── specs/
+│       ├── deployment-infrastructure/
+│       ├── diabetes-management-platform/
+│       ├── security-compliance/
+│       └── system-architecture/
+├── logical-architecture.svg/.png      # Logical architecture diagram
+├── technical-architecture.svg/.png    # Technical architecture diagram
+├── use-case-diagram.svg/.png          # Use case diagram
+├── estimated-cost.svg/.png            # Cost estimation diagram
+├── funding-slide.svg/.png             # Funding slide visual
+├── prototype-cost-slide.svg/.png      # Prototype cost slide visual
+├── capture-fullpage-screenshots.js    # Puppeteer screenshot script
+├── capture-screenshots.sh             # Screenshot capture shell script
+├── capture-screenshots-improved.js    # Improved screenshot script
+├── capture-firefox-screenshots.sh     # Firefox screenshot script
+├── package.json                       # Node.js deps (puppeteer for screenshots)
+├── Idea Submission _ AWS AI for Bharat Hackathon.pptx   # Presentation deck
+├── Idea Submission _ AWS AI for Bharat Hackathon_DiabetCareAI.pdf  # PDF version
 ├── .claude/                           # Claude Code configuration
-│   └── settings.local.json           # Local settings
-└── Idea Submission _ AWS AI for Bharat Hackathon.pptx  # Presentation deck
+├── .gitignore                         # Git ignore rules
+└── .claudeignore                      # Claude Code ignore rules
 ```
 
 **NOTE:** Only the `docs/` folder is pushed to GitHub for wireframe hosting via GitHub Pages.
@@ -62,12 +126,12 @@ ai-for-bharat-2/
 ### Why Diabetes Only?
 
 **Rationale:**
-- **Massive Scale:** 89.8 million diabetics (2024 IDF Atlas) - world's 2nd largest population
-- **Economic Impact:** ₹2-3 lakh crore annual burden (40-50% develop complications)
-- **Preventable Complications:** 80% of blindness from diabetic retinopathy is preventable
-- **Technology Readiness:** AI DR screening clinically validated (92%+ sensitivity, 88%+ specificity)
+- **Massive Scale:** 89.8 million diabetics (IDF Atlas 11th Edition, 2025) - world's 2nd largest population
+- **Economic Impact:** ₹2-3 lakh crore annual burden (up to 50% develop serious complications — IDF)
+- **Preventable Complications:** Up to 90% of DR blindness preventable with timely screening (WHO)
+- **Technology Readiness:** AI DR screening clinically validated (92%+ sensitivity, 88%+ specificity — AIDRSS)
 - **Market Opportunity:** 225M total addressable market (89.8M diabetics + 136M pre-diabetics)
-- **Government Alignment:** NPCDCS active in 500+ districts
+- **Government Alignment:** NP-NCD (formerly NPCDCS) with 682 District NCD Clinics established
 
 ### Core Diabetes Features (In Scope)
 
@@ -192,8 +256,8 @@ The following NCDs and conditions have been **removed** from the project scope:
 
 ### Phase 2: MVP Development (Weeks 3-5)
 1. UI/UX design for low digital literacy users
-2. Core AI model development and training
-3. Mobile app development with Flutter
+2. Core AI integration (AWS Bedrock, Rekognition)
+3. React PWA development with Amplify backend
 4. Offline-first architecture implementation
 5. Regional language integration (i18n/l10n)
 6. Security implementation
@@ -216,7 +280,7 @@ The following NCDs and conditions have been **removed** from the project scope:
 
 ### Mobile-First Requirements
 ✅ **Offline-First Architecture**
-- Core features work without internet (30% rural India has intermittent connectivity)
+- Core features work without internet (only 3.8% rural households have fiber optic access; rural wireless tele-density at 57.89% vs 124.31% urban)
 - Background sync when connection available
 - Local data caching with encryption
 
@@ -271,7 +335,7 @@ The following NCDs and conditions have been **removed** from the project scope:
 ## Testing Strategy
 
 ### Unit Testing
-- **Framework:** pytest for Python, flutter_test for Flutter
+- **Framework:** Jest + React Testing Library for React, pytest for Python
 - **Coverage:** Minimum 80% code coverage
 - **AI Models:** Test accuracy, precision, recall, F1-score
 
@@ -482,7 +546,7 @@ python scripts/generate_manifest.py \
 
 ### Code Documentation
 - **Python:** Google-style docstrings
-- **Dart/Flutter:** DartDoc comments
+- **JavaScript/TypeScript:** JSDoc comments
 - **README:** Setup instructions, architecture overview, API docs
 - **Comments:** Explain "why" not "what" (self-documenting code)
 
@@ -576,8 +640,8 @@ python scripts/generate_manifest.py \
 
 ### Official Documentation
 - AWS AI/ML Services: https://aws.amazon.com/machine-learning/
-- Flutter: https://flutter.dev/docs
-- TensorFlow Lite: https://www.tensorflow.org/lite
+- AWS Amplify: https://docs.amplify.aws/
+- React: https://react.dev/
 - Ayushman Bharat Digital Mission: https://abdm.gov.in/
 
 ### Research Papers
@@ -600,6 +664,6 @@ python scripts/generate_manifest.py \
 
 ---
 
-**Last Updated:** 2026-01-25
+**Last Updated:** 2026-03-08
 **Hackathon:** AWS AI for Bharat
 **Focus:** Mobile-first AI healthcare solutions for India

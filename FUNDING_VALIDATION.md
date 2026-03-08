@@ -131,7 +131,7 @@ Note: 10x achievable with 6x revenue multiple or higher user growth
 - **Total TAM: 225 million** ✓
 
 **Smartphone penetration:**
-- **750 million smartphone users** in India (confirmed)
+- **659+ million smartphone users** in India ([Statista, 2025](https://www.statista.com/statistics/467163/forecast-of-smartphone-users-in-india/))
 - 83% of diabetics likely have smartphones (urban + middle class)
 - **Addressable market: 75M+ diabetic smartphone users**
 

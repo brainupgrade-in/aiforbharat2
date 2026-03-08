@@ -49,7 +49,7 @@ There is a stark disparity in diabetes prevalence:
 - **Urban areas: 11.2%**
 - **Rural areas: 5.2%**
 
-Self-reported prevalence ranges from **3.1% in rural to 7.3% in urban areas**. However, over 50% of diabetes cases in rural areas go undiagnosed, compared to around 30% in urban areas.
+Self-reported prevalence ranges from **3.1% in rural to 7.3% in urban areas**. According to the SMART India study ([Lancet Global Health, 2022](https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(22)00411-9/fulltext)), approximately 37% of diabetes cases in rural areas go undiagnosed, compared to around 23% in urban areas.
 
 States with higher per-capita GDP show higher prevalence (e.g., Chandigarh with GDP of US$3,433 had the highest prevalence of 13.6%).
 
@@ -1028,7 +1028,7 @@ Market research firms provide varying estimates for the India CGM market:
 
 4. **Hardware + Software Bundle:**
    - CGM device + app subscription
-   - **Example:** BeatO glucometer + app, Tracky CGM at ₹5,999/month
+   - **Example:** BeatO glucometer + app, BeatO CGM at ₹3,000-5,000/15-day sensor
 
 5. **Outcome-Based:**
    - Pay based on HbA1c reduction achieved
@@ -1131,8 +1131,8 @@ Market research firms provide varying estimates for the India CGM market:
 
 **Opportunity Areas:**
 
-1. **NPCDCS Screening Programs:**
-   - 500+ districts need diabetes screening
+1. **NP-NCD (formerly NPCDCS) Screening Programs:**
+   - 682 District NCD Clinics and 5,408 CHC NCD Clinics established
    - DR screening integration
    - Potential: 50-100 million screenings/year
    - Pricing: ₹50-₹200 per screening
@@ -1174,7 +1174,7 @@ Market research firms provide varying estimates for the India CGM market:
    - Sensitivity >92%, Specificity >88%
    - Offline capability
    - Price: ₹2.75-4.5 lakhs (affordable for PHCs)
-   - **Recommendation:** Integrate into NPCB-NPCDCS at 500+ district NCD clinics
+   - **Recommendation:** Integrate into NPCB-NP-NCD at 682 District NCD Clinics
 
 2. **CGM-Based Glucose Management:**
    - Abbott FreeStyle Libre, Dexcom available
@@ -1218,7 +1218,7 @@ Market research firms provide varying estimates for the India CGM market:
 - Refine offline capabilities
 
 **Phase 2: Scale (12-24 months)**
-- Expand to 500+ district NCD clinics
+- Expand to 682 District NCD Clinics (NP-NCD network)
 - Government procurement through GeM/tenders
 - Corporate wellness partnerships (50-100 companies)
 - Insurance integrations (2-3 major insurers)

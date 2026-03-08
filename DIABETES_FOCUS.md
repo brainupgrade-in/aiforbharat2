@@ -14,12 +14,12 @@
 
 After comprehensive analysis of India's NCD landscape, we have strategically narrowed our focus to **diabetes and its complications exclusively**. This decision is based on:
 
-1. **Massive Scale:** 89.8 million diabetics (2024 IDF Atlas) - world's 2nd largest population
+1. **Massive Scale:** 89.8 million diabetics ([IDF Atlas 11th Edition, 2025](https://diabetesatlas.org/)) - world's 2nd largest population
 2. **Economic Impact:** ₹2-3 lakh crore annual burden (40-50% develop complications)
-3. **Preventable Complications:** 80% of blindness from diabetic retinopathy is preventable with early detection
+3. **Preventable Complications:** Up to 90% of blindness from diabetic retinopathy is preventable with timely screening and treatment ([WHO](https://www.emro.who.int/noncommunicable-diseases/highlights/eyes-on-diabetes.html))
 4. **Technology Readiness:** AI DR screening is clinically validated (92%+ sensitivity, 88%+ specificity)
 5. **Market Opportunity:** 225M total addressable market (89.8M diabetics + 136M pre-diabetics)
-6. **Government Alignment:** NPCDCS (National Programme for Diabetes, CVD & Stroke) active in 500+ districts
+6. **Government Alignment:** NP-NCD (formerly NPCDCS) with 682 District NCD Clinics established ([NHM](https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=1048&lid=604))
 
 ### Removed from Scope
 
@@ -344,7 +344,7 @@ The following NCDs and conditions have been **explicitly removed** from the proj
 ✅ **Only solution** with smartphone camera-based DR screening (no expensive fundus camera hardware)
 ✅ **Only solution** optimized for Indian food database (100+ traditional foods with GI data)
 ✅ **Most affordable** comprehensive diabetes platform (₹999/year vs. ₹15,000-30,000 competitors)
-✅ **Offline-first** architecture for rural India (30% intermittent connectivity)
+✅ **Offline-first** architecture for rural India (only 3.8% rural households have fiber optic access — [PIB](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2040566))
 ✅ **ABDM-ready** for government integration (NPCDCS, NPCB programs)
 
 ---
@@ -398,7 +398,7 @@ The following NCDs and conditions have been **explicitly removed** from the proj
 ### NPCDCS Integration
 
 **National Programme for Prevention and Control of Cancer, Diabetes, CVD and Stroke:**
-- **Coverage:** 500+ districts, NCD clinics at district/sub-district levels
+- **Coverage:** 682 District NCD Clinics and 5,408 CHC NCD Clinics established ([NHM](https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=1048&lid=604))
 - **Opportunity:**
   - DR screening for 89.8M diabetics (target: 5M screenings/year)
   - Digital health records integration

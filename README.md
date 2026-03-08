@@ -32,7 +32,7 @@ A mobile-first progressive web application (PWA) that provides AI-powered diabet
 ### India's Diabetes Crisis
 
 **Massive Disease Burden:**
-- **89.8 million diabetics** (2024 IDF Atlas) - world's 2nd largest diabetes population
+- **89.8 million diabetics** ([IDF Atlas 11th Edition, 2025](https://diabetesatlas.org/)) - world's 2nd largest diabetes population
 - **156.7 million projected by 2050** - growing at alarming rate
 - **334,922 diabetes deaths in 2024**
 - **₹2-3 lakh crore annual economic impact** (40-50% develop complications)
@@ -41,7 +41,7 @@ A mobile-first progressive web application (PWA) that provides AI-powered diabet
 
 **Severe Manpower Crisis:**
 - Only **1 endocrinologist per 100,000 diabetics** (need 1:5,000 ratio)
-- **5,000 ophthalmologists** for 89.8M diabetics at risk of blindness
+- Only **~1,400 retina specialists** out of 20,944 ophthalmologists for 89.8M diabetics at risk of blindness ([AIIMS Survey](https://www.outlookindia.com/healthcare-spotlight/aiims-survey-flags-alarming-shortage-of-eye-specialists-puts-indias-vision-goals-in-focus))
 - **80% doctors in urban areas** serving only 35% population
 - **80% deficit in Community Health Centers** in rural India
 - **4,413 specialist doctors** vs required 21,964 in rural CHCs
@@ -51,8 +51,8 @@ A mobile-first progressive web application (PWA) that provides AI-powered diabet
 - **₹3,000-5,000 per specialist consultation** (unaffordable for most)
 - **Fundus photography (DR screening): ₹500-1,500 per eye**
 - **Limited DR screening in rural areas** (65% population)
-- **60-70% cases diagnosed at advanced stages**
-- **50%+ rural diabetes cases undiagnosed** vs 30% urban
+- **43% of diabetics undiagnosed** ([IDF Atlas 11th Edition, 2025](https://diabetesatlas.org/)); many first diagnosed when complications are already present
+- **37% rural diabetes cases undiagnosed** vs 23% urban ([SMART India study, Lancet Global Health 2022](https://www.thelancet.com/journals/langlo/article/PIIS2214-109X(22)00411-9/fulltext))
 - Only **45.2% rural individuals** have access to adequate diabetes care vs 68.5% urban
 
 **Financial Catastrophe for Families:**
@@ -64,7 +64,7 @@ A mobile-first progressive web application (PWA) that provides AI-powered diabet
 
 **Market Opportunity:**
 - 89.8M diabetics + 136M pre-diabetics = **225M total addressable market**
-- **750+ million smartphone users** with cameras (fundus imaging potential)
+- **659+ million smartphone users** ([Statista, 2025](https://www.statista.com/statistics/467163/forecast-of-smartphone-users-in-india/)) with cameras (fundus imaging potential)
 - Government programs: NPCDCS (National Programme for Diabetes, CVD & Stroke)
 - Rising awareness post-COVID (diabetes as comorbidity)
 
@@ -127,7 +127,7 @@ An AI-powered mobile progressive web app that provides:
 **For Patients:**
 - **Access:** 24/7 AI guidance vs. 2-6 week endocrinologist wait
 - **Affordability:** ₹0-99/month vs. ₹3,000-5,000 per consultation
-- **Early Detection:** DR screening before vision loss (80% blindness preventable)
+- **Early Detection:** DR screening before vision loss (up to 90% of DR blindness preventable with timely screening — [WHO](https://www.emro.who.int/noncommunicable-diseases/highlights/eyes-on-diabetes.html))
 - **Rural Reach:** Works offline, accessible from villages
 
 **For Healthcare System:**
@@ -715,7 +715,7 @@ Diabetes is India's silent epidemic. Every day:
 - **Millions struggle** with unaffordable specialist care
 - **Families face financial ruin** from diabetes complications
 
-**We have the technology. We have 750 million smartphones. We just need to build the bridge.**
+**We have the technology. We have 659+ million smartphones. We just need to build the bridge.**
 
 DiabetCare AI is not just an app - it's a movement to democratize diabetes care, prevent blindness, and prove that AI can save lives at scale in India's unique context.
 
