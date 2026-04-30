@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nazar-web
+  namespace: nazarai
+  labels:
+    app: nazar-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nazar-web
+  template:
+    metadata:
+      labels:
+        app: nazar-web
+    spec:
+      containers:
+        - name: web
+          image: registry.gheware-ai.com/nazarai/web:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 96Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nazar-web
+  namespace: nazarai
+spec:
+  selector:
+    app: nazar-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

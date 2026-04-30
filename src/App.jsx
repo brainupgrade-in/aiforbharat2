@@ -1,40 +1,27 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react'
-import '@aws-amplify/ui-react/styles.css'
+import { useAuth } from './lib/auth.jsx'
 import NazarApp from './pages/NazarApp'
 import NazarAuthScreen from './components/NazarAuthScreen'
+import OtpLoginForm from './components/OtpLoginForm'
 
 function AuthGate() {
-  const { authStatus } = useAuthenticator((ctx) => [ctx.authStatus])
+  const { isAuthenticated, signOut } = useAuth()
 
-  if (authStatus === 'authenticated') {
-    return (
-      <Authenticator>
-        {({ signOut }) => <NazarApp signOut={signOut} />}
-      </Authenticator>
-    )
+  if (isAuthenticated) {
+    return <NazarApp signOut={signOut} />
   }
 
-  // Show branded auth screen wrapping the sign-in/sign-up form
   return (
     <NazarAuthScreen>
-      <Authenticator />
+      <OtpLoginForm />
     </NazarAuthScreen>
-  )
-}
-
-function AuthenticatedApp() {
-  return (
-    <Authenticator.Provider>
-      <AuthGate />
-    </Authenticator.Provider>
   )
 }
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<AuthenticatedApp />} />
+      <Route path="/" element={<AuthGate />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

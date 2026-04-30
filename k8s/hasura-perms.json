@@ -1,0 +1,234 @@
+{
+  "type": "bulk",
+  "args": [
+    {
+      "type": "pg_create_select_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "app_user", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "columns": ["id", "email", "created_at", "last_login_at"],
+          "filter": {"id": {"_eq": "X-Hasura-User-Id"}}
+        }
+      }
+    },
+
+    {
+      "type": "pg_create_select_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "user_profile", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "columns": "*",
+          "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}
+        }
+      }
+    },
+    {
+      "type": "pg_create_insert_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "user_profile", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "set": {"user_id": "X-Hasura-User-Id"},
+          "columns": ["name", "age", "diabetes_type", "diagnosed_year", "medications", "target_fasting", "target_post_meal", "language"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_update_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "user_profile", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "columns": ["name", "age", "diabetes_type", "diagnosed_year", "medications", "target_fasting", "target_post_meal", "language", "updated_at"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_delete_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "user_profile", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}
+        }
+      }
+    },
+
+    {
+      "type": "pg_create_select_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "glucose_reading", "schema": "public"},
+        "role": "user",
+        "permission": {"columns": "*", "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}}
+      }
+    },
+    {
+      "type": "pg_create_insert_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "glucose_reading", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "set": {"user_id": "X-Hasura-User-Id"},
+          "columns": ["value", "context", "notes", "reading_at", "status"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_update_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "glucose_reading", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "columns": ["value", "context", "notes", "reading_at", "status"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_delete_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "glucose_reading", "schema": "public"},
+        "role": "user",
+        "permission": {"filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}}
+      }
+    },
+
+    {
+      "type": "pg_create_select_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "meal_log", "schema": "public"},
+        "role": "user",
+        "permission": {"columns": "*", "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}}
+      }
+    },
+    {
+      "type": "pg_create_insert_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "meal_log", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "set": {"user_id": "X-Hasura-User-Id"},
+          "columns": ["name", "photo_key", "total_carbs", "glycemic_load", "health_score", "items", "ai_suggestions"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_update_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "meal_log", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "columns": ["name", "photo_key", "total_carbs", "glycemic_load", "health_score", "items", "ai_suggestions"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_delete_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "meal_log", "schema": "public"},
+        "role": "user",
+        "permission": {"filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}}
+      }
+    },
+
+    {
+      "type": "pg_create_select_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "retina_scan", "schema": "public"},
+        "role": "user",
+        "permission": {"columns": "*", "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}}
+      }
+    },
+    {
+      "type": "pg_create_insert_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "retina_scan", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "set": {"user_id": "X-Hasura-User-Id"},
+          "columns": ["image_key", "classification", "confidence", "risk_level", "findings", "recommendations"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_update_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "retina_scan", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "columns": ["image_key", "classification", "confidence", "risk_level", "findings", "recommendations"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_delete_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "retina_scan", "schema": "public"},
+        "role": "user",
+        "permission": {"filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}}
+      }
+    },
+
+    {
+      "type": "pg_create_select_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "chat_message", "schema": "public"},
+        "role": "user",
+        "permission": {"columns": "*", "filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}}
+      }
+    },
+    {
+      "type": "pg_create_insert_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "chat_message", "schema": "public"},
+        "role": "user",
+        "permission": {
+          "check": {"user_id": {"_eq": "X-Hasura-User-Id"}},
+          "set": {"user_id": "X-Hasura-User-Id"},
+          "columns": ["session_id", "role", "content"]
+        }
+      }
+    },
+    {
+      "type": "pg_create_delete_permission",
+      "args": {
+        "source": "default",
+        "table": {"name": "chat_message", "schema": "public"},
+        "role": "user",
+        "permission": {"filter": {"user_id": {"_eq": "X-Hasura-User-Id"}}}
+      }
+    }
+  ]
+}

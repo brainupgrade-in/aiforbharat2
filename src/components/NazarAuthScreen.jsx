@@ -232,8 +232,7 @@ export default function NazarAuthScreen({ children }) {
           {/* Drag indicator */}
           <div className="w-10 h-1 bg-ink/10 rounded-full mx-auto mb-4" />
 
-          {/* Amplify Authenticator with custom styling */}
-          <div className="nazar-auth-wrapper">
+          <div>
             {children}
           </div>
 
@@ -260,7 +259,6 @@ export default function NazarAuthScreen({ children }) {
         </div>
       </div>
 
-      {/* Inline CSS for custom animations + Amplify overrides */}
       <style>{`
         @keyframes floatDot {
           0%, 100% { opacity: 0; transform: translateY(0) scale(1); }
@@ -293,117 +291,6 @@ export default function NazarAuthScreen({ children }) {
         @keyframes slideUp {
           0% { transform: translateY(40px); opacity: 0; }
           100% { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Amplify Authenticator overrides */
-        .nazar-auth-wrapper [data-amplify-authenticator] {
-          --amplify-colors-background-primary: transparent;
-          --amplify-colors-background-secondary: transparent;
-          --amplify-colors-brand-primary-10: #E0F5F5;
-          --amplify-colors-brand-primary-20: #B3E8E8;
-          --amplify-colors-brand-primary-40: #5CCCCC;
-          --amplify-colors-brand-primary-60: #0E8C8C;
-          --amplify-colors-brand-primary-80: #0A6E6E;
-          --amplify-colors-brand-primary-90: #085858;
-          --amplify-colors-brand-primary-100: #063e3e;
-          --amplify-colors-border-primary: #E8E4DD;
-          --amplify-colors-border-focus: #0A6E6E;
-          --amplify-radii-small: 0.75rem;
-          --amplify-radii-medium: 1rem;
-          --amplify-radii-large: 1rem;
-          --amplify-space-small: 0.75rem;
-          --amplify-space-medium: 1rem;
-          --amplify-fonts-default-variable: 'Noto Sans', sans-serif;
-        }
-
-        .nazar-auth-wrapper [data-amplify-authenticator] [data-amplify-router] {
-          background: transparent;
-          border: none;
-          box-shadow: none;
-          padding: 0;
-        }
-
-        .nazar-auth-wrapper .amplify-button--primary {
-          background: linear-gradient(135deg, #0A6E6E 0%, #0E8C8C 100%) !important;
-          color: #FFFFFF !important;
-          border-radius: 0.875rem;
-          font-family: 'Baloo 2', cursive;
-          font-weight: 700;
-          font-size: 1.05rem;
-          padding: 0.875rem 1.5rem;
-          min-height: 52px;
-          box-shadow: 0 4px 14px rgba(10, 110, 110, 0.3);
-          transition: all 150ms ease;
-          letter-spacing: 0.01em;
-          opacity: 1 !important;
-          visibility: visible !important;
-        }
-        .nazar-auth-wrapper .amplify-button--primary:hover {
-          background: linear-gradient(135deg, #0E8C8C 0%, #12ABAB 100%) !important;
-          color: #FFFFFF !important;
-          box-shadow: 0 6px 20px rgba(10, 110, 110, 0.4);
-          transform: translateY(-1px);
-        }
-        .nazar-auth-wrapper .amplify-button--primary:active {
-          transform: scale(0.98);
-        }
-        .nazar-auth-wrapper .amplify-button--primary:disabled {
-          background: linear-gradient(135deg, #0A6E6E 0%, #0E8C8C 100%) !important;
-          color: #FFFFFF !important;
-          opacity: 0.6 !important;
-        }
-
-        .nazar-auth-wrapper .amplify-button--link {
-          color: #0A6E6E;
-          font-weight: 600;
-          font-family: 'Noto Sans', sans-serif;
-        }
-
-        .nazar-auth-wrapper .amplify-input,
-        .nazar-auth-wrapper .amplify-field-group__control {
-          border-radius: 0.75rem;
-          border: 2px solid #E8E4DD;
-          padding: 0.75rem 1rem;
-          min-height: 48px;
-          font-family: 'Noto Sans', sans-serif;
-          background: white;
-          transition: border-color 200ms ease, box-shadow 200ms ease;
-        }
-        .nazar-auth-wrapper .amplify-input:focus,
-        .nazar-auth-wrapper .amplify-field-group__control:focus {
-          border-color: #0A6E6E;
-          box-shadow: 0 0 0 3px rgba(10, 110, 110, 0.1);
-        }
-
-        .nazar-auth-wrapper .amplify-label {
-          font-family: 'Noto Sans', sans-serif;
-          font-weight: 600;
-          color: #4A4A5A;
-          font-size: 0.875rem;
-        }
-
-        .nazar-auth-wrapper .amplify-tabs__item {
-          font-family: 'Baloo 2', cursive;
-          font-weight: 600;
-          color: #8A8A9A;
-          border-bottom-width: 3px;
-          padding: 0.625rem 0;
-        }
-        .nazar-auth-wrapper .amplify-tabs__item--active {
-          color: #0A6E6E;
-          border-color: #0A6E6E;
-        }
-
-        .nazar-auth-wrapper .amplify-heading {
-          font-family: 'Baloo 2', cursive;
-          color: #1A1A2E;
-        }
-
-        .nazar-auth-wrapper .amplify-field-group__outer-end .amplify-button {
-          border-radius: 0 0.75rem 0.75rem 0;
-          border: 2px solid #E8E4DD;
-          border-left: none;
-          min-height: 48px;
         }
       `}</style>
     </div>

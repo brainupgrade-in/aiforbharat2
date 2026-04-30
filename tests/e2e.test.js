@@ -1,313 +1,242 @@
 /**
- * End-to-End Integration Test Suite for Nazar AI / DiabetCare AI
+ * End-to-End Integration Test Suite for Nazar AI (on-prem k3s deployment)
  *
- * Tests: Cognito Auth → AppSync GraphQL → Bedrock Chatbot → Live Site
- * Test user: testuser@nazarai.test / TestPass@9876
+ * Stack tested: Magic-link Auth → Hasura GraphQL → ollama_cloud Chatbot → Live Site
+ * All requests go through https://nazarai.gheware-ai.com (Cloudflare → Traefik → services).
+ *
+ * Required env:
+ *   TEST_PUBLIC_URL          (default https://nazarai.gheware-ai.com)
+ *   HASURA_ADMIN_SECRET      (for OTP injection / cleanup)
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import bcrypt from 'bcryptjs'
 
-// ─── Config ───────────────────────────────────────────────────────────────────
+const PUBLIC_URL = process.env.TEST_PUBLIC_URL || 'https://nazarai.gheware-ai.com'
+const ADMIN      = process.env.HASURA_ADMIN_SECRET
+const TEST_EMAIL = `e2e+vitest-${Date.now()}@nazar.local`
 
-const CONFIG = {
-  region: 'ap-south-1',
-  userPoolId: 'ap-south-1_kbmI8hA9b',
-  clientId: '6901ubh8f4aoboq5emdrotvm3c',
-  appsyncUrl:
-    'https://i7ntbxsdmjda5c2asxjppckzbm.appsync-api.ap-south-1.amazonaws.com/graphql',
-  chatbotUrl:
-    'https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/',
-  liveUrl: 'https://main.d3vwqyp1h0elbo.amplifyapp.com/',
-  testUser: {
-    email: 'testuser@nazarai.test',
-    password: 'TestPass@9876',
-  },
-};
+if (!ADMIN) {
+  throw new Error('HASURA_ADMIN_SECRET env var required to run e2e tests')
+}
 
-// ─── Auth helpers (Cognito USER_PASSWORD_AUTH) ────────────────────────────────
+// ─── helpers ────────────────────────────────────────────────────────────────
 
-async function cognitoAuth(email, password) {
-  const url = `https://cognito-idp.${CONFIG.region}.amazonaws.com/`;
-  const res = await fetch(url, {
+async function adminGql(query, variables = {}) {
+  const r = await fetch(`${PUBLIC_URL}/api/graphql`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-amz-json-1.1',
-      'X-Amz-Target': 'AWSCognitoIdentityProviderService.InitiateAuth',
-    },
-    body: JSON.stringify({
-      AuthFlow: 'USER_PASSWORD_AUTH',
-      ClientId: CONFIG.clientId,
-      AuthParameters: {
-        USERNAME: email,
-        PASSWORD: password,
-      },
-    }),
-  });
-  const data = await res.json();
-  if (data.__type) {
-    throw new Error(`Cognito error: ${data.__type} — ${data.message}`);
-  }
-  return data.AuthenticationResult;
+    headers: { 'Content-Type': 'application/json', 'X-Hasura-Admin-Secret': ADMIN },
+    body: JSON.stringify({ query, variables }),
+  })
+  return r.json()
 }
 
-async function graphql(query, variables, idToken, retries = 2) {
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const res = await fetch(CONFIG.appsyncUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: idToken,
-        },
-        body: JSON.stringify({ query, variables }),
-      });
-      return res.json();
-    } catch (err) {
-      if (attempt === retries) throw err;
-      console.log(`  ⟳ Retry ${attempt + 1}/${retries} (${err.cause?.code || err.message})`);
-    }
-  }
+async function userGql(token, query, variables = {}) {
+  const r = await fetch(`${PUBLIC_URL}/api/graphql`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ query, variables }),
+  })
+  return r.json()
 }
 
-// ─── Shared state ─────────────────────────────────────────────────────────────
+// ─── shared state ───────────────────────────────────────────────────────────
 
-let tokens; // { IdToken, AccessToken, RefreshToken }
+let token       // user JWT (HS256, signed by nazar-auth)
+let userId      // app_user.id
 
-// ─── 1. AUTHENTICATION TESTS ─────────────────────────────────────────────────
+// ─── setup: inject OTP, exchange for JWT ────────────────────────────────────
 
-describe('1. Cognito Authentication', () => {
-  it('should sign in with test user credentials', async () => {
-    tokens = await cognitoAuth(CONFIG.testUser.email, CONFIG.testUser.password);
-    expect(tokens).toBeDefined();
-    expect(tokens.IdToken).toBeTruthy();
-    expect(tokens.AccessToken).toBeTruthy();
-    console.log('  ✓ Got IdToken, AccessToken, RefreshToken');
-  });
+beforeAll(async () => {
+  const otp     = '123456'
+  const otpHash = await bcrypt.hash(otp, 10)
 
-  it('should reject invalid credentials', async () => {
-    await expect(
-      cognitoAuth('fake@example.com', 'WrongPass1!')
-    ).rejects.toThrow();
-  });
-});
-
-// ─── 2. APPSYNC GRAPHQL — GLUCOSE READING ─────────────────────────────────────
-
-describe('2. AppSync GraphQL — GlucoseReading CRUD', () => {
-  let createdId;
-
-  it('should create a glucose reading', async () => {
-    const mutation = `
-      mutation CreateGlucoseReading($input: CreateGlucoseReadingInput!) {
-        createGlucoseReading(input: $input) {
-          id value context notes readingAt status createdAt
-        }
-      }`;
-    const now = new Date().toISOString();
-    const result = await graphql(
-      mutation,
-      {
-        input: {
-          value: 120,
-          context: 'fasting',
-          notes: 'E2E test reading',
-          readingAt: now,
-          status: 'normal',
-        },
-      },
-      tokens.IdToken
-    );
-
-    expect(result.errors).toBeUndefined();
-    expect(result.data.createGlucoseReading.id).toBeTruthy();
-    expect(result.data.createGlucoseReading.value).toBe(120);
-    createdId = result.data.createGlucoseReading.id;
-    console.log(`  ✓ Created GlucoseReading id=${createdId}`);
-  });
-
-  it('should list glucose readings (may be empty)', async () => {
-    const query = `
-      query ListGlucoseReadings {
-        listGlucoseReadings { items { id value context readingAt } }
-      }`;
-    const result = await graphql(query, {}, tokens.IdToken);
-    expect(result.errors).toBeUndefined();
-    const items = result.data.listGlucoseReadings.items;
-    expect(Array.isArray(items)).toBe(true);
-    console.log(`  ✓ Listed ${items.length} glucose reading(s)`);
-  });
-
-  it('should delete the created glucose reading', async () => {
-    if (!createdId) {
-      console.log('  ⊘ Skipped (create failed)');
-      return;
+  // Wipe any prior state for this email (defensive — email is unique-per-run anyway)
+  await adminGql(`
+    mutation Cleanup($email: String!) {
+      delete_login_otp(where: { email: { _eq: $email } })  { affected_rows }
+      delete_app_user (where: { email: { _eq: $email } })  { affected_rows }
     }
-    const mutation = `
-      mutation DeleteGlucoseReading($input: DeleteGlucoseReadingInput!) {
-        deleteGlucoseReading(input: $input) { id }
-      }`;
-    const result = await graphql(
-      mutation,
-      { input: { id: createdId } },
-      tokens.IdToken
-    );
-    expect(result.errors).toBeUndefined();
-    console.log(`  ✓ Deleted GlucoseReading id=${createdId}`);
-  });
-});
+  `, { email: TEST_EMAIL })
 
-// ─── 3. APPSYNC GRAPHQL — USER PROFILE ────────────────────────────────────────
+  // Inject a known OTP via Hasura admin (login_otp is admin-only)
+  const inject = await adminGql(`
+    mutation InjectOtp($email: String!, $hash: String!) {
+      insert_login_otp_one(object: {
+        email: $email
+        otp_hash: $hash
+        expires_at: "2030-01-01T00:00:00Z"
+      }) { email }
+    }
+  `, { email: TEST_EMAIL, hash: otpHash })
+  if (inject.errors) throw new Error('OTP inject failed: ' + JSON.stringify(inject.errors))
 
-describe('3. AppSync GraphQL — UserProfile CRUD', () => {
-  let profileId;
+  // Exchange via the real /auth/verify endpoint
+  const r = await fetch(`${PUBLIC_URL}/auth/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: TEST_EMAIL, otp }),
+  })
+  const out = await r.json()
+  if (!r.ok) throw new Error('verify failed: ' + JSON.stringify(out))
+  token  = out.token
+  userId = out.user.id
+})
 
-  it('should create a user profile', async () => {
-    const mutation = `
-      mutation CreateUserProfile($input: CreateUserProfileInput!) {
-        createUserProfile(input: $input) {
-          id name age diabetesType language
-        }
-      }`;
-    const result = await graphql(
-      mutation,
-      {
-        input: {
-          name: 'E2E Test User',
-          age: 45,
-          diabetesType: 'Type 2',
-          language: 'en',
-          targetFasting: 100,
-          targetPostMeal: 140,
-        },
-      },
-      tokens.IdToken
-    );
+afterAll(async () => {
+  // app_user delete cascades to glucose_reading / chat_message / etc.
+  await adminGql(`
+    mutation Teardown($email: String!) {
+      delete_login_otp(where: { email: { _eq: $email } })  { affected_rows }
+      delete_app_user (where: { email: { _eq: $email } })  { affected_rows }
+    }
+  `, { email: TEST_EMAIL })
+})
 
-    expect(result.errors).toBeUndefined();
-    profileId = result.data.createUserProfile.id;
-    expect(profileId).toBeTruthy();
-    console.log(`  ✓ Created UserProfile id=${profileId}`);
-  });
+// ─── 1. PUBLIC SITE HEALTH ──────────────────────────────────────────────────
 
-  it('should delete the user profile', async () => {
-    const mutation = `
-      mutation DeleteUserProfile($input: DeleteUserProfileInput!) {
-        deleteUserProfile(input: $input) { id }
-      }`;
-    const result = await graphql(
-      mutation,
-      { input: { id: profileId } },
-      tokens.IdToken
-    );
-    expect(result.errors).toBeUndefined();
-    console.log(`  ✓ Deleted UserProfile id=${profileId}`);
-  });
-});
+describe('1. Public Site Health', () => {
+  it('serves the React SPA at /', async () => {
+    const r = await fetch(PUBLIC_URL)
+    expect(r.status).toBe(200)
+    const html = await r.text()
+    expect(html).toContain('<!DOCTYPE html>')
+    expect(html).toContain('Nazar')
+  })
 
-// ─── 4. APPSYNC GRAPHQL — CHAT MESSAGE ────────────────────────────────────────
+  it('auth service /auth/health returns ok', async () => {
+    const r = await fetch(`${PUBLIC_URL}/auth/health`)
+    expect(r.status).toBe(200)
+    expect(await r.json()).toEqual({ ok: true })
+  })
 
-describe('4. AppSync GraphQL — ChatMessage', () => {
-  let msgId;
+  it('chatbot /api/chat/health returns ok', async () => {
+    const r = await fetch(`${PUBLIC_URL}/api/chat/health`)
+    expect(r.status).toBe(200)
+    expect(await r.json()).toEqual({ ok: true })
+  })
+})
 
-  it('should create a chat message', async () => {
-    const mutation = `
-      mutation CreateChatMessage($input: CreateChatMessageInput!) {
-        createChatMessage(input: $input) {
-          id role content sessionId createdAt
-        }
-      }`;
-    const result = await graphql(
-      mutation,
-      {
-        input: {
-          role: 'user',
-          content: 'What is a normal fasting glucose?',
-          sessionId: 'e2e-test-session',
-        },
-      },
-      tokens.IdToken
-    );
+// ─── 2. MAGIC-LINK AUTH ─────────────────────────────────────────────────────
 
-    expect(result.errors).toBeUndefined();
-    msgId = result.data.createChatMessage.id;
-    console.log(`  ✓ Created ChatMessage id=${msgId}`);
-  });
+describe('2. Magic-link Auth', () => {
+  it('issues a JWT on valid OTP (set up in beforeAll)', () => {
+    expect(token).toBeTruthy()
+    expect(userId).toBeTruthy()
+  })
 
-  it('should delete the chat message', async () => {
-    const mutation = `
-      mutation DeleteChatMessage($input: DeleteChatMessageInput!) {
-        deleteChatMessage(input: $input) { id }
-      }`;
-    const result = await graphql(
-      mutation,
-      { input: { id: msgId } },
-      tokens.IdToken
-    );
-    expect(result.errors).toBeUndefined();
-    console.log(`  ✓ Deleted ChatMessage id=${msgId}`);
-  });
-});
+  it('/auth/me returns the user with valid JWT', async () => {
+    const r = await fetch(`${PUBLIC_URL}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    expect(r.status).toBe(200)
+    const data = await r.json()
+    expect(data.user.id).toBe(userId)
+    expect(data.user.email).toBe(TEST_EMAIL)
+  })
 
-// ─── 5. BEDROCK CHATBOT LAMBDA ────────────────────────────────────────────────
+  it('/auth/me rejects missing token with 401', async () => {
+    const r = await fetch(`${PUBLIC_URL}/auth/me`)
+    expect(r.status).toBe(401)
+  })
 
-describe('5. Bedrock Chatbot Lambda', () => {
-  it('should respond in English', async () => {
-    const res = await fetch(CONFIG.chatbotUrl, {
+  it('/auth/verify rejects bad OTP', async () => {
+    const r = await fetch(`${PUBLIC_URL}/auth/verify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: 'What is a normal fasting blood sugar level?',
-        lang: 'en',
-      }),
-    });
-    expect(res.status).toBe(200);
-    const data = await res.json();
-    expect(data.response).toBeTruthy();
-    expect(data.response.length).toBeGreaterThan(20);
-    console.log(`  ✓ English response (${data.response.length} chars)`);
-  });
+      body: JSON.stringify({ email: TEST_EMAIL, otp: '000000' }),
+    })
+    expect(r.status).toBe(401)
+  })
+})
 
-  it('should respond in Hindi', async () => {
-    const res = await fetch(CONFIG.chatbotUrl, {
+// ─── 3. HASURA GRAPHQL — ROW-LEVEL SECURITY ─────────────────────────────────
+
+describe('3. Hasura GraphQL — RLS for `user` role', () => {
+  let glucoseId
+  let profileId
+
+  it('insert glucose_reading auto-sets user_id from JWT claim', async () => {
+    const result = await userGql(token, `
+      mutation Ins($value: Int!, $context: String!, $reading_at: timestamptz!, $status: String!) {
+        insert_glucose_reading_one(object: {
+          value: $value, context: $context, reading_at: $reading_at, status: $status
+        }) { id value context status }
+      }
+    `, { value: 105, context: 'Fasting', reading_at: new Date().toISOString(), status: 'normal' })
+
+    expect(result.errors).toBeUndefined()
+    expect(result.data.insert_glucose_reading_one.value).toBe(105)
+    glucoseId = result.data.insert_glucose_reading_one.id
+
+    // Confirm via admin that user_id was set correctly
+    const verify = await adminGql(`
+      query($id: uuid!) { glucose_reading_by_pk(id: $id) { user_id } }
+    `, { id: glucoseId })
+    expect(verify.data.glucose_reading_by_pk.user_id).toBe(userId)
+  })
+
+  it('list glucose_reading returns only own rows', async () => {
+    const result = await userGql(token, `query { glucose_reading { id value user_id } }`)
+    expect(result.errors).toBeUndefined()
+    expect(result.data.glucose_reading.length).toBeGreaterThan(0)
+    for (const row of result.data.glucose_reading) {
+      expect(row.user_id).toBe(userId)
+    }
+  })
+
+  it('insert + read user_profile', async () => {
+    const ins = await userGql(token, `
+      mutation Ins($name: String, $age: Int, $diabetes_type: String, $language: String) {
+        insert_user_profile_one(object: {
+          name: $name, age: $age, diabetes_type: $diabetes_type, language: $language
+        }) { user_id name age diabetes_type language }
+      }
+    `, { name: 'E2E User', age: 45, diabetes_type: 'Type 2', language: 'en' })
+    expect(ins.errors).toBeUndefined()
+    expect(ins.data.insert_user_profile_one.user_id).toBe(userId)
+    profileId = ins.data.insert_user_profile_one.user_id
+  })
+
+  it('login_otp is NOT readable by user role (admin-only table)', async () => {
+    const result = await userGql(token, `query { login_otp { email } }`)
+    expect(result.errors).toBeDefined()
+    // Hasura returns "field 'login_otp' not found" because the user role has no select perm
+    expect(JSON.stringify(result.errors)).toMatch(/login_otp/)
+  })
+})
+
+// ─── 4. CHATBOT (ollama_cloud kimi-k2.6) ────────────────────────────────────
+
+describe('4. Chatbot — kimi-k2.6:cloud', () => {
+  it('rejects request without JWT (401)', async () => {
+    const r = await fetch(`${PUBLIC_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: 'मधुमेह क्या है?',
-        lang: 'hi',
-      }),
-    });
-    expect(res.status).toBe(200);
-    const data = await res.json();
-    expect(data.response).toBeTruthy();
-    console.log(`  ✓ Hindi response (${data.response.length} chars)`);
-  });
+      body: JSON.stringify({ message: 'hi', lang: 'en' }),
+    })
+    expect(r.status).toBe(401)
+  })
 
-  it('should reject empty message', async () => {
-    const res = await fetch(CONFIG.chatbotUrl, {
+  it('returns a non-empty English response', async () => {
+    const r = await fetch(`${PUBLIC_URL}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ message: 'What is a normal fasting blood sugar level?', lang: 'en' }),
+    })
+    expect(r.status).toBe(200)
+    const data = await r.json()
+    expect(data.response).toBeTruthy()
+    expect(data.response.length).toBeGreaterThan(40)
+    expect(data.model).toBeTruthy()
+  }, 90_000)
+
+  it('rejects empty message with 400', async () => {
+    const r = await fetch(`${PUBLIC_URL}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ message: '', lang: 'en' }),
-    });
-    expect(res.status).toBe(400);
-  });
-
-  it('should handle CORS preflight', async () => {
-    const res = await fetch(CONFIG.chatbotUrl, {
-      method: 'OPTIONS',
-    });
-    // Lambda Function URL returns 200 for OPTIONS
-    expect([200, 204]).toContain(res.status);
-  });
-});
-
-// ─── 6. LIVE SITE HEALTH CHECK ────────────────────────────────────────────────
-
-describe('6. Live Site Health Check', () => {
-  it('should load the live Amplify site', async () => {
-    const res = await fetch(CONFIG.liveUrl);
-    expect(res.status).toBe(200);
-    const html = await res.text();
-    expect(html).toContain('<!DOCTYPE html>');
-    console.log(`  ✓ Live site returned ${html.length} bytes`);
-  });
-});
+    })
+    expect(r.status).toBe(400)
+  })
+})

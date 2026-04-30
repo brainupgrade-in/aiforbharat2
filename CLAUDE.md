@@ -26,31 +26,28 @@ Design an AI solution that improves efficiency, understanding, or support within
 
 ## Project Status
 
-- **Idea submitted** to AWS AI for Bharat Hackathon ✅
-- **Wireframes built** and hosted in `docs/` folder ✅
-- **Screenshots captured** of all wireframe pages ✅
-- **Architecture diagrams** created (logical, technical, use-case, cost, funding) ✅
-- **Kiro specs** defined for deployment, platform, security, and architecture ✅
-- **React MVP built and deployed** on AWS Amplify Hosting ✅
-  - Live at: https://main.d3vwqyp1h0elbo.amplifyapp.com/
+- **Hackathon entry** submitted to AWS AI for Bharat (round 2) ✅
+- **Wireframes** in `docs/` folder ✅
+- **Architecture diagrams** (logical, technical, use-case, cost, funding) ✅
+- **App name:** Nazar AI (DiabetCare AI as secondary)
+- **Migrated to on-prem** (April 2026) ✅ — entire AWS stack deleted; live on home k3s cluster
+  - Live at: **https://nazarai.gheware-ai.com/**
   - GitHub: https://github.com/brainupgrade-in/aiforbharat2
-  - Auth: Amazon Cognito (email-based login)
-  - Backend: Amplify Gen 2 with 5 data models (DynamoDB + AppSync GraphQL)
-  - Region: ap-south-1 (Mumbai, India)
-- **App name evolved** to "Nazar AI" (with DiabetCare AI as secondary name)
+  - Cluster: `k3s-agentgrow` on `nuc` (SSH: `ssh rajesh@nuc`)
+  - Namespace: `nazarai`
+  - Public exposure: Cloudflare Tunnel → Traefik → in-cluster services
 - **Features implemented:** DR screening workflow, multilingual (EN/HI/KN), community dashboard, GPS doctor finder, WhatsApp sharing, high-contrast mode, glucose tracker, AI chatbot
-- **AI Chatbot deployed** via AWS Bedrock (Amazon Nova Micro) ✅
-  - Lambda Function URL: public endpoint for chatbot inference
-  - Model: `apac.amazon.nova-micro-v1:0` (APAC inference profile)
-  - Supports English, Hindi, Kannada responses
-  - India-specific diabetes advisor system prompt
+- **AI Chatbot:** ollama_cloud foundation models via Lambda-style microservice ✅
+  - Models: `kimi-k2.6:cloud` primary for EN, `gpt-oss:120b` primary for HI/KN, full chain fallback
+  - Endpoint: `POST /api/chat` (JWT-required, same-origin)
+- **Auth:** custom magic-link OTP service (`nazar-auth`) issuing HS256 JWTs accepted by Hasura for row-level security
+- **Data:** Hasura GraphQL → CloudNativePG Postgres (7 tables, RLS via JWT claim `x-hasura-user-id`)
 - **E2E Integration Tests** — 14/14 passing (Vitest) ✅
-  - Cognito auth, AppSync GraphQL CRUD, Bedrock chatbot, live site health check
-  - Test user: `testuser@nazarai.test`
+  - Magic-link auth, Hasura GraphQL CRUD with RLS, ollama_cloud chatbot, live site health check
 - **Intro/Demo Video** — Live on YouTube ✅
   - YouTube: https://youtu.be/G620A-YF_bY
   - Built with Remotion 4.0 (React-based) + edge-tts voiceover
-- **Next phase:** Amazon Rekognition Custom Labels for DR screening, meal photo analysis
+- **Next phase:** retina-scan ML model, meal-photo analyzer (storage tier when shipped)
 
 ## Repository Structure
 
@@ -71,37 +68,38 @@ ai-for-bharat-2/
 ├── template.md                        # Quick reference card
 │
 ├── src/                               # React MVP source code
-│   ├── main.jsx                      # Entry point (Amplify config + BrowserRouter)
-│   ├── App.jsx                       # Auth gate + routing
+│   ├── main.jsx                      # Entry point (ApolloProvider + AuthProvider + BrowserRouter)
+│   ├── App.jsx                       # Auth gate + routing (uses useAuth, no Amplify)
 │   ├── index.css                     # TailwindCSS + Nazar design system
-│   ├── pages/
-│   │   ├── NazarApp.jsx              # Main app shell with bottom tab nav
-│   │   ├── NazarHome.jsx             # Home dashboard
-│   │   ├── NazarScan.jsx             # Retina scan capture workflow
-│   │   ├── NazarResult.jsx           # DR results (patient + doctor modes)
-│   │   └── NazarCommunity.jsx        # Community impact dashboard
-│   ├── components/
-│   │   ├── NazarAuthScreen.jsx       # Branded login with animated eye
-│   │   ├── LotusSeverity.jsx         # DR severity flower indicator
-│   │   ├── IrisLoader.jsx            # Eye-themed loading spinner
-│   │   ├── MarigoldCelebration.jsx   # No DR celebration animation
-│   │   └── NearbyDoctors.jsx         # GPS-based doctor finder
+│   ├── pages/                        # NazarApp shell + Home/Scan/Result/Chat/Glucose/Community tabs
+│   ├── components/                   # NazarAuthScreen, OtpLoginForm, LotusSeverity, IrisLoader, ...
 │   └── lib/
-│       ├── i18n.js                   # Translations (EN, HI, KN)
+│       ├── auth.jsx                 # AuthProvider, useAuth hook, JWT/token storage
+│       ├── apollo.js                # Apollo Client → /api/graphql with Bearer token
+│       ├── queries.js               # GraphQL queries/mutations (Hasura schema)
+│       ├── i18n.js                  # Translations (EN, HI, KN)
 │       └── location.js              # Geolocation + maps utilities
 │
+├── services/                          # Containerized backend services (all in nazarai NS)
+│   ├── auth/                         # nazar-auth: Fastify, magic-link OTP, HS256 JWT
+│   ├── chatbot/                      # nazar-chatbot: Fastify, ollama_cloud client, lang-routed
+│   └── web/                          # nazar-web: nginx serving Vite dist with SPA fallback
+│
+├── k8s/                               # Kubernetes manifests (applied to k3s-agentgrow)
+│   ├── 00-namespace.yaml
+│   ├── 01-postgres.yaml             # CNPG Cluster (1 instance, Longhorn 5Gi)
+│   ├── 02-hasura.yaml               # Hasura v2 + JWT-mode auth + admin secret
+│   ├── 03-auth.yaml                 # nazar-auth Deployment + Service
+│   ├── 04-chatbot.yaml              # nazar-chatbot Deployment + Service
+│   ├── 05-web.yaml                  # nazar-web Deployment + Service
+│   ├── 06-ingress.yaml              # Traefik Ingress + Middleware (path rewrite for Hasura)
+│   ├── hasura-perms.json            # Bulk metadata API payload — user-role RLS perms
+│   └── sql/01-schema.sql            # Postgres DDL: app_user, login_otp, glucose_reading, ...
+│
 ├── tests/                             # E2E integration tests (Vitest)
-│   └── e2e.test.js                  # 14 tests: auth, GraphQL, chatbot, site
+│   └── e2e.test.js                  # 14 tests: auth, Hasura RLS, chatbot, site
 ├── vitest.config.js                   # Vitest test configuration
 ├── .env.example                       # Environment variable template
-│
-├── amplify/                           # AWS Amplify Gen 2 backend
-│   ├── backend.ts                    # Backend composition (auth + data + chatbot Lambda)
-│   ├── auth/resource.ts             # Cognito auth configuration
-│   ├── data/resource.ts             # AppSync data models (5 models)
-│   └── functions/chatbot/           # Bedrock AI chatbot Lambda
-│       ├── resource.ts              # Lambda function definition
-│       └── handler.ts               # Bedrock InvokeModel handler (Nova/Claude)
 │
 ├── docs/                              # Original HTML/CSS wireframes
 │   ├── index.html                    # Landing page wireframe
@@ -134,7 +132,6 @@ ai-for-bharat-2/
 ├── vite.config.js                     # Vite build config
 ├── tailwind.config.js                 # TailwindCSS design system
 ├── postcss.config.js                  # PostCSS config
-├── amplify_outputs.json               # Amplify deployment outputs
 │
 ├── logical-architecture.svg/.png      # Architecture diagrams
 ├── technical-architecture.svg/.png
@@ -153,7 +150,7 @@ ai-for-bharat-2/
 └── .claudeignore                      # Claude Code ignore rules
 ```
 
-**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Live Prototype:** https://nazarai.gheware-ai.com/
 **GitHub:** https://github.com/brainupgrade-in/aiforbharat2
 
 ## Selected Use Case: Diabetes Screening ✅
@@ -212,80 +209,48 @@ The following NCDs and conditions have been **removed** from the project scope:
 - **30% rural reach** (vs. <5% access to traditional endocrinologists)
 - **225M total addressable market** (diabetics + pre-diabetics)
 
-## Technology Stack (FINALIZED)
+## Technology Stack
 
-### Frontend - ReactJS Progressive Web App (PWA)
-- **Framework:** React 18.x with Vite
-- **UI Library:** TailwindCSS + shadcn/ui (or Material-UI)
-- **Language:** JavaScript/TypeScript
-- **PWA Features:** Service Workers, offline support, installable
-- **State Management:** Context API / Redux Toolkit
-- **Routing:** React Router v6
-- **Key Libraries:**
-  - `aws-amplify` - AWS integration
-  - `@aws-amplify/ui-react` - Pre-built Amplify components
-  - `react-webcam` - Camera access for retina scans
-  - `recharts` - Data visualization
-  - `react-i18next` - Internationalization
-  - `workbox` - PWA/offline support
+### Frontend — React PWA
+- **Framework:** React 18 + Vite, TailwindCSS, React Router v6
+- **State/data:** Apollo Client → Hasura GraphQL; custom `useAuth` for JWT
+- **PWA:** vite-plugin-pwa (workbox), offline-first SW, installable
+- **Key libs:** `@apollo/client`, `graphql`, `recharts`, `react-webcam`
 
-**Why ReactJS over Flutter?**
-- ✅ Faster development (familiar tech stack)
-- ✅ No app store deployment delays (instant web access)
-- ✅ Instant updates (no app store approval)
-- ✅ Better SEO and discoverability
-- ✅ Single codebase for all devices
-- ✅ Lower cost ($0 vs $99/year Apple + $25 Google)
+### Backend — k3s on NUC
+| Concern | Service | Tech |
+|---|---|---|
+| Auth | `nazar-auth` | Fastify + nodemailer (SES SMTP) + bcryptjs + jsonwebtoken (HS256) |
+| Data API | Hasura v2.42 | JWT-mode auth, RLS via `x-hasura-user-id` from JWT claims |
+| Database | `nazarai-pg` (CNPG operator) | Postgres 16, 1 instance, Longhorn 5Gi PVC |
+| AI / Chat | `nazar-chatbot` | Fastify proxy → ollama_cloud OpenAI-compatible API |
+| Web | `nazar-web` | nginx-unprivileged serving Vite `dist/` with SPA fallback |
+| Ingress | Traefik (k3s built-in) | Path-based routing, replacePathRegex middleware for Hasura |
+| TLS | cert-manager | `letsencrypt-prod` ClusterIssuer |
+| Public exposure | Cloudflare Tunnel | Token-based, hostnames managed in Zero Trust dashboard / API |
+| Container registry | `registry.gheware-ai.com` | k3s mirror config maps both public DNS + internal NodePort |
+| Storage | Longhorn (default SC) | Replicated block storage |
+| Backups | (TODO) | restic/velero → external disk |
 
-### Backend - AWS Amplify Gen 2
-- **Infrastructure:** AWS Amplify (full-stack TypeScript framework)
-- **Authentication:** Amazon Cognito (email, phone OTP, Google OAuth)
-- **Database:** Amazon DynamoDB (via Amplify Data)
-- **Storage:** Amazon S3 (via Amplify Storage) for retina scans and meal photos
-- **APIs:** GraphQL via AWS AppSync (auto-generated from schema)
-- **Functions:** AWS Lambda for custom business logic
-- **Hosting:** AWS Amplify Hosting with CloudFront CDN
-
-**Why Amplify?**
-- ✅ Rapid full-stack development in TypeScript
-- ✅ Built-in auth, database, storage, APIs
-- ✅ Type-safe end-to-end
-- ✅ Auto-scaling serverless architecture
-- ✅ CI/CD out-of-the-box
-
-### AI/ML - AWS Bedrock + Amazon Rekognition
-- **Primary AI:** AWS Bedrock Foundation Models
-  - **Amazon Nova Micro** - Diabetes advisor chatbot (deployed, live via Lambda Function URL)
-  - **Claude 3 Haiku/Sonnet** - Complex medical explanations, weekly reports (planned)
-  - **Amazon Nova Pro** - Meal photo analysis and food recognition (planned)
-  - **Bedrock Knowledge Bases** - RAG for diabetes education content (planned)
-- **Computer Vision:** Amazon Rekognition Custom Labels
-  - Diabetic retinopathy detection from fundus images
-  - Custom model trained on Kaggle DR dataset (35K images)
-- **Why Bedrock?**
-  - ✅ No model training required (pre-trained foundation models)
-  - ✅ Multilingual out-of-the-box (Hindi, Tamil, Telugu)
-  - ✅ HIPAA eligible for healthcare data
-  - ✅ Pay-per-token pricing (cost-effective)
-  - ✅ Fast time-to-market
+### AI/ML — ollama_cloud
+- **Provider name MUST be `ollama_cloud`** (not `ollama` — Gotcha #51 in `~/ai-business-agents/CLAUDE.md`)
+- **Models in use:** `kimi-k2.6:cloud` (EN primary), `gpt-oss:120b` (HI/KN primary, EN fallback)
+- **API:** `https://ollama.com/v1/chat/completions` (OpenAI-compatible), `OLLAMA_API_KEY` env var
+- **Lifecycle warning:** hosted models can be silently retired (e.g. `kimi-k2:1t` retired 2026-04-14 → 500s). Verify via `curl https://ollama.com/v1/models -H "Authorization: Bearer $OLLAMA_API_KEY"` before pinning new models
+- **Future:** retina DR detection (model TBD — Rekognition replacement candidates: ONNX Runtime, KServe, locally-served PyTorch)
 
 ### Development Environment
-- **IDE:** AWS Cloud9 (cloud-based IDE) or local VS Code
-- **AI Assistant:** Amazon Q Developer for code suggestions
-- **Version Control:** Git + GitHub
-- **CI/CD:** AWS Amplify CI/CD (automatic deployment on git push)
-
-### Data & Analytics
-- **Database:** DynamoDB (NoSQL), RDS PostgreSQL (relational needs)
-- **Analytics:** Amazon QuickSight, CloudWatch
-- **ML Pipeline:** SageMaker Pipelines
-- **Model Monitoring:** SageMaker Model Monitor
+- **IDE:** local VS Code or Claude Code
+- **Version Control:** Git + GitHub (https://github.com/brainupgrade-in/aiforbharat2)
+- **Build host:** workstation (docker), pushes to `192.168.1.12:30500` (registry NodePort)
+- **CI/CD:** none yet — manual `docker build && docker push && kubectl rollout`
 
 ### Security & Compliance
-- **Encryption:** AES-256 for data at rest, TLS 1.3 for data in transit
-- **Data Privacy:** GDPR/HIPAA-equivalent compliance
-- **Authentication:** Multi-factor authentication, biometric support
-- **Audit Logging:** AWS CloudTrail
+- **Auth:** magic-link OTP (10-min TTL, bcrypt-hashed) → HS256 JWT (7d TTL)
+- **Authorization:** Hasura row-level perms keyed on `x-hasura-user-id` JWT claim
+- **Encryption:** TLS 1.3 at edge (Cloudflare), HTTP backplane within cluster
+- **Secrets:** k8s Secrets, never in repo. SES creds from `~/ai-business-agents/.env`
+- **Data Privacy:** GDPR / DPDP Act 2023 — minimal collection, user-owned data
 
 ## Development Workflow
 
@@ -379,16 +344,17 @@ The following NCDs and conditions have been **removed** from the project scope:
 ### E2E Integration Tests (Implemented)
 - **Framework:** Vitest (native to Vite)
 - **Test file:** `tests/e2e.test.js` — 14 tests, all passing
-- **Coverage:** Cognito auth, AppSync GraphQL CRUD (GlucoseReading, UserProfile, ChatMessage), Bedrock chatbot (EN + Hindi), live site health check
-- **Run:** `npm test` or `npx vitest run`
+- **Coverage:** Public site health, magic-link OTP → JWT, Hasura RLS (insert auto-set, list-own-rows, admin-only login_otp), chatbot (401 / EN / 400)
+- **Setup:** `beforeAll` injects an OTP via Hasura admin secret, exchanges via real `/auth/verify` endpoint; `afterAll` cascades cleanup via `delete_app_user`
+- **Run:** `HASURA_ADMIN_SECRET=... npm test` (default target: `https://nazarai.gheware-ai.com`)
 
 ### Unit Testing (Planned)
 - **Framework:** Vitest + React Testing Library
 - **Coverage:** Minimum 80% code coverage
 
 ### Integration Testing
-- **Current:** Vitest E2E suite covers Cognito → AppSync → Bedrock → Amplify Hosting
-- **Cloud Services:** Test AWS service integrations
+- **Current:** Vitest E2E suite covers nazar-auth → Hasura → ollama_cloud → public URL
+- **Manual smoke test:** see `## Common Commands` for in-cluster curl pattern
 
 ### User Acceptance Testing
 - **Target Users:** Doctors, ASHA workers, patients
@@ -421,108 +387,62 @@ The following NCDs and conditions have been **removed** from the project scope:
 
 ## Common Commands
 
-### Development (ReactJS + Amplify)
+### Frontend (React + Vite)
 ```bash
-# Install dependencies
-npm install
-
-# Start local development server
-npm run dev                            # Vite dev server on localhost:5173
-
-# AWS Amplify sandbox (local backend with auth, data)
-npx ampx sandbox                      # Run local Amplify sandbox
-
-# Build for production
-npm run build                         # Creates dist/ folder
-npm run preview                       # Preview production build locally
-
-# Deploy (manual — not git-connected)
-npm run build                         # Build dist/
-# Upload dist/ zip via Amplify CreateDeployment API
-
-# Run E2E integration tests
-npm test                              # Vitest — 14 tests (auth, GraphQL, chatbot, site)
-
-# Live prototype URL
-# https://main.d3vwqyp1h0elbo.amplifyapp.com/
+npm install                            # install deps
+npm run dev                            # Vite dev server on :5173
+npm run build                          # builds dist/
+HASURA_ADMIN_SECRET=... npm test       # run e2e suite against live URL
 ```
 
-### Wireframe Development (Original HTML/CSS)
+### Build & deploy a backend service (auth / chatbot / web)
 ```bash
-# View original wireframes locally
-cd docs
-python -m http.server 8000            # Test wireframes at http://localhost:8000
+# Auth or chatbot — Dockerfile in services/<svc>/
+cd services/auth                                      # or chatbot
+docker build -t 192.168.1.12:30500/nazarai/auth:vN .
+docker push 192.168.1.12:30500/nazarai/auth:vN
 
-# Capture wireframe screenshots
-node capture-fullpage-screenshots.js  # Puppeteer-based screenshot capture
+# Web — uses repo root as build context (needs dist/)
+npm run build
+docker build -f services/web/Dockerfile -t 192.168.1.12:30500/nazarai/web:vN .
+docker push 192.168.1.12:30500/nazarai/web:vN
+
+# Roll out new image (after bumping the image tag in the relevant k8s/*.yaml)
+cat k8s/03-auth.yaml | ssh rajesh@nuc kubectl apply -f -
+ssh rajesh@nuc 'kubectl rollout restart deploy/nazar-auth -n nazarai'
 ```
 
-### AWS Bedrock (AI Chatbot — Deployed)
+### Live URL
+- Public: **https://nazarai.gheware-ai.com/**
+- Path layout (single-host, path-based routing):
+  - `/` → nazar-web (React SPA)
+  - `/auth/*` → nazar-auth
+  - `/api/chat` → nazar-chatbot
+  - `/api/graphql` → hasura (Traefik middleware rewrites to `/v1/graphql`)
+
+### Cluster ops
 ```bash
-# Chatbot Lambda Function URL (public, no auth)
-# POST https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/
-# Body: { "message": "What is diabetes?", "lang": "en" }
+# Status
+ssh rajesh@nuc 'kubectl get all -n nazarai'
 
-# Test chatbot from CLI
-curl -X POST https://32jpiriafkk77sqri47s4uyi240ydxap.lambda-url.ap-south-1.on.aws/ \
-  -H 'Content-Type: application/json' \
-  -d '{"message":"What is a normal fasting blood sugar?","lang":"en"}'
+# Connect to Postgres as the app user
+ssh rajesh@nuc bash -c '
+  APP_PW=$(kubectl get secret -n nazarai nazarai-pg-app -o jsonpath="{.data.password}" | base64 -d)
+  kubectl exec -it -n nazarai nazarai-pg-1 -- env PGPASSWORD="$APP_PW" psql -h localhost -U nazarai_app -d nazarai
+'
 
-# Model: apac.amazon.nova-micro-v1:0 (APAC inference profile, ap-south-1)
-# Handler: amplify/functions/chatbot/handler.ts
-# Supports: EN, HI, KN — auto-detects from lang parameter
+# Hasura admin console (port-forward from NUC)
+ssh -L 18080:localhost:18080 rajesh@nuc 'kubectl port-forward -n nazarai svc/hasura 18080:80'
+# then open http://localhost:18080/console with the admin secret
+
+# Test ollama_cloud connectivity / list models
+curl -H "Authorization: Bearer $OLLAMA_API_KEY" https://ollama.com/v1/models | jq '.data[].id'
 ```
 
-### Amazon Rekognition (DR Detection)
+### Wireframe Development (Original HTML/CSS — historic)
 ```bash
-# Train custom labels model
-aws rekognition create-project --project-name diabetic-retinopathy
-
-# Upload labeled dataset to S3
-aws s3 sync ./dr-dataset s3://your-bucket/dr-training-data/
-
-# Create dataset
-aws rekognition create-dataset \
-  --project-arn arn:aws:rekognition:us-east-1:123456789012:project/diabetic-retinopathy/1234567890 \
-  --dataset-type TRAIN \
-  --dataset-source '{"GroundTruthManifest":{"S3Object":{"Bucket":"your-bucket","Name":"manifest.json"}}}'
-
-# Train model (takes 1-2 hours)
-aws rekognition create-project-version \
-  --project-arn <project-arn> \
-  --version-name v1 \
-  --output-config '{"S3Bucket":"your-bucket","S3KeyPrefix":"output/"}'
-
-# Start model endpoint
-aws rekognition start-project-version \
-  --project-version-arn <version-arn> \
-  --min-inference-units 1
-
-# Test detection
-aws rekognition detect-custom-labels \
-  --project-version-arn <version-arn> \
-  --image '{"S3Object":{"Bucket":"your-bucket","Name":"test-image.jpg"}}' \
-  --min-confidence 70
-```
-
-### Data Preparation (DR Dataset)
-```bash
-# Download Kaggle dataset
-kaggle competitions download -c diabetic-retinopathy-detection
-unzip diabetic-retinopathy-detection.zip -d ./data
-
-# Preprocess retina images (resize, normalize)
-python scripts/preprocess_retina.py \
-  --input ./data/train \
-  --output ./data/processed \
-  --resize 512x512 \
-  --format jpg
-
-# Generate Rekognition manifest
-python scripts/generate_manifest.py \
-  --input ./data/processed \
-  --labels ./data/trainLabels.csv \
-  --output ./data/manifest.json
+cd docs && python -m http.server 8000  # http://localhost:8000
+node capture-fullpage-screenshots.js   # Puppeteer screenshots
 ```
 
 ## Key Datasets & Resources
@@ -605,13 +525,12 @@ python scripts/generate_manifest.py \
 ### What TO Do ✅
 - Focus on diabetes screening use case (selected)
 - Build ReactJS Progressive Web App (mobile-first)
-- Use AWS Amplify for rapid backend development
-- Leverage AWS Bedrock for AI (no model training)
-- Create wireframes in docs/ folder for GitHub Pages
+- Use Hasura + Postgres for the data plane; Apollo Client on the frontend
+- Use ollama_cloud for chat (provider name MUST be `ollama_cloud`)
 - Support minimum 2 languages (English + Hindi)
-- Focus on user privacy and data security (HIPAA-equivalent)
+- Focus on user privacy and data security (DPDP Act 2023 / HIPAA-equivalent)
 - Test on mobile browsers (Chrome, Safari)
-- Use AWS Cloud9 or Amazon Q Developer for development
+- Verify ollama_cloud model availability before pinning new model IDs in chatbot
 
 ### What NOT To Do ❌
 - Don't collect unnecessary personal data
@@ -721,8 +640,8 @@ For video narration and voiceover generation, always use these settings:
 
 ---
 
-**Last Updated:** 2026-03-08
-**Hackathon:** AWS AI for Bharat
+**Last Updated:** 2026-04-30
+**Hackathon:** AWS AI for Bharat (entered round 2; concluded)
 **Focus:** Mobile-first AI healthcare solutions for India
-**Live Prototype:** https://main.d3vwqyp1h0elbo.amplifyapp.com/
+**Live Prototype:** https://nazarai.gheware-ai.com/ (on-prem k3s)
 **GitHub:** https://github.com/brainupgrade-in/aiforbharat2

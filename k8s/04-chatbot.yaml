@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nazar-chatbot
+  namespace: nazarai
+  labels:
+    app: nazar-chatbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nazar-chatbot
+  template:
+    metadata:
+      labels:
+        app: nazar-chatbot
+    spec:
+      containers:
+        - name: chatbot
+          image: registry.gheware-ai.com/nazarai/chatbot:v2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - secretRef:
+                name: nazar-chatbot-env
+          readinessProbe:
+            httpGet:
+              path: /api/chat/health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/chat/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 192Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nazar-chatbot
+  namespace: nazarai
+spec:
+  selector:
+    app: nazar-chatbot
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

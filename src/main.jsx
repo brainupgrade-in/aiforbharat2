@@ -1,17 +1,20 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { Amplify } from 'aws-amplify'
-import outputs from '../amplify_outputs.json'
+import { ApolloProvider } from '@apollo/client'
+import { AuthProvider } from './lib/auth.jsx'
+import { apolloClient } from './lib/apollo.js'
 import App from './App'
 import './index.css'
-
-Amplify.configure(outputs)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <ApolloProvider client={apolloClient}>
+          <App />
+        </ApolloProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 )

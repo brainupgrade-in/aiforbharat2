@@ -1,0 +1,27 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: nazarai-pg
+  namespace: nazarai
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
+  instances: 1
+  enableSuperuserAccess: false
+  superuserSecret:
+    name: nazarai-pg-superuser
+  bootstrap:
+    initdb:
+      database: nazarai
+      owner: nazarai_app
+      secret:
+        name: nazarai-pg-app
+  storage:
+    size: 5Gi
+    storageClass: longhorn
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

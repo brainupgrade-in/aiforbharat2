@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState } from 'react'
+import { useQuery, useMutation } from '@apollo/client'
 import { t } from '../lib/i18n'
+import { LIST_GLUCOSE_READINGS, INSERT_GLUCOSE_READING } from '../lib/queries'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 
 const CONTEXTS = {
@@ -8,7 +10,6 @@ const CONTEXTS = {
   kn: ['ಖಾಲಿ ಹೊಟ್ಟೆ', 'ಊಟಕ್ಕೆ ಮುಂಚೆ', 'ಊಟದ ನಂತರ', 'ಯಾವಾಗಲಾದರೂ', 'ಮಲಗುವ ಮುಂಚೆ'],
 }
 
-// Context value mapping for DynamoDB (always store English)
 const CONTEXT_MAP = {
   'खाली पेट': 'Fasting', 'खाने से पहले': 'Before meal', 'खाने के बाद': 'After meal',
   'कभी भी': 'Random', 'सोने से पहले': 'Bedtime',
@@ -38,54 +39,23 @@ function formatTime(dateStr) {
 
 export default function NazarGlucose({ lang }) {
   const [showForm, setShowForm] = useState(false)
-  const [readings, setReadings] = useState([])
   const [glucoseValue, setGlucoseValue] = useState('')
   const [mealContext, setMealContext] = useState((CONTEXTS[lang] || CONTEXTS.en)[0])
   const [notes, setNotes] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [client, setClient] = useState(null)
 
-  // Initialize Amplify client and load readings on mount
-  useEffect(() => {
-    let cancelled = false
-    async function init() {
-      let c = null
-      try {
-        const mod = await import('aws-amplify/data')
-        c = mod.generateClient()
-        if (!cancelled) setClient(c)
-      } catch {
-        // Amplify Data not available
-      }
-      if (!cancelled) loadReadings(c)
-    }
-    init()
-    return () => { cancelled = true }
-  }, [])
+  const { data, loading, error } = useQuery(LIST_GLUCOSE_READINGS, { variables: { limit: 50 } })
+  const [insertReading, { loading: saving }] = useMutation(INSERT_GLUCOSE_READING, {
+    refetchQueries: [{ query: LIST_GLUCOSE_READINGS, variables: { limit: 50 } }],
+  })
 
-  const loadReadings = useCallback(async (c) => {
-    setLoading(true)
-    if (c) {
-      try {
-        const { data } = await c.models.GlucoseReading.list({
-          limit: 50,
-        })
-        const sorted = (data || []).sort((a, b) => new Date(b.readingAt) - new Date(a.readingAt))
-        setReadings(sorted.map((r) => ({
-          id: r.id,
-          value: r.value,
-          context: r.context,
-          notes: r.notes,
-          time: r.readingAt,
-          status: r.status || getStatus(r.value, r.context),
-        })))
-      } catch (err) {
-        console.error('Failed to load readings:', err)
-      }
-    }
-    setLoading(false)
-  }, [])
+  const readings = (data?.glucose_reading || []).map((r) => ({
+    id: r.id,
+    value: r.value,
+    context: r.context,
+    notes: r.notes,
+    time: r.reading_at,
+    status: r.status || getStatus(r.value, r.context),
+  }))
 
   const handleSave = async () => {
     if (!glucoseValue) return
@@ -94,44 +64,25 @@ export default function NazarGlucose({ lang }) {
 
     const enContext = CONTEXT_MAP[mealContext] || mealContext
     const status = getStatus(val, enContext)
-    const now = new Date().toISOString()
 
-    setSaving(true)
-
-    const newReading = {
-      id: Date.now().toString(),
-      value: val,
-      context: enContext,
-      notes: notes || undefined,
-      time: now,
-      status,
-    }
-
-    // Save to DynamoDB if Amplify client is available
-    const dbClient = client
-    if (dbClient) {
-      try {
-        const { data } = await dbClient.models.GlucoseReading.create({
+    try {
+      await insertReading({
+        variables: {
           value: val,
           context: enContext,
-          notes: notes || undefined,
-          readingAt: now,
+          notes: notes || null,
+          reading_at: new Date().toISOString(),
           status,
-        })
-        if (data) newReading.id = data.id
-      } catch (err) {
-        console.error('Failed to save reading:', err)
-      }
+        },
+      })
+      setGlucoseValue('')
+      setNotes('')
+      setShowForm(false)
+    } catch (err) {
+      console.error('Failed to save reading:', err)
     }
-
-    setReadings((prev) => [newReading, ...prev])
-    setGlucoseValue('')
-    setNotes('')
-    setShowForm(false)
-    setSaving(false)
   }
 
-  // Build trend data from last 7 readings
   const trendData = [...readings]
     .reverse()
     .slice(-8)
@@ -141,6 +92,7 @@ export default function NazarGlucose({ lang }) {
     }))
 
   const contexts = CONTEXTS[lang] || CONTEXTS.en
+  const cloudConnected = !error
 
   return (
     <div className="space-y-4 animate-fade-up">
@@ -160,15 +112,13 @@ export default function NazarGlucose({ lang }) {
         </button>
       </div>
 
-      {/* DynamoDB connection indicator */}
       <div className="flex items-center gap-1.5">
-        <div className={`w-2 h-2 rounded-full ${client ? 'bg-mango-green' : 'bg-amber-warm'}`} />
+        <div className={`w-2 h-2 rounded-full ${cloudConnected ? 'bg-mango-green' : 'bg-amber-warm'}`} />
         <span className="text-[10px] text-ink-muted">
-          {client ? t('cloudSync', lang) : t('localOnly', lang)}
+          {cloudConnected ? t('cloudSync', lang) : t('localOnly', lang)}
         </span>
       </div>
 
-      {/* Add Reading Form */}
       {showForm && (
         <div className="card-warm space-y-3 animate-fade-up">
           <h2 className="font-display font-semibold text-ink">{t('recordReading', lang)}</h2>
@@ -224,7 +174,6 @@ export default function NazarGlucose({ lang }) {
         </div>
       )}
 
-      {/* Trend Chart */}
       {trendData.length > 1 && (
         <div className="card-warm">
           <h2 className="font-display font-semibold text-ink mb-3">{t('glucoseTrend', lang)}</h2>
@@ -244,7 +193,6 @@ export default function NazarGlucose({ lang }) {
         </div>
       )}
 
-      {/* Recent Readings */}
       <div className="card-warm">
         <h2 className="font-display font-semibold text-ink mb-3">{t('recentReadings', lang)}</h2>
         {loading ? (
@@ -287,7 +235,6 @@ export default function NazarGlucose({ lang }) {
         )}
       </div>
 
-      {/* Tips */}
       <div className="card-teal">
         <h2 className="font-display font-semibold text-ink mb-2 flex items-center gap-2">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A6E6E" strokeWidth="2">

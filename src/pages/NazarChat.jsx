@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { t } from '../lib/i18n'
+import { useAuth } from '../lib/auth.jsx'
+
+const CHAT_URL = import.meta.env.VITE_CHAT_URL || '/api/chat'
 
 const suggestedQuestions = {
   en: [
@@ -22,122 +25,30 @@ const suggestedQuestions = {
   ],
 }
 
-// Demo responses (used when Bedrock is not configured)
-const demoResponses = {
-  glucose: `**Your fasting glucose of 145 mg/dL is above the normal range.**
-
-Normal fasting: 70-100 mg/dL | Pre-diabetic: 100-125 | Diabetic: 126+
-
-**At 145 mg/dL, this falls in the diabetic range.**
-
-**Immediate steps:**
-1. Stay hydrated — drink water
-2. Take a 15-20 minute walk
-3. Avoid high-carb foods for the next meal
-4. Check again in 2-3 hours
-
-If readings consistently stay above 130 mg/dL fasting, consult your doctor about adjusting medication.`,
-
-  breakfast: `**Top 5 Diabetes-Friendly Indian Breakfasts:**
-
-1. **Moong dal chilla** (22g carbs, Low GI) — High protein, stable sugar for 4 hours
-2. **Vegetable poha** (32g carbs, Medium GI) — Add peanuts + curry leaves
-3. **Besan chilla with mint chutney** (18g carbs, Low GI) — Very low spike
-4. **Ragi dosa with sambar** (28g carbs, Low-Medium GI) — Rich in calcium & fiber
-5. **Oats upma with vegetables** (25g carbs, Low GI) — Add turmeric & mustard seeds
-
-**Avoid:** White bread toast, cornflakes, fruit juice, sweet chai`,
-
-  exercise: `**How Exercise Affects Blood Sugar:**
-
-1. **Immediate:** Muscles use glucose during activity, lowering sugar by 20-40 mg/dL within 30 min
-2. **Insulin sensitivity:** Cells respond better to insulin for up to 48 hours
-3. **Long-term:** Can reduce HbA1c by 0.5-0.7% over 3 months
-
-**Best exercises for diabetics:**
-- Morning walk (30 min) — reduces fasting glucose by 8-12%
-- Yoga (Surya Namaskar) — improves insulin sensitivity
-- Post-meal walk (15 min) — reduces spike by 30-40%
-
-**Timing tip:** Walking 15 min after meals is more effective than 30 min before meals.`,
-
-  retina: `**Diabetic Retina Screening Guide:**
-
-**When to get screened:**
-- Type 2: At diagnosis, then annually
-- Type 1: Within 5 years of diagnosis, then annually
-- If retinopathy detected: Every 3-6 months
-
-**Why it matters:**
-- 90% of DR blindness is preventable with early detection
-- DR has no symptoms until advanced stages
-- Early laser treatment: ₹5,000-10,000 vs ₹3-5 lakh for late-stage surgery
-
-You can use our Retina Scan feature for an AI screening from your smartphone!`,
-
-  default: `Here's what I can tell you about diabetes management:
-
-1. **Monitor glucose regularly** (fasting + post-meal)
-2. **Follow a balanced Indian diet** (dal, roti, vegetables)
-3. **Exercise 30 minutes daily** (walking is excellent)
-4. **Take medications as prescribed**
-5. **Get annual eye screening** to prevent vision loss
-
-Would you like me to go deeper on any of these topics?`,
-}
-
-function getDemoResponse(message) {
-  const lower = message.toLowerCase()
-  if (lower.includes('145') || lower.includes('fasting') || (lower.includes('glucose') && lower.includes('high')) || lower.includes('sugar'))
-    return demoResponses.glucose
-  if (lower.includes('breakfast') || lower.includes('morning') || lower.includes('नाश्ता') || lower.includes('ಉಪಾಹಾರ'))
-    return demoResponses.breakfast
-  if (lower.includes('exercise') || lower.includes('walk') || lower.includes('yoga') || lower.includes('व्यायाम') || lower.includes('ವ್ಯಾಯಾಮ'))
-    return demoResponses.exercise
-  if (lower.includes('retina') || lower.includes('eye') || lower.includes('scan') || lower.includes('रेटिना') || lower.includes('ರೆಟಿನಾ'))
-    return demoResponses.retina
-  return demoResponses.default
-}
-
-// Bedrock integration - calls Lambda function endpoint
-// Set VITE_BEDROCK_ENDPOINT in .env to enable real AI
-const BEDROCK_ENDPOINT = import.meta.env.VITE_BEDROCK_ENDPOINT || null
-
-async function callBedrock(message, lang) {
-  if (!BEDROCK_ENDPOINT) return null
-  try {
-    const res = await fetch(BEDROCK_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message,
-        lang,
-        systemPrompt: `You are Nazar AI, a diabetes health advisor for Indian patients.
-Respond in ${lang === 'hi' ? 'Hindi' : lang === 'kn' ? 'Kannada' : 'English'}.
-Be concise, practical, and India-specific (mention Indian foods, customs, costs in INR).
-Always include a disclaimer that you are not a substitute for professional medical advice.
-Focus on: glucose management, Indian diet, exercise, diabetic retinopathy screening.`,
-      }),
-    })
-    if (!res.ok) return null
-    const data = await res.json()
-    return data.response || data.content || null
-  } catch {
-    return null
-  }
+async function callChatApi(token, message, lang) {
+  const r = await fetch(CHAT_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ message, lang }),
+  })
+  const data = await r.json().catch(() => ({}))
+  if (!r.ok) throw new Error(data.error || `Chat failed (${r.status})`)
+  return data.response || ''
 }
 
 export default function NazarChat({ lang }) {
+  const { token } = useAuth()
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
-  const [isAiMode, setIsAiMode] = useState(!!BEDROCK_ENDPOINT)
   const bottomRef = useRef()
 
   useEffect(() => {
-    // Initial greeting
     const greeting = {
-      en: `Hello! I'm Nazar AI, your diabetes health advisor powered by AWS Bedrock. I can help with glucose readings, Indian diet tips, exercise, and eye screening guidance. How can I help you today?`,
+      en: `Hello! I'm Nazar AI, your diabetes health advisor. I can help with glucose readings, Indian diet tips, exercise, and eye screening guidance. How can I help you today?`,
       hi: `नमस्ते! मैं नज़र AI हूँ, आपका डायबिटीज़ स्वास्थ्य सलाहकार। मैं ब्लड शुगर, भारतीय आहार, व्यायाम, और आँखों की जाँच में मदद कर सकता हूँ। आज मैं आपकी कैसे मदद करूँ?`,
       kn: `ನಮಸ್ಕಾರ! ನಾನು ನಜರ್ AI, ನಿಮ್ಮ ಮಧುಮೇಹ ಆರೋಗ್ಯ ಸಲಹೆಗಾರ. ರಕ್ತದ ಸಕ್ಕರೆ, ಭಾರತೀಯ ಆಹಾರ, ವ್ಯಾಯಾಮ, ಮತ್ತು ಕಣ್ಣಿನ ತಪಾಸಣೆಯಲ್ಲಿ ನಾನು ಸಹಾಯ ಮಾಡಬಲ್ಲೆ.`,
     }
@@ -156,19 +67,17 @@ export default function NazarChat({ lang }) {
     setInput('')
     setTyping(true)
 
-    // Try Bedrock first, fall back to demo
-    let response = await callBedrock(userMsg, lang)
-    if (response) {
-      setIsAiMode(true)
-    } else {
-      setIsAiMode(false)
-      // Simulate typing delay for demo mode
-      await new Promise((r) => setTimeout(r, 1200))
-      response = getDemoResponse(userMsg)
+    try {
+      const response = await callChatApi(token, userMsg, lang)
+      setMessages((prev) => [...prev, { role: 'assistant', content: response }])
+    } catch (err) {
+      setMessages((prev) => [...prev, {
+        role: 'assistant',
+        content: `Sorry, I couldn't reach the AI service. ${err.message}`,
+      }])
+    } finally {
+      setTyping(false)
     }
-
-    setMessages((prev) => [...prev, { role: 'assistant', content: response }])
-    setTyping(false)
   }
 
   const handleKeyDown = (e) => {
@@ -182,7 +91,6 @@ export default function NazarChat({ lang }) {
 
   return (
     <div className="flex flex-col animate-fade-up" style={{ height: 'calc(100dvh - 180px)', minHeight: '400px' }}>
-      {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 bg-teal-pale rounded-xl flex items-center justify-center">
@@ -199,15 +107,8 @@ export default function NazarChat({ lang }) {
             </p>
           </div>
         </div>
-        {/* Demo Mode indicator */}
-        {!isAiMode && (
-          <span className="px-2.5 py-1 bg-amber-light text-amber-deep text-[10px] font-bold rounded-full animate-pulse-border">
-            DEMO MODE
-          </span>
-        )}
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto space-y-3 -mx-1 px-1">
         {messages.map((msg, i) => (
           <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
@@ -261,7 +162,6 @@ export default function NazarChat({ lang }) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Suggested Questions */}
       {messages.length <= 1 && (
         <div className="flex gap-2 overflow-x-auto py-2 -mx-1 px-1 no-scrollbar">
           {questions.map((q, i) => (
@@ -276,7 +176,6 @@ export default function NazarChat({ lang }) {
         </div>
       )}
 
-      {/* Input */}
       <div className="pt-2 border-t border-ivory-dark/50 mt-2">
         <div className="flex gap-2">
           <input
