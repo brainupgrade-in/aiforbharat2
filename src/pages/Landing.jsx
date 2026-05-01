@@ -73,7 +73,7 @@ export default function Landing() {
         <div className="mt-10 text-center">
           <p className="text-xs text-gray-400 mb-2">Powered by</p>
           <p className="text-sm font-medium text-gray-600">
-            AWS Bedrock &bull; Amazon Rekognition &bull; AWS Amplify
+            ollama_cloud &bull; Hasura &bull; CloudNativePG &bull; k3s
           </p>
         </div>
       </div>

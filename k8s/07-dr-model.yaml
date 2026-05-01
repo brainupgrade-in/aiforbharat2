@@ -1,55 +1,58 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nazar-web
+  name: nazar-dr-model
   namespace: nazarai
   labels:
-    app: nazar-web
+    app: nazar-dr-model
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nazar-web
+      app: nazar-dr-model
   template:
     metadata:
       labels:
-        app: nazar-web
+        app: nazar-dr-model
     spec:
       containers:
-        - name: web
-          image: registry.gheware-ai.com/nazarai/web:v4
+        - name: model
+          image: registry.gheware-ai.com/nazarai/dr-model:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
+          env:
+            - name: TORCH_NUM_THREADS
+              value: "4"
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: 8080
-            initialDelaySeconds: 3
+            initialDelaySeconds: 30
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: 8080
-            initialDelaySeconds: 15
+            initialDelaySeconds: 60
             periodSeconds: 30
           resources:
             requests:
-              cpu: 20m
-              memory: 32Mi
+              cpu: 500m
+              memory: 1Gi
             limits:
-              cpu: 100m
-              memory: 96Mi
+              cpu: "2"
+              memory: 2Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nazar-web
+  name: nazar-dr-model
   namespace: nazarai
 spec:
   selector:
-    app: nazar-web
+    app: nazar-dr-model
   ports:
     - name: http
       port: 80

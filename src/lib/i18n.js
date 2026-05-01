@@ -50,6 +50,7 @@ export const strings = {
   callDoctor: { en: 'Call Doctor', hi: 'डॉक्टर को कॉल करो', kn: 'ವೈದ್ಯರಿಗೆ ಕರೆ ಮಾಡಿ' },
   shareWhatsApp: { en: 'Share on WhatsApp', hi: 'WhatsApp पर शेयर', kn: 'WhatsApp ನಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳಿ' },
   drGrade: { en: 'DR Grade', hi: 'DR ग्रेड', kn: 'DR ದರ್ಜೆ' },
+  recommendations: { en: 'Recommendations', hi: 'सिफारिशें', kn: 'ಶಿಫಾರಸುಗಳು' },
   confidence: { en: 'AI Confidence', hi: 'AI विश्वास', kn: 'AI ವಿಶ್ವಾಸ' },
   doctorMode: { en: 'Doctor View', hi: 'डॉक्टर व्यू', kn: 'ವೈದ್ಯರ ನೋಟ' },
   patientMode: { en: 'Patient View', hi: 'मरीज़ व्यू', kn: 'ರೋಗಿಯ ನೋಟ' },
@@ -86,7 +87,7 @@ export const strings = {
 
   // Chatbot
   chatTitle: { en: 'Diabetes AI Advisor', hi: 'डायबिटीज़ AI सलाहकार', kn: 'ಮಧುಮೇಹ AI ಸಲಹೆಗಾರ' },
-  chatPoweredBy: { en: 'Powered by AWS Bedrock', hi: 'AWS Bedrock द्वारा संचालित', kn: 'AWS Bedrock ನಿಂದ ನಡೆಸಲ್ಪಟ್ಟಿದೆ' },
+  chatPoweredBy: { en: 'Powered by ollama_cloud', hi: 'ollama_cloud द्वारा संचालित', kn: 'ollama_cloud ನಿಂದ ನಡೆಸಲ್ಪಟ್ಟಿದೆ' },
   chatPlaceholder: { en: 'Ask about diabetes...', hi: 'डायबिटीज़ के बारे में पूछें...', kn: 'ಮಧುಮೇಹ ಬಗ್ಗೆ ಕೇಳಿ...' },
   chatDisclaimer: { en: 'For general information only. Not medical advice.', hi: 'केवल सामान्य जानकारी। चिकित्सा सलाह नहीं।', kn: 'ಸಾಮಾನ್ಯ ಮಾಹಿತಿ ಮಾತ್ರ. ವೈದ್ಯಕೀಯ ಸಲಹೆ ಅಲ್ಲ.' },
   send: { en: 'Send', hi: 'भेजो', kn: 'ಕಳುಹಿಸಿ' },

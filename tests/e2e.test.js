@@ -11,6 +11,12 @@
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import bcrypt from 'bcryptjs'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const TEST_FUNDUS_PNG = readFileSync(join(__dirname, 'fixtures', 'test-fundus.png'))
 
 const PUBLIC_URL = process.env.TEST_PUBLIC_URL || 'https://nazarai.gheware-ai.com'
 const ADMIN      = process.env.HASURA_ADMIN_SECRET
@@ -206,9 +212,78 @@ describe('3. Hasura GraphQL — RLS for `user` role', () => {
   })
 })
 
-// ─── 4. CHATBOT (ollama_cloud kimi-k2.6) ────────────────────────────────────
+// ─── 4. RETINA SCAN (full pipeline) ─────────────────────────────────────────
 
-describe('4. Chatbot — kimi-k2.6:cloud', () => {
+describe('4. Retina Scan — upload → classify → persist → retrieve', () => {
+  // 224×224 gray-gradient PNG fixture — same input size the model expects, so
+  // the processor doesn't need to upscale. Not a real fundus, so classification
+  // is meaningless; we assert API contract only.
+  const fundusPng = TEST_FUNDUS_PNG
+
+  let scanId
+
+  it('/api/scan/health returns ok', async () => {
+    const r = await fetch(`${PUBLIC_URL}/api/scan/health`)
+    expect(r.status).toBe(200)
+    expect(await r.json()).toEqual({ ok: true })
+  })
+
+  it('rejects upload without JWT (401)', async () => {
+    const fd = new FormData()
+    fd.append('image', new Blob([fundusPng], { type: 'image/png' }), 'fundus.png')
+    const r = await fetch(`${PUBLIC_URL}/api/scan`, { method: 'POST', body: fd })
+    expect(r.status).toBe(401)
+  })
+
+  it('uploads image, classifies, persists to retina_scan', async () => {
+    const fd = new FormData()
+    fd.append('image', new Blob([fundusPng], { type: 'image/png' }), 'fundus.png')
+    const r = await fetch(`${PUBLIC_URL}/api/scan`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    })
+    expect(r.status).toBe(200)
+    const data = await r.json()
+    expect(data.id).toBeTruthy()
+    expect(typeof data.has_dr).toBe('boolean')
+    expect(data.classification).toBeTruthy()
+    expect(typeof data.confidence).toBe('number')
+    expect(['low', 'moderate', 'high']).toContain(data.risk_level)
+    expect(Array.isArray(data.recommendations)).toBe(true)
+    expect(data.recommendations.length).toBeGreaterThan(0)
+    scanId = data.id
+  }, 60_000)
+
+  it('lists own scan via Hasura with RLS', async () => {
+    const result = await userGql(token, `query { retina_scan(order_by: {created_at: desc}) { id user_id } }`)
+    expect(result.errors).toBeUndefined()
+    const ids = result.data.retina_scan.map((r) => r.id)
+    expect(ids).toContain(scanId)
+    for (const r of result.data.retina_scan) expect(r.user_id).toBe(userId)
+  })
+
+  it('retrieves the saved image via /api/scan/:id/image', async () => {
+    const r = await fetch(`${PUBLIC_URL}/api/scan/${scanId}/image`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    expect(r.status).toBe(200)
+    expect(r.headers.get('content-type')).toMatch(/image\//)
+    const buf = await r.arrayBuffer()
+    expect(buf.byteLength).toBe(fundusPng.length)
+  })
+
+  it('returns 404 for someone else\'s scan id', async () => {
+    const r = await fetch(`${PUBLIC_URL}/api/scan/00000000-0000-0000-0000-000000000000/image`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    expect(r.status).toBe(404)
+  })
+})
+
+// ─── 5. CHATBOT (ollama_cloud kimi-k2.6) ────────────────────────────────────
+
+describe('5. Chatbot — kimi-k2.6:cloud', () => {
   it('rejects request without JWT (401)', async () => {
     const r = await fetch(`${PUBLIC_URL}/api/chat`, {
       method: 'POST',

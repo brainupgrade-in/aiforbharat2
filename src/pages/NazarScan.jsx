@@ -1,21 +1,39 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { t } from '../lib/i18n'
+import { useAuth } from '../lib/auth.jsx'
 import IrisLoader from '../components/IrisLoader'
 
+const SCAN_URL = import.meta.env.VITE_SCAN_URL || '/api/scan'
+
+const CLASS_TO_SEVERITY = {
+  'No DR': 0,
+  'Mild NPDR': 1,
+  'Moderate NPDR': 2,
+  'Severe NPDR': 3,
+  'Proliferative DR': 4,
+}
+
+async function urlToBlob(url) {
+  // Works for both data: URLs (camera capture) and blob: URLs (file upload)
+  const r = await fetch(url)
+  return r.blob()
+}
+
 export default function NazarScan({ lang, onResult }) {
-  const [step, setStep] = useState(1) // 1=photo, 2=analyzing
+  const { token } = useAuth()
+  const [step, setStep] = useState(1)               // 1=photo, 2=analyzing
   const [patientId, setPatientId] = useState('')
   const [preview, setPreview] = useState(null)
   const [photoQuality, setPhotoQuality] = useState(null)
   const [showCamera, setShowCamera] = useState(false)
   const [cameraError, setCameraError] = useState(null)
+  const [error, setError] = useState(null)
 
   const fileRef = useRef()
   const videoRef = useRef()
   const streamRef = useRef(null)
   const canvasRef = useRef()
 
-  // Cleanup camera stream on unmount
   useEffect(() => {
     return () => stopCamera()
   }, [])
@@ -36,18 +54,14 @@ export default function NazarScan({ lang, onResult }) {
       })
       streamRef.current = stream
       setShowCamera(true)
-      // Wait for DOM to render video element
       requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream
-        }
+        if (videoRef.current) videoRef.current.srcObject = stream
       })
     } catch (err) {
       console.error('Camera error:', err)
       setCameraError(err.name === 'NotAllowedError'
         ? 'Camera permission denied. Please allow camera access.'
         : 'Could not access camera. Try uploading a photo instead.')
-      // Fallback: open file picker with capture
       fileRef.current?.click()
     }
   }
@@ -58,49 +72,66 @@ export default function NazarScan({ lang, onResult }) {
     const canvas = canvasRef.current
     canvas.width = video.videoWidth
     canvas.height = video.videoHeight
-    const ctx = canvas.getContext('2d')
-    ctx.drawImage(video, 0, 0)
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.9)
-    setPreview(dataUrl)
+    canvas.getContext('2d').drawImage(video, 0, 0)
+    setPreview(canvas.toDataURL('image/jpeg', 0.9))
     stopCamera()
-    // Simulate quality check
-    setTimeout(() => setPhotoQuality(Math.random() > 0.15 ? 'good' : 'bad'), 800)
+    setPhotoQuality('good')
   }
 
   const handleFileChange = useCallback((e) => {
     const file = e.target?.files?.[0]
     if (file) {
-      const url = URL.createObjectURL(file)
-      setPreview(url)
-      setPhotoQuality(null)
-      setTimeout(() => setPhotoQuality(Math.random() > 0.15 ? 'good' : 'bad'), 800)
+      setPreview(URL.createObjectURL(file))
+      setPhotoQuality('good')
     }
-    // Reset file input so same file can be re-selected
     if (e.target) e.target.value = ''
   }, [])
 
   const handleRetake = () => {
     setPreview(null)
     setPhotoQuality(null)
+    setError(null)
   }
 
-  const handleSendForScan = () => {
+  const handleSendForScan = async () => {
+    if (!preview || !token) return
     setStep(2)
-    setTimeout(() => {
-      const severity = Math.random() > 0.6 ? 0 : Math.ceil(Math.random() * 4)
-      const confidence = (85 + Math.random() * 13).toFixed(1)
-      onResult({
-        severity,
-        confidence: parseFloat(confidence),
-        patientId: patientId || 'Patient',
-        findings: {
-          ma: severity > 0 ? Math.ceil(Math.random() * 8) : 0,
-          he: severity > 1,
-          nve: severity > 2,
-          neovasc: severity > 3,
-        },
+    setError(null)
+
+    try {
+      const blob = await urlToBlob(preview)
+      const fd = new FormData()
+      fd.append('image', blob, 'fundus.jpg')
+
+      const res = await fetch(SCAN_URL, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
       })
-    }, 3000)
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        throw new Error(data.error || `Scan failed (${res.status})`)
+      }
+
+      // Adapt API response → NazarResult-compatible shape (legacy: severity, confidence%)
+      const severity = CLASS_TO_SEVERITY[data.classification] ?? 0
+      onResult({
+        scanId: data.id,
+        severity,
+        classification: data.classification,
+        confidence: Math.round((data.confidence || 0) * 100),
+        riskLevel: data.risk_level,
+        hasDr: data.has_dr,
+        pAnyDr: data.p_any_dr,
+        probs: data.findings || {},
+        recommendations: data.recommendations || [],
+        patientId: patientId || 'Patient',
+        inferenceMs: data.inference_ms,
+      })
+    } catch (e) {
+      setError(e.message || 'Could not analyze image. Please try again.')
+      setStep(1)
+    }
   }
 
   const stepLabels = [t('step1', lang), t('step2', lang), t('step3', lang)]
@@ -109,18 +140,16 @@ export default function NazarScan({ lang, onResult }) {
     <div className="space-y-5 animate-fade-up">
       <div className="flex items-center justify-between">
         <h1 className="font-display text-heading font-bold text-teal-deep">{t('scanTitle', lang)}</h1>
-        <span className="px-2.5 py-1 bg-amber-light text-amber-deep text-[10px] font-bold rounded-full">
-          DEMO MODE
-        </span>
-      </div>
-      <div className="bg-amber-light/60 rounded-xl px-3 py-2 text-[11px] text-ink-light">
-        {t('demoMode', lang)}
       </div>
 
-      {/* Hidden canvas for camera capture */}
+      {error && (
+        <div className="bg-kumkum-light border-2 border-kumkum-red/40 rounded-xl px-3 py-2.5 text-caption text-kumkum-red">
+          {error}
+        </div>
+      )}
+
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Hidden file input for gallery upload */}
       <input
         ref={fileRef}
         type="file"
@@ -131,7 +160,6 @@ export default function NazarScan({ lang, onResult }) {
         aria-label={t('takePhoto', lang)}
       />
 
-      {/* Step indicator */}
       <div className="flex items-center gap-2" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={3}>
         {stepLabels.map((label, i) => (
           <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -149,7 +177,6 @@ export default function NazarScan({ lang, onResult }) {
 
       {step === 1 && (
         <>
-          {/* Patient ID */}
           <div>
             <label className="block text-caption font-medium text-ink-light mb-1.5" htmlFor="patient-id">
               {t('patientId', lang)}
@@ -164,22 +191,13 @@ export default function NazarScan({ lang, onResult }) {
             />
           </div>
 
-          {/* Camera / Preview */}
           <div className="card-warm">
             <h2 className="font-display font-semibold text-ink mb-2">{t('captureFundus', lang)}</h2>
             <p className="text-caption text-ink-muted mb-4">{t('positionGuide', lang)}</p>
 
-            {/* Live camera view */}
             {showCamera && (
               <div className="relative bg-gray-900 rounded-2xl overflow-hidden aspect-square max-h-72 mx-auto mb-4">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-full h-full object-cover"
-                />
-                {/* Guide circle overlay on live camera */}
+                <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <svg viewBox="0 0 200 200" className="w-3/4 h-3/4 opacity-50">
                     <circle cx="100" cy="100" r="80" fill="none" stroke="#12ABAB" strokeWidth="2" strokeDasharray="8 4" />
@@ -190,7 +208,6 @@ export default function NazarScan({ lang, onResult }) {
                     <line x1="160" y1="100" x2="190" y2="100" stroke="#12ABAB" strokeWidth="0.5" />
                   </svg>
                 </div>
-                {/* Capture button overlay */}
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
                   <button
                     onClick={captureFromCamera}
@@ -199,11 +216,7 @@ export default function NazarScan({ lang, onResult }) {
                   >
                     <div className="w-12 h-12 bg-teal-deep rounded-full" />
                   </button>
-                  <button
-                    onClick={stopCamera}
-                    className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center shadow-lg"
-                    aria-label="Close camera"
-                  >
+                  <button onClick={stopCamera} className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center shadow-lg" aria-label="Close camera">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" strokeWidth="2.5">
                       <line x1="18" y1="6" x2="6" y2="18" />
                       <line x1="6" y1="6" x2="18" y2="18" />
@@ -213,26 +226,17 @@ export default function NazarScan({ lang, onResult }) {
               </div>
             )}
 
-            {/* Preview of captured/uploaded image */}
             {!showCamera && preview && (
               <div className="relative bg-gray-900 rounded-2xl overflow-hidden aspect-square max-h-72 mx-auto mb-4">
                 <img src={preview} alt="Fundus capture" className="w-full h-full object-cover" />
-                {/* Quality badge */}
                 {photoQuality && (
                   <div className={`absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full font-body font-semibold text-sm ${
-                    photoQuality === 'good'
-                      ? 'bg-mango-green text-white'
-                      : 'bg-kumkum-red text-white'
+                    photoQuality === 'good' ? 'bg-mango-green text-white' : 'bg-kumkum-red text-white'
                   }`}>
                     {photoQuality === 'good' ? t('photoOk', lang) : t('photoRetake', lang)}
                   </div>
                 )}
-                {/* Retake button */}
-                <button
-                  onClick={handleRetake}
-                  className="absolute top-3 right-3 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center shadow"
-                  aria-label="Retake"
-                >
+                <button onClick={handleRetake} className="absolute top-3 right-3 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center shadow" aria-label="Retake">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" strokeWidth="2">
                     <polyline points="23 4 23 10 17 10" />
                     <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
@@ -241,7 +245,6 @@ export default function NazarScan({ lang, onResult }) {
               </div>
             )}
 
-            {/* Empty state with guide circle */}
             {!showCamera && !preview && (
               <div className="relative bg-gray-900 rounded-2xl overflow-hidden aspect-square max-h-72 mx-auto mb-4">
                 <div className="w-full h-full flex items-center justify-center">
@@ -257,21 +260,15 @@ export default function NazarScan({ lang, onResult }) {
               </div>
             )}
 
-            {/* Camera error */}
             {cameraError && (
               <div className="bg-amber-light rounded-xl p-3 mb-3">
                 <p className="text-caption text-ink-light">{cameraError}</p>
               </div>
             )}
 
-            {/* Action buttons (shown when camera is NOT active) */}
             {!showCamera && (
               <div className="flex gap-3">
-                <button
-                  onClick={startCamera}
-                  className="btn-teal flex-1 gap-2"
-                  aria-label={t('takePhoto', lang)}
-                >
+                <button onClick={startCamera} className="btn-teal flex-1 gap-2" aria-label={t('takePhoto', lang)}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                     <circle cx="12" cy="13" r="4" />
@@ -298,7 +295,6 @@ export default function NazarScan({ lang, onResult }) {
             )}
           </div>
 
-          {/* Send for AI scan */}
           {preview && photoQuality === 'good' && (
             <button
               onClick={handleSendForScan}
@@ -315,7 +311,6 @@ export default function NazarScan({ lang, onResult }) {
         </>
       )}
 
-      {/* Analyzing state */}
       {step === 2 && (
         <div className="flex flex-col items-center py-12 animate-fade-up">
           <IrisLoader size={96} />

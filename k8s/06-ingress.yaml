@@ -60,6 +60,13 @@ spec:
                 name: nazar-chatbot
                 port:
                   number: 80
+          - path: /api/scan
+            pathType: Prefix
+            backend:
+              service:
+                name: nazar-scan
+                port:
+                  number: 80
           - path: /auth
             pathType: Prefix
             backend:

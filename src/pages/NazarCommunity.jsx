@@ -314,7 +314,7 @@ export default function NazarCommunity({ lang }) {
       {/* Powered by */}
       <div className="text-center py-4">
         <p className="text-[11px] text-ink-muted">
-          Powered by AWS Bedrock &bull; Amazon Rekognition &bull; AWS Amplify
+          Powered by ollama_cloud &bull; Hasura &bull; CloudNativePG &bull; k3s
         </p>
       </div>
     </div>

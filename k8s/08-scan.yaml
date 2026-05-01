@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nazar-scan-images
+  namespace: nazarai
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nazar-scan
+  namespace: nazarai
+  labels:
+    app: nazar-scan
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate          # PVC is RWO; one pod at a time
+  selector:
+    matchLabels:
+      app: nazar-scan
+  template:
+    metadata:
+      labels:
+        app: nazar-scan
+    spec:
+      securityContext:
+        fsGroup: 1000           # node user GID; mounts PVC as group-writable
+      containers:
+        - name: scan
+          image: registry.gheware-ai.com/nazarai/scan:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: HASURA_URL
+              value: http://hasura/v1/graphql
+            - name: DR_MODEL_URL
+              value: http://nazar-dr-model/predict
+            - name: IMAGE_DIR
+              value: /data
+          envFrom:
+            - secretRef:
+                name: nazar-scan-env
+          volumeMounts:
+            - name: images
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /api/scan/health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/scan/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              cpu: 300m
+              memory: 384Mi
+      volumes:
+        - name: images
+          persistentVolumeClaim:
+            claimName: nazar-scan-images
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nazar-scan
+  namespace: nazarai
+spec:
+  selector:
+    app: nazar-scan
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
