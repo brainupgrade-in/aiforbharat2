@@ -45,6 +45,8 @@ Design an AI solution that improves efficiency, understanding, or support within
   - AI chatbot with persistent history (per-session, RLS-protected)
   - Scan history tab — list + tap-to-reopen results from any past scan
   - Real upload progress UI for slow connections; client-side image quality (dimension + Laplacian-blur) gate before upload
+  - Camera defaults to front (`facingMode: 'user'`) for self-screening; in-frame flip button switches to back for ASHA-worker / clinic use with a fundus lens adapter
+  - WhatsApp result sharing uses the live URL (`https://nazarai.gheware-ai.com`) — no stale Amplify links
   - Apollo `errorLink` → expired-JWT detection → graceful sign-out
   - GPS doctor finder, WhatsApp result sharing, high-contrast mode, PWA install
 - **AI Chatbot:** ollama_cloud foundation models via Lambda-style microservice ✅

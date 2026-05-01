@@ -20,7 +20,7 @@ AI-powered diabetic retinopathy screening and diabetes management for India's 89
 - ✅ Multilingual UI **and** auth screen (EN/HI/KN) — preference saved to user_profile and follows the user across devices
 - ✅ Hasura GraphQL on CloudNativePG Postgres with row-level security via JWT claims; Apollo `errorLink` auto-bounces back to sign-in when JWT expires
 - ✅ Diabetes-advisor chatbot via `ollama_cloud` (`kimi-k2.6:cloud` for EN, `gpt-oss:120b` for HI/KN, full-chain fallback on non-2xx **or** empty content); chat history persists per session
-- ✅ Real DR screening pipeline: ViT-base classifier (`rafalosa/diabetic-retinopathy-224-procnorm-vit`) running CPU-only on the cluster, ~220 ms / image, threshold-tuned for ≥95% sensitivity at the cost of some specificity. Client-side image-quality gate (dimension + Laplacian-blur) before upload; XHR upload progress bar for slow connections.
+- ✅ Real DR screening pipeline: ViT-base classifier (`rafalosa/diabetic-retinopathy-224-procnorm-vit`) running CPU-only on the cluster, ~220 ms / image, threshold-tuned for ≥95% sensitivity at the cost of some specificity. Client-side image-quality gate (dimension + Laplacian-blur) before upload; XHR upload progress bar for slow connections. Camera defaults to **front** (patient self-scan) with an in-frame flip button to back (ASHA-worker / clinic with fundus lens).
 - ✅ Glucose tracker with cloud sync — log, edit, delete; trend chart with status thresholds
 - ✅ Scan history tab — full list of past scans, tap any row to re-open the result page (no re-inference)
 - ✅ Auth security: 6-digit OTP `bcrypt(otp + OTP_PEPPER)` hashed, 10-min TTL, single-use; rate limit (1/30s, max 5/hour per email)
