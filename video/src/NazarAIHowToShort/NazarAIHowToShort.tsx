@@ -2,19 +2,22 @@ import { AbsoluteFill, Sequence, useCurrentFrame, interpolate, Img, staticFile, 
 
 const FPS = 30;
 
-// Each scene = audio duration + visual hold after voiceover finishes.
-// CTA gets a longer fade-out to land the ending.
-const F = (audioSec: number, holdSec = 1.5) => Math.ceil((audioSec + holdSec) * FPS);
+// Each scene = audio duration + a short visual hold. Tight pacing so the
+// reel feels punchy instead of laid back. CTA gets a slightly longer hold
+// so the URL sticks before the loop / replay.
+const F = (audioSec: number, holdSec = 0.5) => Math.ceil((audioSec + holdSec) * FPS);
 
+// Voiceover durations measured from public/audio/howto-short/*.mp3
+// (Neerja Expressive, en-IN, +10% rate).
 const sceneDurations = {
-  hook:    F(5.86),
-  open:    F(4.99),
-  signin:  F(5.28),
-  scan:    F(5.78),
-  result:  F(5.69),
-  glucose: F(4.99),
-  chat:    F(4.54),
-  cta:     F(5.14, 3.5),
+  hook:    F(5.81),
+  open:    F(5.69),
+  signin:  F(6.24),
+  scan:    F(7.68),
+  result:  F(5.59),
+  glucose: F(5.86),
+  chat:    F(4.63),
+  cta:     F(6.29, 1.8),
 };
 
 let cumulative = 0;
@@ -206,6 +209,9 @@ const CTA: React.FC = () => {
 export const NazarAIHowToShort: React.FC = () => {
   return (
     <AbsoluteFill>
+      {/* Light background music — looped + ducked to 0.08 so the female voiceover stays dominant */}
+      <Audio src={staticFile("music/upbeat.mp3")} volume={0.08} loop />
+
       <Sequence from={sceneStarts.hook} durationInFrames={sceneDurations.hook}>
         <Hook />
       </Sequence>

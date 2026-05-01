@@ -383,6 +383,9 @@ local.properties
 # Audio files (if recording for accessibility features)
 *.wav
 *.mp3
+
+# Exception: small bundled music tracks for the Remotion compositions
+!video/public/music/*.mp3
 *.flac
 *.ogg
 
