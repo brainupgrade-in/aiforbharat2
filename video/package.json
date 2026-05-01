@@ -6,6 +6,7 @@
     "studio": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts NazarAIIntro out/nazar-ai-intro.mp4",
     "render-720": "remotion render src/index.ts NazarAIIntro out/nazar-ai-intro-720.mp4 --scale=0.667",
+    "render-howto": "remotion render src/index.ts NazarAIHowToShort out/howto-short.mp4",
     "compositions": "remotion compositions src/index.ts"
   },
   "dependencies": {

@@ -1,5 +1,6 @@
 import { Composition } from "remotion";
 import { NazarAIIntro } from "./NazarAIIntro/NazarAIIntro";
+import { NazarAIHowToShort, HOWTO_SHORT_TOTAL_FRAMES } from "./NazarAIHowToShort/NazarAIHowToShort";
 
 export const RemotionRoot: React.FC = () => {
     return (
@@ -11,6 +12,15 @@ export const RemotionRoot: React.FC = () => {
                 fps={30}
                 width={1920}
                 height={1080}
+                defaultProps={{}}
+            />
+            <Composition
+                id="NazarAIHowToShort"
+                component={NazarAIHowToShort}
+                durationInFrames={HOWTO_SHORT_TOTAL_FRAMES}
+                fps={30}
+                width={1080}
+                height={1920}
                 defaultProps={{}}
             />
         </>
