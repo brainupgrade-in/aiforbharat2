@@ -115,7 +115,7 @@ ${locationLink}
 
 ⚠️ Please consult an ophthalmologist for professional evaluation.
 
-Screened with Nazar AI — https://main.d3vwqyp1h0elbo.amplifyapp.com`
+Screened with Nazar AI — https://nazarai.gheware-ai.com`
 
   return `https://wa.me/?text=${encodeURIComponent(message)}`
 }
