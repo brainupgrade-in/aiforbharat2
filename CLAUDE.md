@@ -36,7 +36,17 @@ Design an AI solution that improves efficiency, understanding, or support within
   - Cluster: `k3s-agentgrow` on `nuc` (SSH: `ssh rajesh@nuc`)
   - Namespace: `nazarai`
   - Public exposure: Cloudflare Tunnel → Traefik → in-cluster services
-- **Features implemented:** DR screening workflow, multilingual (EN/HI/KN), community dashboard, GPS doctor finder, WhatsApp sharing, high-contrast mode, glucose tracker, AI chatbot
+- **Features implemented:**
+  - DR screening (real ML, threshold-tuned for sensitivity)
+  - Magic-link OTP auth with resend cooldown + server-side rate limit
+  - First-login profile onboarding (name + age + diabetes type) + later-edit modal in app header
+  - Multilingual UI + auth (EN/HI/KN), language preference persisted to `user_profile.language` and localStorage
+  - Glucose tracker — log, edit, delete, trend chart, status badges
+  - AI chatbot with persistent history (per-session, RLS-protected)
+  - Scan history tab — list + tap-to-reopen results from any past scan
+  - Real upload progress UI for slow connections; client-side image quality (dimension + Laplacian-blur) gate before upload
+  - Apollo `errorLink` → expired-JWT detection → graceful sign-out
+  - GPS doctor finder, WhatsApp result sharing, high-contrast mode, PWA install
 - **AI Chatbot:** ollama_cloud foundation models via Lambda-style microservice ✅
   - Models: `kimi-k2.6:cloud` primary for EN, `gpt-oss:120b` primary for HI/KN, full chain fallback
   - Endpoint: `POST /api/chat` (JWT-required, same-origin)
@@ -76,12 +86,13 @@ ai-for-bharat-2/
 │   ├── main.jsx                      # Entry point (ApolloProvider + AuthProvider + BrowserRouter)
 │   ├── App.jsx                       # Auth gate + routing (uses useAuth, no Amplify)
 │   ├── index.css                     # TailwindCSS + Nazar design system
-│   ├── pages/                        # NazarApp shell + Home/Scan/Result/Chat/Glucose/Community tabs
-│   ├── components/                   # NazarAuthScreen, OtpLoginForm, LotusSeverity, IrisLoader, ...
+│   ├── pages/                        # NazarApp shell + Home/Scan/Result/Chat/Glucose/History tabs (Community removed)
+│   ├── components/                   # NazarAuthScreen, OtpLoginForm, ProfileForm, LotusSeverity, IrisLoader, NearbyDoctors, MarigoldCelebration
 │   └── lib/
-│       ├── auth.jsx                 # AuthProvider, useAuth hook, JWT/token storage
-│       ├── apollo.js                # Apollo Client → /api/graphql with Bearer token
-│       ├── queries.js               # GraphQL queries/mutations (Hasura schema)
+│       ├── auth.jsx                 # AuthProvider, useAuth hook, JWT/token storage, listens for nazarai:session-expired
+│       ├── apollo.js                # Apollo Client → /api/graphql; errorLink dispatches session-expired on 401/invalid-jwt
+│       ├── queries.js               # GraphQL queries/mutations (Hasura schema) — incl. UPSERT_PROFILE, *_GLUCOSE_READING, LIST_RETINA_SCANS
+│       ├── imageQuality.js          # Laplacian-variance blur check + dimension gate for fundus uploads
 │       ├── i18n.js                  # Translations (EN, HI, KN)
 │       └── location.js              # Geolocation + maps utilities
 │
@@ -106,7 +117,8 @@ ai-for-bharat-2/
 │   └── sql/01-schema.sql            # Postgres DDL: app_user, login_otp, glucose_reading, ...
 │
 ├── tests/                             # E2E integration tests (Vitest)
-│   └── e2e.test.js                  # 14 tests: auth, Hasura RLS, chatbot, site
+│   ├── e2e.test.js                  # 20 tests: auth, Hasura RLS, scan pipeline, chatbot, site
+│   └── fixtures/test-fundus.png     # 224×224 synthetic gradient PNG used by scan-flow tests
 ├── vitest.config.js                   # Vitest test configuration
 ├── .env.example                       # Environment variable template
 │
@@ -257,7 +269,8 @@ The following NCDs and conditions have been **removed** from the project scope:
 - **Label semantics:** Model's `id2label` is NOT APTOS-standard order (`{0:mild, 1:moderate, 2:no_dr, 3:proliferative, 4:severe}`). The service **hardcodes a remap** to APTOS-standard so the API speaks `{0:No DR, 1:Mild, 2:Moderate, 3:Severe, 4:Proliferative}`
 - **Decision rule:** binary "any DR" call uses `P(any DR) > 0.30` (sensitivity-tuned, not argmax) — the bare-argmax model never predicts Mild/Severe/Proliferative on APTOS, so threshold tuning is necessary to get sensitivity ≥95%
 - **Phase 0 numbers** (APTOS test, 400 samples, NUC CPU): top-2 acc 81%, sensitivity 89.45% at argmax / ~95%+ at threshold 0.30, specificity 98% / ~92% at threshold, mean latency 798 ms (PyTorch native) / 220 ms (in-service after warm-up)
-- **Future:** if smartphone-captured fundus accuracy proves insufficient, escalate to RETFound (Nature 2023 foundation model) + APTOS fine-tune. Image-quality gate is also still heuristic; a real fundus quality classifier (Laplacian variance / dedicated model) is open work
+- **Image-quality gate (client-side):** `src/lib/imageQuality.js` — dimension check (≥224×224) + Laplacian-of-grayscale variance on a 256×256 downsample, threshold 80. Reports `too_small` / `blurry` so the upload UI can show a specific reason. Threshold is empirical from APTOS samples; will need re-tuning when real Indian phone-fundus captures arrive.
+- **Future:** if smartphone-captured fundus accuracy proves insufficient, escalate to RETFound (Nature 2023 foundation model) + APTOS fine-tune. A more sophisticated quality classifier (dedicated lightweight CNN) could replace the Laplacian heuristic.
 
 ### Development Environment
 - **IDE:** local VS Code or Claude Code
@@ -266,11 +279,13 @@ The following NCDs and conditions have been **removed** from the project scope:
 - **CI/CD:** none yet — manual `docker build && docker push && kubectl rollout`
 
 ### Security & Compliance
-- **Auth:** magic-link OTP (10-min TTL, bcrypt-hashed) → HS256 JWT (7d TTL)
-- **Authorization:** Hasura row-level perms keyed on `x-hasura-user-id` JWT claim
+- **Auth:** magic-link OTP (6-digit, 10-min TTL, hashed via `bcrypt(otp + OTP_PEPPER)`) → HS256 JWT (7-day TTL)
+- **Auth rate limit:** server-side: max 1 OTP / email / 30 sec, max 5 OTPs / email / hour, returns 429 (matches client-side cooldown but plugs the API-direct abuse path)
+- **JWT lifecycle:** Apollo `errorLink` detects expired/invalid JWT (HTTP 401, Hasura `invalid-jwt` code, or "JWT expired" message) → dispatches `nazarai:session-expired` → `AuthProvider` forces sign-out, dropping user back at the OTP screen instead of opaque GraphQL errors
+- **Authorization:** Hasura row-level perms keyed on `x-hasura-user-id` JWT claim. `login_otp` is admin-only (no user-role select perm) so the OTP-injection table can't be read by any logged-in user
 - **Encryption:** TLS 1.3 at edge (Cloudflare), HTTP backplane within cluster
-- **Secrets:** k8s Secrets, never in repo. SES creds from `~/ai-business-agents/.env`
-- **Data Privacy:** GDPR / DPDP Act 2023 — minimal collection, user-owned data
+- **Secrets:** k8s Secrets, never in repo. `nazar-auth-env` holds DATABASE_URL, JWT_SECRET, OTP_PEPPER, SMTP_*. SES creds sourced from `~/ai-business-agents/.env` at deploy time
+- **Data Privacy:** GDPR / DPDP Act 2023 — minimal collection, user-owned data, `app_user` delete cascades through all child tables (glucose_reading, retina_scan, chat_message, user_profile)
 
 ## Critical Design Principles
 
@@ -332,10 +347,16 @@ The following NCDs and conditions have been **removed** from the project scope:
 
 ### E2E Integration Tests (Implemented)
 - **Framework:** Vitest (native to Vite)
-- **Test file:** `tests/e2e.test.js` — 14 tests, all passing
-- **Coverage:** Public site health, magic-link OTP → JWT, Hasura RLS (insert auto-set, list-own-rows, admin-only login_otp), chatbot (401 / EN / 400)
-- **Setup:** `beforeAll` injects an OTP via Hasura admin secret, exchanges via real `/auth/verify` endpoint; `afterAll` cascades cleanup via `delete_app_user`
-- **Run:** `HASURA_ADMIN_SECRET=... npm test` (default target: `https://nazarai.gheware-ai.com`)
+- **Test file:** `tests/e2e.test.js` — **20 tests, all passing**
+- **Coverage:**
+  - Public site health (3): `/`, `/auth/health`, `/api/chat/health`
+  - Magic-link auth (4): JWT issuance, `/auth/me`, missing token, bad OTP
+  - Hasura GraphQL with RLS (4): insert auto-sets `user_id`, list-own-rows-only, admin-only `login_otp` blocked, profile CRUD
+  - Retina scan pipeline (6): health, 401 without JWT, full upload→classify→persist, image roundtrip, cross-user 404, RLS check via Hasura
+  - Chatbot (3): 401 without JWT, English response, 400 on empty message
+- **Setup:** `beforeAll` injects an OTP via Hasura admin secret using `bcrypt(otp + OTP_PEPPER)` (must match server-side hashing), then exchanges via real `/auth/verify`. `afterAll` cleans up via `delete_app_user` cascade.
+- **Required env:** `HASURA_ADMIN_SECRET`, `OTP_PEPPER` (both must match the values in the cluster's `hasura-env` and `nazar-auth-env` secrets respectively).
+- **Run:** `HASURA_ADMIN_SECRET=... OTP_PEPPER=... npm test` (default target: `https://nazarai.gheware-ai.com`; override via `TEST_PUBLIC_URL=...`)
 
 ### Unit Testing (Planned)
 - **Framework:** Vitest + React Testing Library
@@ -381,7 +402,7 @@ The following NCDs and conditions have been **removed** from the project scope:
 npm install                            # install deps
 npm run dev                            # Vite dev server on :5173
 npm run build                          # builds dist/
-HASURA_ADMIN_SECRET=... npm test       # run e2e suite against live URL
+HASURA_ADMIN_SECRET=... OTP_PEPPER=... npm test   # run 20 e2e tests against live URL
 ```
 
 ### Build & deploy a backend service (auth / chatbot / web)

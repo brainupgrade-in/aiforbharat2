@@ -15,13 +15,17 @@ AI-powered diabetic retinopathy screening and diabetes management for India's 89
 
 ## Status
 
-- ✅ React 18 PWA, Apollo + custom magic-link OTP auth
-- ✅ Hasura GraphQL on CloudNativePG Postgres with row-level security via JWT claims
-- ✅ Diabetes-advisor chatbot via `ollama_cloud` (`kimi-k2.6:cloud` for EN, `gpt-oss:120b` for HI/KN, with full-chain fallback on non-2xx **or** empty content)
-- ✅ Real DR screening pipeline: ViT-base classifier (`rafalosa/diabetic-retinopathy-224-procnorm-vit`) running CPU-only on the cluster, ~220 ms / image, threshold-tuned for ≥95% sensitivity at the cost of some specificity
-- ✅ Glucose tracker with cloud sync
+- ✅ React 18 PWA, Apollo + custom magic-link OTP auth (with resend cooldown + server-side rate limit)
+- ✅ First-login profile onboarding (name, age, diabetes type) gates the app; in-app edit affordance for later changes
+- ✅ Multilingual UI **and** auth screen (EN/HI/KN) — preference saved to user_profile and follows the user across devices
+- ✅ Hasura GraphQL on CloudNativePG Postgres with row-level security via JWT claims; Apollo `errorLink` auto-bounces back to sign-in when JWT expires
+- ✅ Diabetes-advisor chatbot via `ollama_cloud` (`kimi-k2.6:cloud` for EN, `gpt-oss:120b` for HI/KN, full-chain fallback on non-2xx **or** empty content); chat history persists per session
+- ✅ Real DR screening pipeline: ViT-base classifier (`rafalosa/diabetic-retinopathy-224-procnorm-vit`) running CPU-only on the cluster, ~220 ms / image, threshold-tuned for ≥95% sensitivity at the cost of some specificity. Client-side image-quality gate (dimension + Laplacian-blur) before upload; XHR upload progress bar for slow connections.
+- ✅ Glucose tracker with cloud sync — log, edit, delete; trend chart with status thresholds
+- ✅ Scan history tab — full list of past scans, tap any row to re-open the result page (no re-inference)
+- ✅ Auth security: 6-digit OTP `bcrypt(otp + OTP_PEPPER)` hashed, 10-min TTL, single-use; rate limit (1/30s, max 5/hour per email)
 - ✅ Cloudflare Tunnel public exposure (no exposed home IP), Let's Encrypt TLS via cert-manager
-- ✅ E2E test suite: **20/20 passing** (auth → Hasura RLS → ollama_cloud → DR pipeline → site)
+- ✅ E2E test suite: **20/20 passing** (auth → Hasura RLS → DR pipeline → ollama_cloud → site)
 - ✅ AWS account fully torn down (no recurring spend)
 - 🔄 Meal-photo analyzer — pending. Will need a shared object-storage tier (MinIO) when shipped.
 
@@ -138,9 +142,9 @@ See `CLAUDE.md` for the full developer guide (commands, conventions, gotchas).
 ```
 ai-for-bharat-2/
 ├── src/                                 React MVP (Vite)
-│   ├── pages/Nazar*.jsx                 Home, Scan, Result, Chat, Glucose, Community
-│   ├── components/                      OtpLoginForm, NazarAuthScreen, LotusSeverity, ...
-│   └── lib/                             auth.jsx, apollo.js, queries.js, i18n.js
+│   ├── pages/Nazar*.jsx                 Home, Scan, Result, Chat, Glucose, History
+│   ├── components/                      OtpLoginForm, NazarAuthScreen, ProfileForm, LotusSeverity, NearbyDoctors, ...
+│   └── lib/                             auth.jsx, apollo.js (with errorLink), queries.js, imageQuality.js, i18n.js
 ├── services/                            Containerized backend services
 │   ├── auth/                            nazar-auth (Fastify, magic-link OTP)
 │   ├── chatbot/                         nazar-chatbot (Fastify → ollama_cloud)
@@ -166,10 +170,12 @@ ai-for-bharat-2/
 ## Testing
 
 ```bash
-HASURA_ADMIN_SECRET=<...> npm test
+HASURA_ADMIN_SECRET=<...> OTP_PEPPER=<...> npm test
 ```
 
-20 tests cover:
+Both env vars must match the values in the cluster's `hasura-env` and `nazar-auth-env` k8s Secrets respectively — `OTP_PEPPER` is needed because the test injects OTPs directly into `login_otp` using the same `bcrypt(otp + OTP_PEPPER)` the auth service uses.
+
+**20 tests** cover:
 1. Public site health (3) — `/`, `/auth/health`, `/api/chat/health`
 2. Magic-link auth (4) — JWT issuance, `/auth/me`, bad OTP, missing token
 3. Hasura GraphQL with RLS (4) — auto-set `user_id` on insert, list-own-rows-only, admin-only `login_otp` blocked, profile CRUD
