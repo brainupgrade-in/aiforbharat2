@@ -22,7 +22,7 @@ function formatScanDate(iso) {
   return `${d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}, ${d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`
 }
 
-export default function NazarHistory({ lang }) {
+export default function NazarHistory({ lang, onSelectScan }) {
   const { data, loading } = useQuery(LIST_RETINA_SCANS, { variables: { limit: 50 } })
   const scans = data?.retina_scan || []
 
@@ -44,7 +44,12 @@ export default function NazarHistory({ lang }) {
             const severity = CLASS_TO_SEVERITY[scan.classification] ?? 0
             const tone = RISK_TONE[scan.risk_level] || RISK_TONE.low
             return (
-              <div key={scan.id} className="card-warm flex items-center gap-4 !py-3">
+              <button
+                key={scan.id}
+                onClick={() => onSelectScan?.(scan)}
+                className="card-warm w-full flex items-center gap-4 !py-3 text-left active:scale-[0.99] transition-transform hover:border-teal-pale border-2 border-transparent"
+                aria-label={`View ${scan.classification} scan from ${formatScanDate(scan.created_at)}`}
+              >
                 <LotusSeverity petals={severity} size={42} animate={false} />
                 <div className="flex-1 min-w-0">
                   <p className="font-display font-bold text-ink truncate">
@@ -60,7 +65,10 @@ export default function NazarHistory({ lang }) {
                     {Math.round((scan.confidence || 0) * 100)}%
                   </span>
                 </div>
-              </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8A9A" strokeWidth="2" className="shrink-0" aria-hidden="true">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
             )
           })}
         </div>

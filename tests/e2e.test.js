@@ -20,6 +20,7 @@ const TEST_FUNDUS_PNG = readFileSync(join(__dirname, 'fixtures', 'test-fundus.pn
 
 const PUBLIC_URL = process.env.TEST_PUBLIC_URL || 'https://nazarai.gheware-ai.com'
 const ADMIN      = process.env.HASURA_ADMIN_SECRET
+const PEPPER     = process.env.OTP_PEPPER || ''
 const TEST_EMAIL = `e2e+vitest-${Date.now()}@nazar.local`
 
 if (!ADMIN) {
@@ -55,7 +56,9 @@ let userId      // app_user.id
 
 beforeAll(async () => {
   const otp     = '123456'
-  const otpHash = await bcrypt.hash(otp, 10)
+  // Match the auth service's bcrypt(otp + OTP_PEPPER) hashing so the OTP we
+  // inject directly into login_otp will verify when /auth/verify runs.
+  const otpHash = await bcrypt.hash(otp + PEPPER, 10)
 
   // Wipe any prior state for this email (defensive — email is unique-per-run anyway)
   await adminGql(`

@@ -130,6 +130,9 @@ export const LIST_RETINA_SCANS = gql`
       classification
       confidence
       risk_level
+      findings
+      recommendations
+      image_key
       created_at
     }
   }

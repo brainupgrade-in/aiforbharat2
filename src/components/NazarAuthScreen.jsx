@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { LANGS } from '../lib/i18n'
+import { LANGS, t } from '../lib/i18n'
 
 /**
  * NazarAuthScreen — immersive branded login/signup wrapper
@@ -193,31 +193,31 @@ export default function NazarAuthScreen({ children, lang, setLang }) {
           <div className="flex items-center justify-center gap-2 mt-2">
             <div className="h-px w-8 bg-amber-warm/40" />
             <p className="font-body text-amber-warm text-sm font-medium tracking-wide">
-              Protecting Your Eyes
+              {t('protectingYourEyes', lang || 'en')}
             </p>
             <div className="h-px w-8 bg-amber-warm/40" />
           </div>
         </div>
 
-        {/* Hindi inspirational quote */}
+        {/* Inspirational quote — kept in original Hindi as a brand element regardless of UI language */}
         <p className="text-center text-amber-warm/90 text-sm font-display font-semibold mb-2 italic">
           "आँखों से प्यार झलकना चाहिए, बीमारी नहीं"
         </p>
 
         {/* Key message */}
-        <p className="text-center text-teal-pale/80 text-sm font-body max-w-[280px] mx-auto leading-relaxed mb-5">
-          AI-powered diabetic retinopathy screening.
-          <span className="text-white font-semibold"> 30-second scan. </span>
-          Protect your vision before it's too late.
+        <p className="text-center text-teal-pale/80 text-sm font-body max-w-[300px] mx-auto leading-relaxed mb-5">
+          {t('splashIntro1', lang || 'en')}
+          <span className="text-white font-semibold"> {t('splashIntro2', lang || 'en')} </span>
+          {t('splashIntro3', lang || 'en')}
         </p>
 
         {/* Impact stats */}
         <div className="flex justify-center gap-6 mb-5">
-          <StatCounter value={89} suffix="M" label="Diabetics in India" />
+          <StatCounter value={89} suffix="M" label={t('diabeticsInIndia', lang || 'en')} />
           <div className="w-px bg-white/15 self-stretch" />
-          <StatCounter value={43} suffix="%" label="Undiagnosed" />
+          <StatCounter value={43} suffix="%" label={t('undiagnosedLabel', lang || 'en')} />
           <div className="w-px bg-white/15 self-stretch" />
-          <StatCounter value={90} suffix="%" label="Blindness Preventable" />
+          <StatCounter value={90} suffix="%" label={t('blindnessPreventable', lang || 'en')} />
         </div>
 
         {/* Testimonial */}
@@ -264,10 +264,10 @@ export default function NazarAuthScreen({ children, lang, setLang }) {
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
-              <span className="text-[11px] text-ink-muted">End-to-end encrypted • HIPAA compliant</span>
+              <span className="text-[11px] text-ink-muted">{t('splashEncrypted', lang || 'en')}</span>
             </div>
             <p className="text-[10px] text-ink-muted/60">
-              AWS AI for Bharat • Made in India 🇮🇳
+              {t('madeInIndia', lang || 'en')} 🇮🇳
             </p>
             <p className="text-[10px] text-ink-muted/60">
               Built by{' '}

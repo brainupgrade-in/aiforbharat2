@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { t } from '../lib/i18n'
 import { useAuth } from '../lib/auth.jsx'
+import { checkImageQuality } from '../lib/imageQuality'
 import IrisLoader from '../components/IrisLoader'
 
 const SCAN_URL = import.meta.env.VITE_SCAN_URL || '/api/scan'
@@ -27,6 +28,7 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
   const [patientId, setPatientId] = useState(initialPatientId)
   const [preview, setPreview] = useState(null)
   const [photoQuality, setPhotoQuality] = useState(null)
+  const [qualityReason, setQualityReason] = useState(null)   // 'too_small' | 'blurry' | null
   const [showCamera, setShowCamera] = useState(false)
   const [cameraError, setCameraError] = useState(null)
   const [error, setError] = useState(null)
@@ -68,6 +70,14 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
     }
   }
 
+  const runQualityCheck = useCallback(async (src) => {
+    setPhotoQuality(null)
+    setQualityReason(null)
+    const result = await checkImageQuality(src)
+    setPhotoQuality(result.ok ? 'good' : 'bad')
+    setQualityReason(result.reason)
+  }, [])
+
   const captureFromCamera = () => {
     if (!videoRef.current || !canvasRef.current) return
     const video = videoRef.current
@@ -75,10 +85,10 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
     canvas.width = video.videoWidth
     canvas.height = video.videoHeight
     canvas.getContext('2d').drawImage(video, 0, 0)
-    setPreview(canvas.toDataURL('image/jpeg', 0.9))
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9)
+    setPreview(dataUrl)
     stopCamera()
-    // Camera frames are at device resolution — well above the model's 224×224 input.
-    setPhotoQuality(canvas.width >= 224 && canvas.height >= 224 ? 'good' : 'bad')
+    runQualityCheck(dataUrl)
   }
 
   const handleFileChange = useCallback((e) => {
@@ -89,20 +99,14 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
     }
     const url = URL.createObjectURL(file)
     setPreview(url)
-    setPhotoQuality(null)
-    // Reject anything below the model's input size — those upscale into garbage.
-    const img = new Image()
-    img.onload = () => {
-      setPhotoQuality(img.naturalWidth >= 224 && img.naturalHeight >= 224 ? 'good' : 'bad')
-    }
-    img.onerror = () => setPhotoQuality('bad')
-    img.src = url
+    runQualityCheck(url)
     if (e.target) e.target.value = ''
-  }, [])
+  }, [runQualityCheck])
 
   const handleRetake = () => {
     setPreview(null)
     setPhotoQuality(null)
+    setQualityReason(null)
     setError(null)
   }
 
@@ -261,11 +265,22 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
             {!showCamera && preview && (
               <div className="relative bg-gray-900 rounded-2xl overflow-hidden aspect-square max-h-72 mx-auto mb-4">
                 <img src={preview} alt="Fundus capture" className="w-full h-full object-cover" />
-                {photoQuality && (
-                  <div className={`absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full font-body font-semibold text-sm ${
-                    photoQuality === 'good' ? 'bg-mango-green text-white' : 'bg-kumkum-red text-white'
-                  }`}>
-                    {photoQuality === 'good' ? t('photoOk', lang) : t('photoRetake', lang)}
+                {photoQuality === 'good' && (
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full font-body font-semibold text-sm bg-mango-green text-white">
+                    {t('photoOk', lang)}
+                  </div>
+                )}
+                {photoQuality === 'bad' && (
+                  <div className="absolute bottom-3 left-3 right-3 px-3 py-2 rounded-2xl font-body font-medium text-[12px] bg-kumkum-red text-white text-center leading-snug">
+                    {qualityReason === 'too_small' && t('photoTooSmall', lang)}
+                    {qualityReason === 'blurry' && t('photoBlurry', lang)}
+                    {!qualityReason && t('photoRetake', lang)}
+                  </div>
+                )}
+                {photoQuality === null && (
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white/90 text-ink-muted text-[11px] font-medium">
+                    <span className="inline-block w-3 h-3 border-2 border-teal-deep border-t-transparent rounded-full animate-spin align-middle mr-2" />
+                    Checking quality…
                   </div>
                 )}
                 <button onClick={handleRetake} className="absolute top-3 right-3 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center shadow" aria-label="Retake">

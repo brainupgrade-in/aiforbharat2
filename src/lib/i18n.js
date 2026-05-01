@@ -96,6 +96,19 @@ export const strings = {
   // Upload progress
   uploading: { en: 'Uploading image…', hi: 'इमेज अपलोड हो रही है…', kn: 'ಚಿತ್ರ ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ…' },
   uploadProgress: { en: 'Uploaded {percent}%', hi: '{percent}% अपलोड', kn: '{percent}% ಅಪ್‌ಲೋಡ್' },
+  // Auth-screen splash (was English-only)
+  protectingYourEyes: { en: 'Protecting Your Eyes', hi: 'आपकी आँखों की सुरक्षा', kn: 'ನಿಮ್ಮ ಕಣ್ಣುಗಳ ರಕ್ಷಣೆ' },
+  splashIntro1: { en: 'AI-powered diabetic retinopathy screening.', hi: 'AI-आधारित डायबिटिक रेटिनोपैथी जाँच।', kn: 'AI-ಆಧಾರಿತ ಮಧುಮೇಹ ರೆಟಿನೋಪತಿ ತಪಾಸಣೆ.' },
+  splashIntro2: { en: '30-second scan.', hi: '30 सेकंड में स्कैन।', kn: '30 ಸೆಕೆಂಡ್ ಸ್ಕ್ಯಾನ್.' },
+  splashIntro3: { en: 'Protect your vision before it\'s too late.', hi: 'देर होने से पहले अपनी नज़र की रक्षा करें।', kn: 'ತಡವಾಗುವ ಮೊದಲು ನಿಮ್ಮ ದೃಷ್ಟಿಯನ್ನು ರಕ್ಷಿಸಿ.' },
+  diabeticsInIndia: { en: 'Diabetics in India', hi: 'भारत में मधुमेह रोगी', kn: 'ಭಾರತದಲ್ಲಿ ಮಧುಮೇಹಿಗಳು' },
+  undiagnosedLabel: { en: 'Undiagnosed', hi: 'बिना निदान', kn: 'ಪತ್ತೆಯಾಗದ' },
+  blindnessPreventable: { en: 'Blindness Preventable', hi: 'अंधेपन से बचाव संभव', kn: 'ಕುರುಡುತನ ತಡೆಯಬಹುದು' },
+  splashEncrypted: { en: 'End-to-end encrypted', hi: 'एंड-टू-एंड एन्क्रिप्टेड', kn: 'ಎಂಡ್-ಟು-ಎಂಡ್ ಎನ್‌ಕ್ರಿಪ್ಟ್' },
+  madeInIndia: { en: 'Made in India', hi: 'भारत में बना', kn: 'ಭಾರತದಲ್ಲಿ ತಯಾರಿಸಲಾಗಿದೆ' },
+  // Photo quality reasons
+  photoTooSmall: { en: 'Image too small. Need at least 224×224 pixels.', hi: 'इमेज बहुत छोटी है। कम से कम 224×224 पिक्सेल चाहिए।', kn: 'ಚಿತ್ರ ತುಂಬಾ ಸಣ್ಣದು. ಕನಿಷ್ಠ 224×224 ಪಿಕ್ಸೆಲ್ ಬೇಕು.' },
+  photoBlurry: { en: 'Image looks blurry. Hold steady and retake.', hi: 'इमेज धुंधली है। स्थिर रखकर फिर लें।', kn: 'ಚಿತ್ರ ಮಸುಕಾಗಿದೆ. ಸ್ಥಿರವಾಗಿ ಹಿಡಿದು ಮತ್ತೆ ತೆಗೆಯಿರಿ.' },
   confidence: { en: 'AI Confidence', hi: 'AI विश्वास', kn: 'AI ವಿಶ್ವಾಸ' },
   doctorMode: { en: 'Doctor View', hi: 'डॉक्टर व्यू', kn: 'ವೈದ್ಯರ ನೋಟ' },
   patientMode: { en: 'Patient View', hi: 'मरीज़ व्यू', kn: 'ರೋಗಿಯ ನೋಟ' },

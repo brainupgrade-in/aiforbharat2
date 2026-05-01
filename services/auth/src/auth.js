@@ -6,8 +6,22 @@ import { sendOtp } from './mail.js';
 const OTP_TTL_MINUTES = 10;
 const JWT_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
+// Defense-in-depth: bcrypt(otp + pepper) instead of bcrypt(otp).
+// Even with a DB compromise, an attacker who lacks the pepper can't brute-force
+// the 6-digit OTP space (10⁶ candidates, trivially exhaustible against bare bcrypt).
+// Rotating OTP_PEPPER invalidates all in-flight OTPs (acceptable — they're 10-min TTL).
+const OTP_PEPPER = process.env.OTP_PEPPER || '';
+
 function generateOtp() {
   return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function hashOtp(otp) {
+  return bcrypt.hash(otp + OTP_PEPPER, 10);
+}
+
+function compareOtp(otp, hash) {
+  return bcrypt.compare(otp + OTP_PEPPER, hash);
 }
 
 function signToken(user) {
@@ -58,7 +72,7 @@ export async function requestLogin(email) {
   }
 
   const otp = generateOtp();
-  const otpHash = await bcrypt.hash(otp, 10);
+  const otpHash = await hashOtp(otp);
   const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60_000);
 
   await query(
@@ -91,7 +105,7 @@ export async function verifyOtp(email, otp) {
     const e = new Error('otp not found or expired'); e.statusCode = 401; throw e;
   }
 
-  const ok = await bcrypt.compare(code, rows[0].otp_hash);
+  const ok = await compareOtp(code, rows[0].otp_hash);
   if (!ok) {
     const e = new Error('otp mismatch'); e.statusCode = 401; throw e;
   }

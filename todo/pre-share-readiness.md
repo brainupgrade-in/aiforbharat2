@@ -119,8 +119,14 @@ Audit covered: feature flow, intuitive UI, honesty of displayed data, error stat
 
 **Status:** All blocks ✅. Auth service rolled out as `auth:v2`; web image at `web:v8`. 20/20 e2e tests passing.
 
-**Known gaps still worth tackling later (not pre-share blockers):**
-- The marketing splash on `NazarAuthScreen` (tagline, impact stats, paragraph copy) is still English-only. Translating those takes ~7 keys and is a clean follow-up.
-- Image-quality check is dimension-only. A blurry phone photo with high resolution still passes. Real fix: a Laplacian-variance blur check in JS, or a tiny client-side TFJS classifier.
-- No "tap a history row to re-open results" yet — the history page is read-only. Wiring it back through `NazarResult` requires either re-running inference or persisting full result-page payloads to the DB.
-- `OTP_PEPPER` not used; per-row bcrypt is fine but rotation would need a migration if we ever wanted to invalidate existing OTPs en masse.
+**Known gaps — all closed**
+
+- [x] Auth-screen splash now lang-aware (added `protectingYourEyes`, `splashIntro1/2/3`, `diabeticsInIndia`, `undiagnosedLabel`, `blindnessPreventable`, `splashEncrypted`, `madeInIndia` in i18n; the inspirational Hindi quote is preserved as a brand element regardless of UI language; the stale "AWS AI for Bharat" footer line was dropped along with it)
+- [x] Image-quality check now does Laplacian-of-grayscale variance on a 256×256 downsample with threshold 80 (`src/lib/imageQuality.js`). Reports specific reason (`too_small` / `blurry`) so the badge can say e.g. "Image looks blurry. Hold steady and retake." instead of the old generic "Retake photo". Includes a "Checking quality…" intermediate state.
+- [x] History rows are now buttons. Tapping a saved scan rebuilds the full `NazarResult` view from the persisted `findings` + `recommendations` + `classification` + `risk_level` (no need to re-run inference). `LIST_RETINA_SCANS` was extended to fetch the JSON columns + `image_key`.
+- [x] OTP_PEPPER added: auth service now hashes `bcrypt(otp + OTP_PEPPER)` instead of bare `bcrypt(otp)`. Pepper lives in the `nazar-auth-env` secret, separate from `JWT_SECRET`. E2E tests honor it via `process.env.OTP_PEPPER` so the same hash format is used for direct test injection.
+
+**New nothing-here-yet items spotted during this pass (not blocking):**
+- Image-quality threshold (80) is empirical from APTOS samples — may need tuning once real Indian phone-fundus captures come in.
+- Tapping a history row reuses the cached `findings`; if a scan was taken before `findings` was persisted (none currently — schema has had it from day one), the result page would render with empty probability bars.
+- `image_key` is fetched in history rows but the result view doesn't display the original image yet. The endpoint exists (`/api/scan/:id/image`) — just no `<img>` plumbing.

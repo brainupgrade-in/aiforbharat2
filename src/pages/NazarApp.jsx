@@ -10,6 +10,14 @@ import NazarGlucose from './NazarGlucose'
 import NazarHistory from './NazarHistory'
 import ProfileForm from '../components/ProfileForm'
 
+const CLASS_TO_SEVERITY = {
+  'No DR': 0,
+  'Mild NPDR': 1,
+  'Moderate NPDR': 2,
+  'Severe NPDR': 3,
+  'Proliferative DR': 4,
+}
+
 const NAV_ITEMS = [
   { id: 'home', icon: 'home' },
   { id: 'scan', icon: 'scan' },
@@ -80,6 +88,26 @@ export default function NazarApp({ profile, lang, setLang, signOut }) {
     setTab('results')
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
+
+  const handleSelectHistoryScan = useCallback((scan) => {
+    // Re-hydrate a saved retina_scan row into the same shape NazarResult expects
+    const findings = scan.findings || {}
+    const severity = CLASS_TO_SEVERITY[scan.classification] ?? 0
+    setScanResult({
+      scanId: scan.id,
+      severity,
+      classification: scan.classification,
+      confidence: Math.round((scan.confidence || 0) * 100),
+      riskLevel: scan.risk_level,
+      hasDr: scan.classification !== 'No DR',
+      pAnyDr: 1 - (findings['No DR'] || 0),
+      probs: findings,
+      recommendations: scan.recommendations || [],
+      patientId: profile?.name || 'Patient',
+    })
+    setTab('results')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [profile])
 
   const handleLangChange = (code) => {
     setLang(code)
@@ -186,7 +214,7 @@ export default function NazarApp({ profile, lang, setLang, signOut }) {
         {tab === 'results' && <NazarResult lang={lang} result={scanResult} onNavigate={handleNavigate} />}
         {tab === 'chat' && <NazarChat lang={lang} />}
         {tab === 'glucose' && <NazarGlucose lang={lang} />}
-        {tab === 'history' && <NazarHistory lang={lang} />}
+        {tab === 'history' && <NazarHistory lang={lang} onSelectScan={handleSelectHistoryScan} />}
       </main>
 
       {/* Profile edit modal */}
