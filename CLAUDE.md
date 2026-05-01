@@ -42,12 +42,18 @@ Design an AI solution that improves efficiency, understanding, or support within
   - Endpoint: `POST /api/chat` (JWT-required, same-origin)
 - **Auth:** custom magic-link OTP service (`nazar-auth`) issuing HS256 JWTs accepted by Hasura for row-level security
 - **Data:** Hasura GraphQL → CloudNativePG Postgres (7 tables, RLS via JWT claim `x-hasura-user-id`)
-- **E2E Integration Tests** — 14/14 passing (Vitest) ✅
-  - Magic-link auth, Hasura GraphQL CRUD with RLS, ollama_cloud chatbot, live site health check
+- **DR screening pipeline:** real ML, end-to-end ✅
+  - Model: `rafalosa/diabetic-retinopathy-224-procnorm-vit` (ViT-base, public HF checkpoint)
+  - Phase 0 eval on APTOS test split: 81% top-2 accuracy, 89.5% sensitivity for any-DR vs no-DR (sensitivity-tuned threshold P(any DR) > 0.30 in production pushes this to ~95%)
+  - Inference latency: ~220 ms / image on NUC CPU (no GPU needed)
+  - Service: `nazar-dr-model` (FastAPI + PyTorch CPU) + `nazar-scan` (Fastify, multipart upload, owns 20 Gi PVC for image storage, persists via Hasura with user JWT)
+  - Frontend `NazarScan` does real upload to `/api/scan`; `NazarResult` shows real class probabilities + server recommendations. **DEMO MODE flag retired.**
+- **E2E Integration Tests** — 20/20 passing (Vitest) ✅
+  - Magic-link auth, Hasura GraphQL CRUD with RLS (incl. admin-only `login_otp`), ollama_cloud chatbot, full retina-scan pipeline (upload → classify → persist → image roundtrip → cross-user 404), live site health check
 - **Intro/Demo Video** — Live on YouTube ✅
   - YouTube: https://youtu.be/G620A-YF_bY
   - Built with Remotion 4.0 (React-based) + edge-tts voiceover
-- **Next phase:** retina-scan ML model, meal-photo analyzer (storage tier when shipped)
+- **Next phase:** meal-photo analyzer (will need shared object storage tier — MinIO when a second service needs the images), validation against real Indian fundus captures, model upgrade to RETFound if smartphone-image accuracy is insufficient
 
 ## Repository Structure
 
@@ -56,7 +62,6 @@ ai-for-bharat-2/
 ├── README.md                           # Comprehensive problem analysis and solution roadmap
 ├── CLAUDE.md                          # This file - guidance for Claude Code
 ├── PROJECT_SUMMARY.md                 # Hackathon submission summary
-├── TECH_STACK.md                      # Detailed technical stack documentation
 ├── DIABETES_FOCUS.md                  # Diabetes-only scope documentation
 ├── IDEA_SUBMISSION.md                 # Hackathon idea submission content
 ├── FUNDING_VALIDATION.md              # Funding validation analysis
@@ -83,6 +88,8 @@ ai-for-bharat-2/
 ├── services/                          # Containerized backend services (all in nazarai NS)
 │   ├── auth/                         # nazar-auth: Fastify, magic-link OTP, HS256 JWT
 │   ├── chatbot/                      # nazar-chatbot: Fastify, ollama_cloud client, lang-routed
+│   ├── scan/                         # nazar-scan: Fastify, multipart upload, owns 20Gi PVC, calls dr-model + persists to Hasura
+│   ├── dr-model/                     # nazar-dr-model: FastAPI + PyTorch (ViT), 5-class DR classifier
 │   └── web/                          # nazar-web: nginx serving Vite dist with SPA fallback
 │
 ├── k8s/                               # Kubernetes manifests (applied to k3s-agentgrow)
@@ -93,6 +100,8 @@ ai-for-bharat-2/
 │   ├── 04-chatbot.yaml              # nazar-chatbot Deployment + Service
 │   ├── 05-web.yaml                  # nazar-web Deployment + Service
 │   ├── 06-ingress.yaml              # Traefik Ingress + Middleware (path rewrite for Hasura)
+│   ├── 07-dr-model.yaml             # nazar-dr-model Deployment + Service (CPU-only, 1-2 Gi RAM)
+│   ├── 08-scan.yaml                 # nazar-scan Deployment + Service + PVC (20Gi Longhorn)
 │   ├── hasura-perms.json            # Bulk metadata API payload — user-role RLS perms
 │   └── sql/01-schema.sql            # Postgres DDL: app_user, login_otp, glucose_reading, ...
 │
@@ -224,6 +233,8 @@ The following NCDs and conditions have been **removed** from the project scope:
 | Data API | Hasura v2.42 | JWT-mode auth, RLS via `x-hasura-user-id` from JWT claims |
 | Database | `nazarai-pg` (CNPG operator) | Postgres 16, 1 instance, Longhorn 5Gi PVC |
 | AI / Chat | `nazar-chatbot` | Fastify proxy → ollama_cloud OpenAI-compatible API |
+| AI / DR scan | `nazar-dr-model` | FastAPI + PyTorch CPU, ViT-base classifier, ~220 ms/image |
+| Scan upload | `nazar-scan` | Fastify multipart, 20 Gi Longhorn PVC, calls dr-model, persists via Hasura |
 | Web | `nazar-web` | nginx-unprivileged serving Vite `dist/` with SPA fallback |
 | Ingress | Traefik (k3s built-in) | Path-based routing, replacePathRegex middleware for Hasura |
 | TLS | cert-manager | `letsencrypt-prod` ClusterIssuer |
@@ -232,12 +243,21 @@ The following NCDs and conditions have been **removed** from the project scope:
 | Storage | Longhorn (default SC) | Replicated block storage |
 | Backups | (TODO) | restic/velero → external disk |
 
-### AI/ML — ollama_cloud
+### AI/ML
+
+**Chat (`nazar-chatbot` → ollama_cloud)**
 - **Provider name MUST be `ollama_cloud`** (not `ollama` — Gotcha #51 in `~/ai-business-agents/CLAUDE.md`)
 - **Models in use:** `kimi-k2.6:cloud` (EN primary), `gpt-oss:120b` (HI/KN primary, EN fallback)
 - **API:** `https://ollama.com/v1/chat/completions` (OpenAI-compatible), `OLLAMA_API_KEY` env var
 - **Lifecycle warning:** hosted models can be silently retired (e.g. `kimi-k2:1t` retired 2026-04-14 → 500s). Verify via `curl https://ollama.com/v1/models -H "Authorization: Bearer $OLLAMA_API_KEY"` before pinning new models
-- **Future:** retina DR detection (model TBD — Rekognition replacement candidates: ONNX Runtime, KServe, locally-served PyTorch)
+
+**DR scan (`nazar-dr-model` → in-cluster ViT)**
+- **Model:** `rafalosa/diabetic-retinopathy-224-procnorm-vit` (ViT-base, fine-tuned on `martinezomg/diabetic-retinopathy`, public HF Apache-2.0 weights, ~330 MB) — pre-baked into container image at build time
+- **Runtime:** PyTorch CPU + transformers `AutoImageProcessor`/`AutoModelForImageClassification`. ONNX evaluated and skipped: 800ms PyTorch latency is well under our 10s budget; conversion adds maintenance cost without a real win
+- **Label semantics:** Model's `id2label` is NOT APTOS-standard order (`{0:mild, 1:moderate, 2:no_dr, 3:proliferative, 4:severe}`). The service **hardcodes a remap** to APTOS-standard so the API speaks `{0:No DR, 1:Mild, 2:Moderate, 3:Severe, 4:Proliferative}`
+- **Decision rule:** binary "any DR" call uses `P(any DR) > 0.30` (sensitivity-tuned, not argmax) — the bare-argmax model never predicts Mild/Severe/Proliferative on APTOS, so threshold tuning is necessary to get sensitivity ≥95%
+- **Phase 0 numbers** (APTOS test, 400 samples, NUC CPU): top-2 acc 81%, sensitivity 89.45% at argmax / ~95%+ at threshold 0.30, specificity 98% / ~92% at threshold, mean latency 798 ms (PyTorch native) / 220 ms (in-service after warm-up)
+- **Future:** if smartphone-captured fundus accuracy proves insufficient, escalate to RETFound (Nature 2023 foundation model) + APTOS fine-tune. Image-quality gate is also still heuristic; a real fundus quality classifier (Laplacian variance / dedicated model) is open work
 
 ### Development Environment
 - **IDE:** local VS Code or Claude Code
@@ -251,37 +271,6 @@ The following NCDs and conditions have been **removed** from the project scope:
 - **Encryption:** TLS 1.3 at edge (Cloudflare), HTTP backplane within cluster
 - **Secrets:** k8s Secrets, never in repo. SES creds from `~/ai-business-agents/.env`
 - **Data Privacy:** GDPR / DPDP Act 2023 — minimal collection, user-owned data
-
-## Development Workflow
-
-### Phase 1: Research & Validation (Weeks 1-2)
-1. Choose specific use case from TIER 1 priorities
-2. Review existing AI models and datasets
-3. Identify regulatory requirements (Medical Devices Rules 2017, SaMD classification)
-4. Stakeholder research (interviews with doctors, patients, ASHA workers if possible)
-5. Dataset identification (NDHM, ICMR repositories, Kaggle healthcare datasets)
-
-### Phase 2: MVP Development (Weeks 3-5)
-1. UI/UX design for low digital literacy users
-2. Core AI integration (AWS Bedrock, Rekognition)
-3. React PWA development with Amplify backend
-4. Offline-first architecture implementation
-5. Regional language integration (i18n/l10n)
-6. Security implementation
-
-### Phase 3: Testing & Validation (Week 6)
-1. Unit testing and integration testing
-2. Model accuracy validation
-3. User acceptance testing (UAT)
-4. Performance optimization
-5. Security audit
-
-### Phase 4: Documentation & Presentation (Week 7)
-1. Code documentation
-2. API documentation
-3. User guides (English + Hindi minimum)
-4. Deployment guide
-5. Presentation deck finalization
 
 ## Critical Design Principles
 
@@ -418,6 +407,7 @@ ssh rajesh@nuc 'kubectl rollout restart deploy/nazar-auth -n nazarai'
   - `/` → nazar-web (React SPA)
   - `/auth/*` → nazar-auth
   - `/api/chat` → nazar-chatbot
+  - `/api/scan` → nazar-scan (POST upload, GET `/:id/image` byte stream)
   - `/api/graphql` → hasura (Traefik middleware rewrites to `/v1/graphql`)
 
 ### Cluster ops
@@ -542,64 +532,12 @@ node capture-fullpage-screenshots.js   # Puppeteer screenshots
 - Don't ignore accessibility requirements
 - Don't launch without ABDM integration plan
 
-## Quick Start Guide
-
-### Diabetes Screening MVP (7-Week Plan)
-
-**Week 1: Setup & Wireframes**
-1. Create GitHub repository structure
-2. Build HTML/CSS/JS wireframes in `docs/` folder
-3. Enable GitHub Pages for wireframe sharing
-4. Set up AWS Cloud9 development environment
-5. Initialize AWS Amplify project with React + Vite
-
-**Week 2: Authentication & Core UI**
-1. Implement Amplify Auth (email, phone OTP, Google OAuth)
-2. Build responsive React UI (TailwindCSS)
-3. Create dashboard with navigation
-4. Implement PWA manifest and service worker
-5. Test offline functionality
-
-**Week 3: Glucose Tracker**
-1. Define Amplify Data schema (User, GlucoseReading models)
-2. Build glucose logging UI (manual entry)
-3. Create glucose history chart (recharts)
-4. Implement trend analysis
-5. Test data sync
-
-**Week 4: AI Chatbot (Bedrock)**
-1. Integrate AWS Bedrock (Claude 3 Haiku)
-2. Build chat UI with conversation history
-3. Implement diabetes advisor chatbot
-4. Add multilingual support (Hindi)
-5. Test chatbot responses
-
-**Week 5: Meal Analyzer & Retina Scan**
-1. Build meal photo upload (S3 Storage)
-2. Integrate Bedrock Nova Pro for food recognition
-3. Train Rekognition Custom Labels on DR dataset
-4. Implement retina scan upload and analysis
-5. Display DR risk level with explanation
-
-**Week 6: Testing & Optimization**
-1. User testing with 20+ diabetic patients
-2. Performance optimization (Lighthouse >90)
-3. Security audit (OWASP checklist)
-4. Accessibility testing (WCAG 2.1 AA)
-5. Cross-browser testing
-
-**Week 7: Documentation & Submission**
-1. Complete README with screenshots
-2. Create demo video (3-5 minutes)
-3. Finalize presentation deck
-4. Write TECH_STACK.md (completed ✅)
-5. Submit to AWS AI for Bharat Hackathon
-
 ## References & Resources
 
 ### Official Documentation
-- AWS AI/ML Services: https://aws.amazon.com/machine-learning/
-- AWS Amplify: https://docs.amplify.aws/
+- Hasura GraphQL: https://hasura.io/docs/2.0/
+- CloudNativePG: https://cloudnative-pg.io/documentation/
+- ollama_cloud (model list): `curl https://ollama.com/v1/models -H "Authorization: Bearer $OLLAMA_API_KEY"`
 - React: https://react.dev/
 - Ayushman Bharat Digital Mission: https://abdm.gov.in/
 
@@ -640,7 +578,7 @@ For video narration and voiceover generation, always use these settings:
 
 ---
 
-**Last Updated:** 2026-04-30
+**Last Updated:** 2026-05-01
 **Hackathon:** AWS AI for Bharat (entered round 2; concluded)
 **Focus:** Mobile-first AI healthcare solutions for India
 **Live Prototype:** https://nazarai.gheware-ai.com/ (on-prem k3s)
