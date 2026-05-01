@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../lib/auth.jsx'
+
+const COOLDOWN_MS = 60_000
 
 export default function OtpLoginForm() {
   const { requestLogin, verifyOtp } = useAuth()
@@ -8,12 +10,40 @@ export default function OtpLoginForm() {
   const [otp, setOtp] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [info, setInfo] = useState('')
+  const [cooldownUntil, setCooldownUntil] = useState(0)
+  const [secondsLeft, setSecondsLeft] = useState(0)
+  const infoTimerRef = useRef(null)
+
+  // Countdown for resend cooldown
+  useEffect(() => {
+    if (cooldownUntil <= Date.now()) {
+      setSecondsLeft(0)
+      return
+    }
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000))
+      setSecondsLeft(remaining)
+    }
+    tick()
+    const timer = setInterval(tick, 1000)
+    return () => clearInterval(timer)
+  }, [cooldownUntil])
+
+  const flashInfo = (msg) => {
+    setInfo(msg)
+    if (infoTimerRef.current) clearTimeout(infoTimerRef.current)
+    infoTimerRef.current = setTimeout(() => setInfo(''), 4000)
+  }
+
+  const startCooldown = () => setCooldownUntil(Date.now() + COOLDOWN_MS)
 
   const submitEmail = async (e) => {
     e.preventDefault()
-    setError(''); setBusy(true)
+    setError(''); setInfo(''); setBusy(true)
     try {
       await requestLogin(email.trim())
+      startCooldown()
       setStage('otp')
     } catch (err) {
       setError(err.message || 'Could not send code')
@@ -29,6 +59,21 @@ export default function OtpLoginForm() {
       await verifyOtp(email.trim(), otp.trim())
     } catch (err) {
       setError(err.message || 'Invalid code')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const handleResend = async () => {
+    if (secondsLeft > 0 || busy) return
+    setError(''); setBusy(true)
+    try {
+      await requestLogin(email.trim())
+      startCooldown()
+      setOtp('')
+      flashInfo('New code sent')
+    } catch (err) {
+      setError(err.message || 'Could not resend code')
     } finally {
       setBusy(false)
     }
@@ -79,14 +124,31 @@ export default function OtpLoginForm() {
           <button type="submit" disabled={busy || otp.length !== 6} className="btn-teal w-full">
             {busy ? 'Verifying…' : 'Verify & sign in'}
           </button>
-          <button
-            type="button"
-            onClick={() => { setStage('email'); setOtp(''); setError('') }}
-            className="text-sm text-teal-deep hover:underline w-full text-center"
-          >
-            Use a different email
-          </button>
+
+          <div className="flex items-center justify-between text-sm pt-1">
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={secondsLeft > 0 || busy}
+              className="text-teal-deep hover:underline disabled:text-ink-muted disabled:no-underline disabled:cursor-not-allowed"
+            >
+              {secondsLeft > 0 ? `Resend in ${secondsLeft}s` : 'Resend code'}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setStage('email'); setOtp(''); setError(''); setInfo('') }}
+              className="text-teal-deep hover:underline"
+            >
+              Use a different email
+            </button>
+          </div>
         </form>
+      )}
+
+      {info && (
+        <div className="text-sm text-mango-green bg-mango-light px-3 py-2 rounded-lg">
+          {info}
+        </div>
       )}
 
       {error && (

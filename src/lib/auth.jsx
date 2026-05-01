@@ -48,7 +48,17 @@ export function AuthProvider({ children }) {
   const signOut = useCallback(() => {
     setToken(null)
     setUser(null)
+    // Clear any per-user client-side state so the next sign-in starts fresh
+    localStorage.removeItem('nazarai.chat.sessionId')
   }, [])
+
+  // When Apollo (or anyone) detects an expired/invalid JWT, force a signout so
+  // the user is dropped back at the OTP screen instead of seeing opaque errors.
+  useEffect(() => {
+    const handler = () => { if (token) signOut() }
+    window.addEventListener('nazarai:session-expired', handler)
+    return () => window.removeEventListener('nazarai:session-expired', handler)
+  }, [token, signOut])
 
   const value = {
     token,

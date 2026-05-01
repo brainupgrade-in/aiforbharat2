@@ -19,10 +19,10 @@ async function urlToBlob(url) {
   return r.blob()
 }
 
-export default function NazarScan({ lang, onResult }) {
+export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
   const { token } = useAuth()
   const [step, setStep] = useState(1)               // 1=photo, 2=analyzing
-  const [patientId, setPatientId] = useState('')
+  const [patientId, setPatientId] = useState(initialPatientId)
   const [preview, setPreview] = useState(null)
   const [photoQuality, setPhotoQuality] = useState(null)
   const [showCamera, setShowCamera] = useState(false)
@@ -75,15 +75,26 @@ export default function NazarScan({ lang, onResult }) {
     canvas.getContext('2d').drawImage(video, 0, 0)
     setPreview(canvas.toDataURL('image/jpeg', 0.9))
     stopCamera()
-    setPhotoQuality('good')
+    // Camera frames are at device resolution — well above the model's 224×224 input.
+    setPhotoQuality(canvas.width >= 224 && canvas.height >= 224 ? 'good' : 'bad')
   }
 
   const handleFileChange = useCallback((e) => {
     const file = e.target?.files?.[0]
-    if (file) {
-      setPreview(URL.createObjectURL(file))
-      setPhotoQuality('good')
+    if (!file) {
+      if (e.target) e.target.value = ''
+      return
     }
+    const url = URL.createObjectURL(file)
+    setPreview(url)
+    setPhotoQuality(null)
+    // Reject anything below the model's input size — those upscale into garbage.
+    const img = new Image()
+    img.onload = () => {
+      setPhotoQuality(img.naturalWidth >= 224 && img.naturalHeight >= 224 ? 'good' : 'bad')
+    }
+    img.onerror = () => setPhotoQuality('bad')
+    img.src = url
     if (e.target) e.target.value = ''
   }, [])
 

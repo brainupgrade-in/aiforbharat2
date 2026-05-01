@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { t } from '../lib/i18n'
-import { LIST_GLUCOSE_READINGS, INSERT_GLUCOSE_READING } from '../lib/queries'
+import { LIST_GLUCOSE_READINGS, INSERT_GLUCOSE_READING, DELETE_GLUCOSE_READING } from '../lib/queries'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 
 const CONTEXTS = {
@@ -47,6 +47,18 @@ export default function NazarGlucose({ lang }) {
   const [insertReading, { loading: saving }] = useMutation(INSERT_GLUCOSE_READING, {
     refetchQueries: [{ query: LIST_GLUCOSE_READINGS, variables: { limit: 50 } }],
   })
+  const [deleteReading] = useMutation(DELETE_GLUCOSE_READING, {
+    refetchQueries: [{ query: LIST_GLUCOSE_READINGS, variables: { limit: 50 } }],
+  })
+
+  const handleDelete = async (id) => {
+    if (!window.confirm(t('deleteReadingConfirm', lang))) return
+    try {
+      await deleteReading({ variables: { id } })
+    } catch (err) {
+      console.error('Failed to delete reading:', err)
+    }
+  }
 
   const readings = (data?.glucose_reading || []).map((r) => ({
     id: r.id,
@@ -204,7 +216,7 @@ export default function NazarGlucose({ lang }) {
         ) : (
           <div className="space-y-2">
             {readings.slice(0, 10).map((reading) => (
-              <div key={reading.id} className="flex items-center justify-between py-2.5 border-b border-ivory-dark/30 last:border-0">
+              <div key={reading.id} className="flex items-center justify-between py-2.5 border-b border-ivory-dark/30 last:border-0 group">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                     reading.status === 'high' ? 'bg-kumkum-light' : reading.status === 'low' ? 'bg-amber-light' : 'bg-mango-light'
@@ -220,15 +232,28 @@ export default function NazarGlucose({ lang }) {
                     <div className="text-[11px] text-ink-muted">{reading.context} &bull; {formatTime(reading.time)}</div>
                   </div>
                 </div>
-                <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${
-                  reading.status === 'high'
-                    ? 'bg-kumkum-light text-kumkum-red'
-                    : reading.status === 'low'
-                    ? 'bg-amber-light text-amber-deep'
-                    : 'bg-mango-light text-mango-green'
-                }`}>
-                  {reading.status === 'high' ? t('high', lang) : reading.status === 'low' ? t('low', lang) : t('normal', lang)}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${
+                    reading.status === 'high'
+                      ? 'bg-kumkum-light text-kumkum-red'
+                      : reading.status === 'low'
+                      ? 'bg-amber-light text-amber-deep'
+                      : 'bg-mango-light text-mango-green'
+                  }`}>
+                    {reading.status === 'high' ? t('high', lang) : reading.status === 'low' ? t('low', lang) : t('normal', lang)}
+                  </span>
+                  <button
+                    onClick={() => handleDelete(reading.id)}
+                    className="w-7 h-7 rounded-lg text-ink-muted hover:bg-kumkum-light hover:text-kumkum-red flex items-center justify-center"
+                    aria-label={t('delete', lang)}
+                    title={t('delete', lang)}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             ))}
           </div>

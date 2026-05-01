@@ -1,18 +1,19 @@
 import { useState, useCallback } from 'react'
+import { useMutation } from '@apollo/client'
 import { LANGS, t } from '../lib/i18n'
+import { UPDATE_PROFILE_LANGUAGE } from '../lib/queries'
 import NazarHome from './NazarHome'
 import NazarScan from './NazarScan'
 import NazarResult from './NazarResult'
 import NazarChat from './NazarChat'
 import NazarGlucose from './NazarGlucose'
-import NazarCommunity from './NazarCommunity'
+import ProfileForm from '../components/ProfileForm'
 
 const NAV_ITEMS = [
   { id: 'home', icon: 'home' },
   { id: 'scan', icon: 'scan' },
   { id: 'chat', icon: 'chat' },
   { id: 'glucose', icon: 'glucose' },
-  { id: 'community', icon: 'community' },
 ]
 
 function NavIcon({ icon, active }) {
@@ -60,11 +61,13 @@ function NavIcon({ icon, active }) {
   }
 }
 
-export default function NazarApp({ signOut }) {
+export default function NazarApp({ profile, lang, setLang, signOut }) {
   const [tab, setTab] = useState('home')
-  const [lang, setLang] = useState('hi')
   const [highContrast, setHighContrast] = useState(false)
   const [scanResult, setScanResult] = useState(null)
+  const [showProfileEdit, setShowProfileEdit] = useState(false)
+
+  const [updateLanguage] = useMutation(UPDATE_PROFILE_LANGUAGE)
 
   const handleNavigate = useCallback((target) => {
     setTab(target)
@@ -76,6 +79,12 @@ export default function NazarApp({ signOut }) {
     setTab('results')
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
+
+  const handleLangChange = (code) => {
+    setLang(code)
+    // Persist to profile so the choice follows the user across devices.
+    updateLanguage({ variables: { language: code } }).catch(() => {})
+  }
 
   return (
     <div className={`min-h-screen min-h-[100dvh] bg-ivory retinal-bg ${highContrast ? 'high-contrast' : ''}`}>
@@ -124,7 +133,7 @@ export default function NazarApp({ signOut }) {
                 {Object.entries(LANGS).map(([code, label]) => (
                   <button
                     key={code}
-                    onClick={() => setLang(code)}
+                    onClick={() => handleLangChange(code)}
                     className={`px-2 py-1.5 text-[11px] font-semibold transition-colors min-w-[36px] ${
                       lang === code
                         ? 'bg-teal-deep text-white'
@@ -137,6 +146,19 @@ export default function NazarApp({ signOut }) {
                   </button>
                 ))}
               </div>
+
+              {/* Profile edit */}
+              <button
+                onClick={() => setShowProfileEdit(true)}
+                className="w-8 h-8 bg-teal-pale rounded-lg flex items-center justify-center text-teal-deep hover:bg-teal-ghost transition-colors"
+                aria-label={t('editProfile', lang)}
+                title={profile?.name ? `${profile.name} — ${t('editProfile', lang)}` : t('editProfile', lang)}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </button>
 
               {/* Sign out */}
               {signOut && (
@@ -159,12 +181,48 @@ export default function NazarApp({ signOut }) {
       {/* Content */}
       <main className="max-w-lg mx-auto px-4 py-5 pb-24">
         {tab === 'home' && <NazarHome lang={lang} onNavigate={handleNavigate} />}
-        {tab === 'scan' && <NazarScan lang={lang} onResult={handleResult} />}
+        {tab === 'scan' && <NazarScan lang={lang} onResult={handleResult} initialPatientId={profile?.name} />}
         {tab === 'results' && <NazarResult lang={lang} result={scanResult} onNavigate={handleNavigate} />}
         {tab === 'chat' && <NazarChat lang={lang} />}
         {tab === 'glucose' && <NazarGlucose lang={lang} />}
-        {tab === 'community' && <NazarCommunity lang={lang} />}
       </main>
+
+      {/* Profile edit modal */}
+      {showProfileEdit && (
+        <div
+          className="fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
+          onClick={() => setShowProfileEdit(false)}
+        >
+          <div
+            className="bg-ivory rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto p-5"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-label={t('editProfile', lang)}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-display text-heading font-bold text-teal-deep">{t('editProfile', lang)}</h2>
+              <button
+                onClick={() => setShowProfileEdit(false)}
+                className="w-8 h-8 rounded-lg text-ink-muted hover:bg-ivory-dark flex items-center justify-center"
+                aria-label={t('cancel', lang)}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <ProfileForm
+              mode="edit"
+              lang={lang}
+              setLang={handleLangChange}
+              initial={profile}
+              onComplete={() => setShowProfileEdit(false)}
+              onCancel={() => setShowProfileEdit(false)}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Bottom nav — 5 tabs */}
       <nav

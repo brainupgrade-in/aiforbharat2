@@ -1,8 +1,26 @@
 import { useState, useRef, useEffect } from 'react'
+import { useQuery, useMutation } from '@apollo/client'
 import { t } from '../lib/i18n'
 import { useAuth } from '../lib/auth.jsx'
+import { LIST_CHAT_MESSAGES, INSERT_CHAT_MESSAGE } from '../lib/queries'
 
 const CHAT_URL = import.meta.env.VITE_CHAT_URL || '/api/chat'
+const SESSION_KEY = 'nazarai.chat.sessionId'
+
+function getSessionId() {
+  let sid = localStorage.getItem(SESSION_KEY)
+  if (!sid) {
+    sid = (crypto.randomUUID && crypto.randomUUID()) || `sess-${Date.now()}-${Math.random().toString(36).slice(2)}`
+    localStorage.setItem(SESSION_KEY, sid)
+  }
+  return sid
+}
+
+const greetingByLang = {
+  en: `Hello! I'm Nazar AI, your diabetes health advisor. I can help with glucose readings, Indian diet tips, exercise, and eye screening guidance. How can I help you today?`,
+  hi: `नमस्ते! मैं नज़र AI हूँ, आपका डायबिटीज़ स्वास्थ्य सलाहकार। मैं ब्लड शुगर, भारतीय आहार, व्यायाम, और आँखों की जाँच में मदद कर सकता हूँ। आज मैं आपकी कैसे मदद करूँ?`,
+  kn: `ನಮಸ್ಕಾರ! ನಾನು ನಜರ್ AI, ನಿಮ್ಮ ಮಧುಮೇಹ ಆರೋಗ್ಯ ಸಲಹೆಗಾರ. ರಕ್ತದ ಸಕ್ಕರೆ, ಭಾರತೀಯ ಆಹಾರ, ವ್ಯಾಯಾಮ, ಮತ್ತು ಕಣ್ಣಿನ ತಪಾಸಣೆಯಲ್ಲಿ ನಾನು ಸಹಾಯ ಮಾಡಬಲ್ಲೆ.`,
+}
 
 const suggestedQuestions = {
   en: [
@@ -41,23 +59,39 @@ async function callChatApi(token, message, lang) {
 
 export default function NazarChat({ lang }) {
   const { token } = useAuth()
+  const [sessionId] = useState(getSessionId)
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
   const bottomRef = useRef()
+  const hydratedRef = useRef(false)
 
+  const { data: histData } = useQuery(LIST_CHAT_MESSAGES, {
+    variables: { session_id: sessionId },
+    fetchPolicy: 'cache-and-network',
+  })
+
+  const [insertMessage] = useMutation(INSERT_CHAT_MESSAGE)
+
+  // Hydrate from server once: replay history if any, else show greeting (UI-only, not persisted).
   useEffect(() => {
-    const greeting = {
-      en: `Hello! I'm Nazar AI, your diabetes health advisor. I can help with glucose readings, Indian diet tips, exercise, and eye screening guidance. How can I help you today?`,
-      hi: `नमस्ते! मैं नज़र AI हूँ, आपका डायबिटीज़ स्वास्थ्य सलाहकार। मैं ब्लड शुगर, भारतीय आहार, व्यायाम, और आँखों की जाँच में मदद कर सकता हूँ। आज मैं आपकी कैसे मदद करूँ?`,
-      kn: `ನಮಸ್ಕಾರ! ನಾನು ನಜರ್ AI, ನಿಮ್ಮ ಮಧುಮೇಹ ಆರೋಗ್ಯ ಸಲಹೆಗಾರ. ರಕ್ತದ ಸಕ್ಕರೆ, ಭಾರತೀಯ ಆಹಾರ, ವ್ಯಾಯಾಮ, ಮತ್ತು ಕಣ್ಣಿನ ತಪಾಸಣೆಯಲ್ಲಿ ನಾನು ಸಹಾಯ ಮಾಡಬಲ್ಲೆ.`,
+    if (hydratedRef.current || !histData?.chat_message) return
+    hydratedRef.current = true
+    const history = histData.chat_message.map((m) => ({ role: m.role, content: m.content }))
+    if (history.length > 0) {
+      setMessages(history)
+    } else {
+      setMessages([{ role: 'assistant', content: greetingByLang[lang] || greetingByLang.en }])
     }
-    setMessages([{ role: 'assistant', content: greeting[lang] || greeting.en }])
-  }, [lang])
+  }, [histData, lang])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, typing])
+
+  const persist = (role, content) => {
+    insertMessage({ variables: { session_id: sessionId, role, content } }).catch(() => {})
+  }
 
   const sendMessage = async (text) => {
     const userMsg = text || input
@@ -66,11 +100,14 @@ export default function NazarChat({ lang }) {
     setMessages((prev) => [...prev, { role: 'user', content: userMsg }])
     setInput('')
     setTyping(true)
+    persist('user', userMsg)
 
     try {
       const response = await callChatApi(token, userMsg, lang)
       setMessages((prev) => [...prev, { role: 'assistant', content: response }])
+      persist('assistant', response)
     } catch (err) {
+      // Surface error in UI but don't persist — error states aren't useful in chat history
       setMessages((prev) => [...prev, {
         role: 'assistant',
         content: `Sorry, I couldn't reach the AI service. ${err.message}`,
@@ -87,6 +124,8 @@ export default function NazarChat({ lang }) {
     }
   }
 
+  // Show suggested questions only when conversation is fresh (just the greeting)
+  const showSuggestions = messages.length <= 1
   const questions = suggestedQuestions[lang] || suggestedQuestions.en
 
   return (
@@ -162,7 +201,7 @@ export default function NazarChat({ lang }) {
         <div ref={bottomRef} />
       </div>
 
-      {messages.length <= 1 && (
+      {showSuggestions && (
         <div className="flex gap-2 overflow-x-auto py-2 -mx-1 px-1 no-scrollbar">
           {questions.map((q, i) => (
             <button

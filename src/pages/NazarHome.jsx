@@ -1,42 +1,30 @@
 import { useState, useEffect } from 'react'
+import { useQuery } from '@apollo/client'
 import { t } from '../lib/i18n'
 import LotusSeverity from '../components/LotusSeverity'
 import { getUserLocation, getCachedLocation } from '../lib/location'
+import { LIST_RETINA_SCANS, LIST_GLUCOSE_READINGS } from '../lib/queries'
 
-const sugarData = [
-  { day: 'Mon', f: 118, p: 156 },
-  { day: 'Tue', f: 112, p: 148 },
-  { day: 'Wed', f: 126, p: 165 },
-  { day: 'Thu', f: 108, p: 142 },
-  { day: 'Fri', f: 115, p: 152 },
-  { day: 'Sat', f: 122, p: 170 },
-  { day: 'Sun', f: 110, p: 145 },
-]
+const CLASS_TO_SEVERITY = {
+  'No DR': 0,
+  'Mild NPDR': 1,
+  'Moderate NPDR': 2,
+  'Severe NPDR': 3,
+  'Proliferative DR': 4,
+}
+const GRADE_KEYS = ['noDR', 'mild', 'moderate', 'severe', 'proliferative']
 
-function Sparkline({ data, dataKey, color, height = 40 }) {
-  const values = data.map((d) => d[dataKey])
-  const min = Math.min(...values) - 10
-  const max = Math.max(...values) + 10
-  const range = max - min
-  const w = 200
-  const points = values
-    .map((v, i) => `${(i / (values.length - 1)) * w},${height - ((v - min) / range) * height}`)
-    .join(' ')
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+}
 
-  return (
-    <svg viewBox={`0 0 ${w} ${height}`} className="w-full" style={{ height }} aria-hidden="true">
-      <polyline points={points} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      {values.map((v, i) => (
-        <circle
-          key={i}
-          cx={(i / (values.length - 1)) * w}
-          cy={height - ((v - min) / range) * height}
-          r="3"
-          fill={color}
-        />
-      ))}
-    </svg>
-  )
+function relativeTime(dateStr) {
+  const d = new Date(dateStr)
+  const diff = Date.now() - d.getTime()
+  if (diff < 60_000) return 'just now'
+  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)} min ago`
+  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)} h ago`
+  return `${Math.floor(diff / 86_400_000)}d ago`
 }
 
 export default function NazarHome({ lang, onNavigate }) {
@@ -48,15 +36,18 @@ export default function NazarHome({ lang, onNavigate }) {
     }
   }, [])
 
-  const lastScanDate = '28 Feb 2026'
-  const lastScanResult = 0 // 0 = no DR
-  const streakDays = 14
-  const communityCount = 2847
+  const { data: scansData } = useQuery(LIST_RETINA_SCANS, { variables: { limit: 1 } })
+  const { data: glucoseData } = useQuery(LIST_GLUCOSE_READINGS, { variables: { limit: 5 } })
+
+  const lastScan = scansData?.retina_scan?.[0]
+  const lastSeverity = lastScan ? (CLASS_TO_SEVERITY[lastScan.classification] ?? 0) : null
+  const recentReadings = glucoseData?.glucose_reading || []
+
   const locationName = location?.short?.split(',')[0] || location?.town || location?.village || null
 
   return (
     <div className="space-y-5 animate-fade-up">
-      {/* Hero Greeting */}
+      {/* Hero greeting */}
       <div className="text-center pt-2">
         <h1 className="font-display text-display font-bold text-teal-deep leading-tight">
           {t('greeting', lang)}
@@ -64,6 +55,15 @@ export default function NazarHome({ lang, onNavigate }) {
         <p className="font-body text-body text-ink-muted mt-1">
           {t('greetingSub', lang)}
         </p>
+        {locationName && (
+          <p className="font-body text-caption text-ink-muted mt-1.5 inline-flex items-center gap-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            {locationName}
+          </p>
+        )}
       </div>
 
       {/* Scan CTA */}
@@ -79,82 +79,88 @@ export default function NazarHome({ lang, onNavigate }) {
         {t('scanToday', lang)}
       </button>
 
-      {/* Last Scan Card */}
-      <div className="card-warm">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-caption text-ink-muted font-medium">{t('lastScan', lang)}</p>
-            <p className="font-body font-semibold text-ink mt-0.5">{lastScanDate}</p>
-          </div>
-          <div className="flex items-center gap-3">
+      {/* Last scan */}
+      {lastScan ? (
+        <div className="card-warm">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-caption text-ink-muted font-medium text-right">{t('result', lang)}</p>
-              <p className={`font-display font-bold text-right ${
-                lastScanResult === 0 ? 'text-mango-green' : 'text-kumkum-red'
-              }`}>
-                {t(lastScanResult === 0 ? 'noDR' : 'mild', lang)}
-              </p>
+              <p className="text-caption text-ink-muted font-medium">{t('lastScan', lang)}</p>
+              <p className="font-body font-semibold text-ink mt-0.5">{formatDate(lastScan.created_at)}</p>
             </div>
-            <LotusSeverity petals={lastScanResult} size={48} animate={false} />
+            <div className="flex items-center gap-3">
+              <div>
+                <p className="text-caption text-ink-muted font-medium text-right">{t('result', lang)}</p>
+                <p className={`font-display font-bold text-right ${
+                  lastSeverity === 0 ? 'text-mango-green' : lastSeverity > 2 ? 'text-kumkum-red' : 'text-amber-deep'
+                }`}>
+                  {t(GRADE_KEYS[lastSeverity], lang)}
+                </p>
+              </div>
+              <LotusSeverity petals={lastSeverity} size={48} animate={false} />
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Streak */}
-      <div className="card-teal flex items-center gap-4">
-        <div className="w-12 h-12 bg-amber-warm rounded-xl flex items-center justify-center shrink-0">
-          <span className="text-2xl" role="img" aria-hidden="true">🔥</span>
-        </div>
-        <div>
-          <p className="font-display font-bold text-teal-deep text-xl">
-            {streakDays} {t('streak', lang)}
-          </p>
-        </div>
-      </div>
-
-      {/* Blood Sugar Sparkline */}
-      <div className="card-warm">
-        <h2 className="font-display font-semibold text-ink text-body-lg mb-3">{t('bloodSugar', lang)}</h2>
-        <div className="space-y-3">
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-caption text-ink-muted">{t('fasting', lang)}</span>
-              <span className="font-mono text-caption text-teal-deep font-medium">Avg 116 mg/dL</span>
-            </div>
-            <Sparkline data={sugarData} dataKey="f" color="#0A6E6E" />
+      ) : (
+        <div className="card-warm text-center py-5">
+          <div className="w-12 h-12 mx-auto mb-2 bg-teal-pale rounded-full flex items-center justify-center">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A6E6E" strokeWidth="2">
+              <ellipse cx="12" cy="12" rx="10" ry="6" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
           </div>
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-caption text-ink-muted">{t('postMeal', lang)}</span>
-              <span className="font-mono text-caption text-amber-deep font-medium">Avg 154 mg/dL</span>
-            </div>
-            <Sparkline data={sugarData} dataKey="p" color="#F5A623" />
+          <p className="font-display font-semibold text-ink">{t('noScansYet', lang)}</p>
+          <p className="font-body text-caption text-ink-muted mt-1">{t('noScansYetSub', lang)}</p>
+        </div>
+      )}
+
+      {/* Recent glucose */}
+      {recentReadings.length > 0 ? (
+        <div className="card-warm">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-display font-semibold text-ink text-body-lg">{t('recentGlucose', lang)}</h2>
+            <button
+              onClick={() => onNavigate('glucose')}
+              className="text-caption font-medium text-teal-deep hover:underline"
+            >
+              {t('seeAll', lang)} →
+            </button>
+          </div>
+          <div className="space-y-2">
+            {recentReadings.map((r) => {
+              const status = r.status || 'normal'
+              return (
+                <div key={r.id} className="flex items-center justify-between py-1.5 border-b border-ivory-dark/30 last:border-0">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                      status === 'high' ? 'bg-kumkum-light' : status === 'low' ? 'bg-amber-light' : 'bg-mango-light'
+                    }`}>
+                      <span className={`font-mono font-bold text-[13px] ${
+                        status === 'high' ? 'text-kumkum-red' : status === 'low' ? 'text-amber-deep' : 'text-mango-green'
+                      }`}>{r.value}</span>
+                    </div>
+                    <div>
+                      <p className="font-body text-caption text-ink">{r.context}</p>
+                      <p className="text-[11px] text-ink-muted">{relativeTime(r.reading_at)}</p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
-        {/* Day labels */}
-        <div className="flex justify-between mt-1 px-0.5">
-          {sugarData.map((d) => (
-            <span key={d.day} className="text-[10px] text-ink-muted">{d.day}</span>
-          ))}
+      ) : (
+        <div className="card-warm text-center py-5">
+          <p className="font-display font-semibold text-ink">{t('noGlucoseYet', lang)}</p>
+          <p className="font-body text-caption text-ink-muted mt-1 mb-3">{t('noGlucoseYetSub', lang)}</p>
+          <button onClick={() => onNavigate('glucose')} className="btn-teal !py-2 !px-4 !text-sm gap-1.5 mx-auto">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            {t('logReadingShort', lang)}
+          </button>
         </div>
-      </div>
-
-      {/* Community stat */}
-      <div className="bg-teal-deep rounded-2xl p-4 text-white flex items-center gap-4">
-        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-        </div>
-        <p className="font-body text-caption">
-          <span className="font-display font-bold text-body-lg text-amber-warm">
-            {communityCount.toLocaleString()}
-          </span>{' '}
-          {t('communityToday', lang)} {locationName || t('rajasthan', lang)}
-        </p>
-      </div>
+      )}
     </div>
   )
 }
