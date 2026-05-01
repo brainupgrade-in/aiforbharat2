@@ -74,6 +74,28 @@ export const strings = {
   codeResent: { en: 'New code sent', hi: 'नया कोड भेज दिया', kn: 'ಹೊಸ ಕೋಡ್ ಕಳುಹಿಸಲಾಗಿದೆ' },
   deleteReadingConfirm: { en: 'Delete this reading?', hi: 'यह रीडिंग हटाएँ?', kn: 'ಈ ಓದುವಿಕೆಯನ್ನು ಅಳಿಸಬೇಕೆ?' },
   delete: { en: 'Delete', hi: 'हटाएँ', kn: 'ಅಳಿಸಿ' },
+  // Auth screen (was English-only before)
+  signIn: { en: 'Sign in', hi: 'साइन इन', kn: 'ಸೈನ್ ಇನ್' },
+  emailIntro: { en: 'We\'ll email you a 6-digit code', hi: 'हम आपको 6 अंकों का कोड ईमेल करेंगे', kn: 'ನಿಮಗೆ 6-ಅಂಕಿಯ ಕೋಡ್ ಇಮೇಲ್ ಮಾಡುತ್ತೇವೆ' },
+  otpIntro: { en: 'Enter the code sent to {email}', hi: '{email} पर भेजा गया कोड दर्ज करें', kn: '{email} ಗೆ ಕಳುಹಿಸಲಾದ ಕೋಡ್ ನಮೂದಿಸಿ' },
+  emailPlaceholder: { en: 'you@example.com', hi: 'aap@example.com', kn: 'you@example.com' },
+  sendCode: { en: 'Send code', hi: 'कोड भेजें', kn: 'ಕೋಡ್ ಕಳುಹಿಸಿ' },
+  sending: { en: 'Sending…', hi: 'भेजा जा रहा है…', kn: 'ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ…' },
+  verifyAndSignIn: { en: 'Verify & sign in', hi: 'सत्यापित करें', kn: 'ಪರಿಶೀಲಿಸಿ' },
+  verifying: { en: 'Verifying…', hi: 'सत्यापित हो रहा है…', kn: 'ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ…' },
+  useDifferentEmail: { en: 'Use a different email', hi: 'दूसरा ईमेल इस्तेमाल करें', kn: 'ಬೇರೆ ಇಮೇಲ್ ಬಳಸಿ' },
+  couldNotSendCode: { en: 'Could not send code', hi: 'कोड नहीं भेजा जा सका', kn: 'ಕೋಡ್ ಕಳುಹಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ' },
+  invalidCode: { en: 'Invalid code', hi: 'गलत कोड', kn: 'ಅಮಾನ್ಯ ಕೋಡ್' },
+  // Glucose edit
+  updateReading: { en: 'Update reading', hi: 'रीडिंग अपडेट करें', kn: 'ಓದುವಿಕೆ ನವೀಕರಿಸಿ' },
+  editReading: { en: 'Edit reading', hi: 'रीडिंग संपादित करें', kn: 'ಓದುವಿಕೆ ಸಂಪಾದಿಸಿ' },
+  // Scan history
+  history: { en: 'History', hi: 'इतिहास', kn: 'ಇತಿಹಾಸ' },
+  scanHistoryTitle: { en: 'Scan history', hi: 'स्कैन इतिहास', kn: 'ಸ್ಕ್ಯಾನ್ ಇತಿಹಾಸ' },
+  scanHistoryEmpty: { en: 'No scans yet. Take your first one from the Scan tab.', hi: 'अभी तक कोई स्कैन नहीं। स्कैन टैब से पहला स्कैन लें।', kn: 'ಇನ್ನೂ ಸ್ಕ್ಯಾನ್‌ಗಳಿಲ್ಲ. ಸ್ಕ್ಯಾನ್ ಟ್ಯಾಬ್‌ನಿಂದ ಮೊದಲನೆಯದನ್ನು ತೆಗೆದುಕೊಳ್ಳಿ.' },
+  // Upload progress
+  uploading: { en: 'Uploading image…', hi: 'इमेज अपलोड हो रही है…', kn: 'ಚಿತ್ರ ಅಪ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ…' },
+  uploadProgress: { en: 'Uploaded {percent}%', hi: '{percent}% अपलोड', kn: '{percent}% ಅಪ್‌ಲೋಡ್' },
   confidence: { en: 'AI Confidence', hi: 'AI विश्वास', kn: 'AI ವಿಶ್ವಾಸ' },
   doctorMode: { en: 'Doctor View', hi: 'डॉक्टर व्यू', kn: 'ವೈದ್ಯರ ನೋಟ' },
   patientMode: { en: 'Patient View', hi: 'मरीज़ व्यू', kn: 'ರೋಗಿಯ ನೋಟ' },
@@ -107,6 +129,7 @@ export const strings = {
   glucose: { en: 'Glucose', hi: 'शुगर', kn: 'ಸಕ್ಕರೆ' },
   results: { en: 'Results', hi: 'रिज़ल्ट', kn: 'ಫಲಿತಾಂಶ' },
   community: { en: 'Community', hi: 'समुदाय', kn: 'ಸಮುದಾಯ' },
+  // 'history' tab label resolves via t('history', lang) -> already added in pre-share keys block
 
   // Chatbot
   chatTitle: { en: 'Diabetes AI Advisor', hi: 'डायबिटीज़ AI सलाहकार', kn: 'ಮಧುಮೇಹ AI ಸಲಹೆಗಾರ' },

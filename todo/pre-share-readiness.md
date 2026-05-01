@@ -103,20 +103,24 @@ Audit covered: feature flow, intuitive UI, honesty of displayed data, error stat
 - [x] §6 Resend OTP + 60-sec cooldown (countdown + "New code sent" toast)
 - [x] §9 language persists to `user_profile.language` AND `localStorage`; on login `ProfileGate` syncs `lang` from server
 
-**Block 3 — polish (partial)**
+**Block 3 — polish**
 - [x] §7 401 → re-login UX (Apollo `errorLink` dispatches `nazarai:session-expired` → `AuthProvider` listens and forces signOut)
 - [x] §10 photo quality minimum (image dimensions ≥ 224×224 enforced on both file upload and camera capture paths)
 - [x] §8 delete glucose readings (trash icon per row, `window.confirm`, `DELETE_GLUCOSE_READING` mutation)
-- [ ] §11 upload progress UI — deferred
-- [ ] §12 scan history — deferred
+- [x] §11 upload progress UI (XHR replaces fetch in the scan flow; step-2 screen now shows a real upload progress bar before switching to the IrisLoader for the inference phase)
+- [x] §12 scan history (new `NazarHistory` page on the bottom nav as 5th tab using a clock icon; lists last 50 retina_scan rows with classification, risk-tone badge, confidence, and timestamp)
+
+**Block 3+ — items the user explicitly asked for after Block 3 shipped**
+- [x] In-place edit of glucose readings (pencil icon per row; form switches to "Update reading" with `UPDATE_GLUCOSE_READING` mutation; original `reading_at` is preserved on edit)
+- [x] Server-side rate limit on `/auth/request-login` (1 per 30 seconds per email + max 5 per hour; returns 429 with a clear message — matches the client-side cooldown but plugs the API-direct abuse path)
+- [x] Lang-aware OTP screen (`OtpLoginForm` now takes a `lang` prop and pulls all copy from i18n; `NazarAuthScreen` exposes a small EN/HI/KN switcher in the form area so the auth flow respects the user's language before they sign in)
 
 ---
 
-**Status:** Block 1 ✅ · Block 2 ✅ · Block 3 partial (3/5). The two deferred items don't block share — current build is share-ready.
+**Status:** All blocks ✅. Auth service rolled out as `auth:v2`; web image at `web:v8`. 20/20 e2e tests passing.
 
-**Deferred follow-ups (not blocking share):**
-- §11 upload progress UI for slow connections (Analyzing… screen currently shows nothing during the 5-15s upload phase on 4G)
-- §12 scan history list view
-- Edit-mode for individual glucose readings (delete works; in-place value edit is still missing)
-- Server-side rate limit on `/auth/request-login` (client cooldown is honest-user only)
-- Lang-aware OTP screen (currently English-only; Auth screen i18n is a separate piece of work)
+**Known gaps still worth tackling later (not pre-share blockers):**
+- The marketing splash on `NazarAuthScreen` (tagline, impact stats, paragraph copy) is still English-only. Translating those takes ~7 keys and is a clean follow-up.
+- Image-quality check is dimension-only. A blurry phone photo with high resolution still passes. Real fix: a Laplacian-variance blur check in JS, or a tiny client-side TFJS classifier.
+- No "tap a history row to re-open results" yet — the history page is read-only. Wiring it back through `NazarResult` requires either re-running inference or persisting full result-page payloads to the DB.
+- `OTP_PEPPER` not used; per-row bcrypt is fine but rotation would need a migration if we ever wanted to invalidate existing OTPs en masse.

@@ -7,6 +7,7 @@ import NazarScan from './NazarScan'
 import NazarResult from './NazarResult'
 import NazarChat from './NazarChat'
 import NazarGlucose from './NazarGlucose'
+import NazarHistory from './NazarHistory'
 import ProfileForm from '../components/ProfileForm'
 
 const NAV_ITEMS = [
@@ -14,6 +15,7 @@ const NAV_ITEMS = [
   { id: 'scan', icon: 'scan' },
   { id: 'chat', icon: 'chat' },
   { id: 'glucose', icon: 'glucose' },
+  { id: 'history', icon: 'history' },
 ]
 
 function NavIcon({ icon, active }) {
@@ -47,13 +49,12 @@ function NavIcon({ icon, active }) {
           <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
         </svg>
       )
-    case 'community':
+    case 'history':
       return (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          <path d="M3 3v5h5" />
+          <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8" />
+          <polyline points="12 7 12 12 15 14" />
         </svg>
       )
     default:
@@ -185,6 +186,7 @@ export default function NazarApp({ profile, lang, setLang, signOut }) {
         {tab === 'results' && <NazarResult lang={lang} result={scanResult} onNavigate={handleNavigate} />}
         {tab === 'chat' && <NazarChat lang={lang} />}
         {tab === 'glucose' && <NazarGlucose lang={lang} />}
+        {tab === 'history' && <NazarHistory lang={lang} />}
       </main>
 
       {/* Profile edit modal */}

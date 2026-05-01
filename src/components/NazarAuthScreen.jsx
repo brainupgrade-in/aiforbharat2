@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { LANGS } from '../lib/i18n'
 
 /**
  * NazarAuthScreen — immersive branded login/signup wrapper
@@ -156,7 +157,7 @@ function TestimonialCarousel() {
   )
 }
 
-export default function NazarAuthScreen({ children }) {
+export default function NazarAuthScreen({ children, lang, setLang }) {
   const dots = [
     { delay: 0, x: 10, y: 15, size: 6, color: 'rgba(10,110,110,0.3)' },
     { delay: 1.5, x: 85, y: 20, size: 8, color: 'rgba(245,166,35,0.25)' },
@@ -231,6 +232,26 @@ export default function NazarAuthScreen({ children }) {
         >
           {/* Drag indicator */}
           <div className="w-10 h-1 bg-ink/10 rounded-full mx-auto mb-4" />
+
+          {/* Language switcher — small, top of form */}
+          {setLang && (
+            <div className="flex justify-center mb-3">
+              <div className="flex bg-ivory-dark rounded-lg overflow-hidden">
+                {Object.entries(LANGS).map(([code, label]) => (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => setLang(code)}
+                    className={`px-3 py-1.5 text-[11px] font-semibold transition-colors min-w-[40px] ${
+                      lang === code ? 'bg-teal-deep text-white' : 'text-ink-muted'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div>
             {children}

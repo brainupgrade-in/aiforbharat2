@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../lib/auth.jsx'
+import { t } from '../lib/i18n'
 
 const COOLDOWN_MS = 60_000
 
-export default function OtpLoginForm() {
+export default function OtpLoginForm({ lang = 'en' }) {
   const { requestLogin, verifyOtp } = useAuth()
   const [stage, setStage] = useState('email')   // email | otp
   const [email, setEmail] = useState('')
@@ -15,7 +16,6 @@ export default function OtpLoginForm() {
   const [secondsLeft, setSecondsLeft] = useState(0)
   const infoTimerRef = useRef(null)
 
-  // Countdown for resend cooldown
   useEffect(() => {
     if (cooldownUntil <= Date.now()) {
       setSecondsLeft(0)
@@ -46,7 +46,7 @@ export default function OtpLoginForm() {
       startCooldown()
       setStage('otp')
     } catch (err) {
-      setError(err.message || 'Could not send code')
+      setError(err.message || t('couldNotSendCode', lang))
     } finally {
       setBusy(false)
     }
@@ -58,7 +58,7 @@ export default function OtpLoginForm() {
     try {
       await verifyOtp(email.trim(), otp.trim())
     } catch (err) {
-      setError(err.message || 'Invalid code')
+      setError(err.message || t('invalidCode', lang))
     } finally {
       setBusy(false)
     }
@@ -71,9 +71,9 @@ export default function OtpLoginForm() {
       await requestLogin(email.trim())
       startCooldown()
       setOtp('')
-      flashInfo('New code sent')
+      flashInfo(t('codeResent', lang))
     } catch (err) {
-      setError(err.message || 'Could not resend code')
+      setError(err.message || t('couldNotSendCode', lang))
     } finally {
       setBusy(false)
     }
@@ -82,9 +82,9 @@ export default function OtpLoginForm() {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="font-display text-xl font-bold text-ink">Sign in</h2>
+        <h2 className="font-display text-xl font-bold text-ink">{t('signIn', lang)}</h2>
         <p className="text-sm text-ink-muted mt-1">
-          {stage === 'email' ? 'We\'ll email you a 6-digit code' : `Enter the code sent to ${email}`}
+          {stage === 'email' ? t('emailIntro', lang) : t('otpIntro', lang, { email })}
         </p>
       </div>
 
@@ -97,11 +97,11 @@ export default function OtpLoginForm() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
+            placeholder={t('emailPlaceholder', lang)}
             className="input-nazar w-full"
           />
           <button type="submit" disabled={busy || !email} className="btn-teal w-full">
-            {busy ? 'Sending…' : 'Send code'}
+            {busy ? t('sending', lang) : t('sendCode', lang)}
           </button>
         </form>
       )}
@@ -122,7 +122,7 @@ export default function OtpLoginForm() {
             className="input-nazar w-full text-center tracking-[0.5em] font-display text-xl"
           />
           <button type="submit" disabled={busy || otp.length !== 6} className="btn-teal w-full">
-            {busy ? 'Verifying…' : 'Verify & sign in'}
+            {busy ? t('verifying', lang) : t('verifyAndSignIn', lang)}
           </button>
 
           <div className="flex items-center justify-between text-sm pt-1">
@@ -132,14 +132,14 @@ export default function OtpLoginForm() {
               disabled={secondsLeft > 0 || busy}
               className="text-teal-deep hover:underline disabled:text-ink-muted disabled:no-underline disabled:cursor-not-allowed"
             >
-              {secondsLeft > 0 ? `Resend in ${secondsLeft}s` : 'Resend code'}
+              {secondsLeft > 0 ? t('resendIn', lang, { seconds: secondsLeft }) : t('resendCode', lang)}
             </button>
             <button
               type="button"
               onClick={() => { setStage('email'); setOtp(''); setError(''); setInfo('') }}
               className="text-teal-deep hover:underline"
             >
-              Use a different email
+              {t('useDifferentEmail', lang)}
             </button>
           </div>
         </form>

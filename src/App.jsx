@@ -47,8 +47,8 @@ function AuthGate() {
 
   if (!isAuthenticated) {
     return (
-      <NazarAuthScreen>
-        <OtpLoginForm />
+      <NazarAuthScreen lang={lang} setLang={setLang}>
+        <OtpLoginForm lang={lang} />
       </NazarAuthScreen>
     )
   }

@@ -36,6 +36,27 @@ export async function requestLogin(email) {
     const e = new Error('invalid email'); e.statusCode = 400; throw e;
   }
 
+  // Rate limit: at most one OTP per email per 30 seconds (matches client cooldown)
+  // and at most 5 per hour (catches API abuse beyond the UI cooldown).
+  const recent = await query(
+    `SELECT
+       COUNT(*) FILTER (WHERE created_at > now() - interval '30 seconds') AS in_last_30s,
+       COUNT(*) FILTER (WHERE created_at > now() - interval '1 hour')      AS in_last_hour
+     FROM login_otp WHERE email = $1`,
+    [normalized]
+  );
+  const stats = recent.rows[0];
+  if (Number(stats.in_last_30s) > 0) {
+    const e = new Error('Please wait 30 seconds before requesting another code');
+    e.statusCode = 429;
+    throw e;
+  }
+  if (Number(stats.in_last_hour) >= 5) {
+    const e = new Error('Too many requests for this email. Try again later.');
+    e.statusCode = 429;
+    throw e;
+  }
+
   const otp = generateOtp();
   const otpHash = await bcrypt.hash(otp, 10);
   const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60_000);

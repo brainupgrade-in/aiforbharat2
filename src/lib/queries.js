@@ -13,6 +13,29 @@ export const LIST_GLUCOSE_READINGS = gql`
   }
 `
 
+export const UPDATE_GLUCOSE_READING = gql`
+  mutation UpdateGlucoseReading(
+    $id: uuid!
+    $value: Int!
+    $context: String!
+    $notes: String
+    $reading_at: timestamptz!
+    $status: String
+  ) {
+    update_glucose_reading_by_pk(
+      pk_columns: { id: $id }
+      _set: { value: $value, context: $context, notes: $notes, reading_at: $reading_at, status: $status }
+    ) {
+      id
+      value
+      context
+      notes
+      reading_at
+      status
+    }
+  }
+`
+
 export const DELETE_GLUCOSE_READING = gql`
   mutation DeleteGlucoseReading($id: uuid!) {
     delete_glucose_reading_by_pk(id: $id) {

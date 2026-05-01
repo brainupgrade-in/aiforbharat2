@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { t } from '../lib/i18n'
-import { LIST_GLUCOSE_READINGS, INSERT_GLUCOSE_READING, DELETE_GLUCOSE_READING } from '../lib/queries'
+import { LIST_GLUCOSE_READINGS, INSERT_GLUCOSE_READING, DELETE_GLUCOSE_READING, UPDATE_GLUCOSE_READING } from '../lib/queries'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts'
 
 const CONTEXTS = {
@@ -39,25 +39,51 @@ function formatTime(dateStr) {
 
 export default function NazarGlucose({ lang }) {
   const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState(null)        // null = insert mode
+  const [editingTime, setEditingTime] = useState(null)    // preserve original timestamp on edit
   const [glucoseValue, setGlucoseValue] = useState('')
   const [mealContext, setMealContext] = useState((CONTEXTS[lang] || CONTEXTS.en)[0])
   const [notes, setNotes] = useState('')
 
   const { data, loading, error } = useQuery(LIST_GLUCOSE_READINGS, { variables: { limit: 50 } })
-  const [insertReading, { loading: saving }] = useMutation(INSERT_GLUCOSE_READING, {
-    refetchQueries: [{ query: LIST_GLUCOSE_READINGS, variables: { limit: 50 } }],
-  })
-  const [deleteReading] = useMutation(DELETE_GLUCOSE_READING, {
-    refetchQueries: [{ query: LIST_GLUCOSE_READINGS, variables: { limit: 50 } }],
-  })
+  const refetch = [{ query: LIST_GLUCOSE_READINGS, variables: { limit: 50 } }]
+  const [insertReading, { loading: inserting }] = useMutation(INSERT_GLUCOSE_READING, { refetchQueries: refetch })
+  const [updateReading, { loading: updating }] = useMutation(UPDATE_GLUCOSE_READING, { refetchQueries: refetch })
+  const [deleteReading] = useMutation(DELETE_GLUCOSE_READING, { refetchQueries: refetch })
+  const saving = inserting || updating
+
+  const resetForm = () => {
+    setGlucoseValue('')
+    setNotes('')
+    setMealContext((CONTEXTS[lang] || CONTEXTS.en)[0])
+    setEditingId(null)
+    setEditingTime(null)
+    setShowForm(false)
+  }
 
   const handleDelete = async (id) => {
     if (!window.confirm(t('deleteReadingConfirm', lang))) return
     try {
       await deleteReading({ variables: { id } })
+      // If we were editing the deleted row, clear the form
+      if (editingId === id) resetForm()
     } catch (err) {
       console.error('Failed to delete reading:', err)
     }
+  }
+
+  const handleEdit = (reading) => {
+    setEditingId(reading.id)
+    setEditingTime(reading.time)
+    setGlucoseValue(String(reading.value))
+    // reading.context is the English value from DB; map back to current-lang label for the select
+    const langContexts = CONTEXTS[lang] || CONTEXTS.en
+    const enContexts = CONTEXTS.en
+    const idx = enContexts.indexOf(reading.context)
+    setMealContext(idx >= 0 ? langContexts[idx] : reading.context)
+    setNotes(reading.notes || '')
+    setShowForm(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const readings = (data?.glucose_reading || []).map((r) => ({
@@ -76,20 +102,21 @@ export default function NazarGlucose({ lang }) {
 
     const enContext = CONTEXT_MAP[mealContext] || mealContext
     const status = getStatus(val, enContext)
+    const variables = {
+      value: val,
+      context: enContext,
+      notes: notes || null,
+      reading_at: editingId && editingTime ? editingTime : new Date().toISOString(),
+      status,
+    }
 
     try {
-      await insertReading({
-        variables: {
-          value: val,
-          context: enContext,
-          notes: notes || null,
-          reading_at: new Date().toISOString(),
-          status,
-        },
-      })
-      setGlucoseValue('')
-      setNotes('')
-      setShowForm(false)
+      if (editingId) {
+        await updateReading({ variables: { id: editingId, ...variables } })
+      } else {
+        await insertReading({ variables })
+      }
+      resetForm()
     } catch (err) {
       console.error('Failed to save reading:', err)
     }
@@ -133,7 +160,7 @@ export default function NazarGlucose({ lang }) {
 
       {showForm && (
         <div className="card-warm space-y-3 animate-fade-up">
-          <h2 className="font-display font-semibold text-ink">{t('recordReading', lang)}</h2>
+          <h2 className="font-display font-semibold text-ink">{editingId ? t('editReading', lang) : t('recordReading', lang)}</h2>
           <div>
             <label className="block text-caption font-medium text-ink-light mb-1.5">
               {t('glucoseLevel', lang)}
@@ -177,9 +204,9 @@ export default function NazarGlucose({ lang }) {
           </div>
           <div className="flex gap-2">
             <button onClick={handleSave} disabled={saving} className="btn-teal flex-1 !text-sm">
-              {saving ? t('saving', lang) : t('saveReading', lang)}
+              {saving ? t('saving', lang) : editingId ? t('updateReading', lang) : t('saveReading', lang)}
             </button>
-            <button onClick={() => setShowForm(false)} className="btn-outline flex-1 !text-sm">
+            <button onClick={resetForm} className="btn-outline flex-1 !text-sm">
               {t('cancel', lang)}
             </button>
           </div>
@@ -242,6 +269,17 @@ export default function NazarGlucose({ lang }) {
                   }`}>
                     {reading.status === 'high' ? t('high', lang) : reading.status === 'low' ? t('low', lang) : t('normal', lang)}
                   </span>
+                  <button
+                    onClick={() => handleEdit(reading)}
+                    className="w-7 h-7 rounded-lg text-ink-muted hover:bg-teal-pale hover:text-teal-deep flex items-center justify-center"
+                    aria-label={t('editReading', lang)}
+                    title={t('editReading', lang)}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
                   <button
                     onClick={() => handleDelete(reading.id)}
                     className="w-7 h-7 rounded-lg text-ink-muted hover:bg-kumkum-light hover:text-kumkum-red flex items-center justify-center"

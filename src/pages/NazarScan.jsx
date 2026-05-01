@@ -21,7 +21,9 @@ async function urlToBlob(url) {
 
 export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
   const { token } = useAuth()
-  const [step, setStep] = useState(1)               // 1=photo, 2=analyzing
+  const [step, setStep] = useState(1)               // 1=photo, 2=upload+analyze
+  const [phase, setPhase] = useState('idle')        // idle | uploading | analyzing
+  const [uploadProgress, setUploadProgress] = useState(0)
   const [patientId, setPatientId] = useState(initialPatientId)
   const [preview, setPreview] = useState(null)
   const [photoQuality, setPhotoQuality] = useState(null)
@@ -107,6 +109,8 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
   const handleSendForScan = async () => {
     if (!preview || !token) return
     setStep(2)
+    setPhase('uploading')
+    setUploadProgress(0)
     setError(null)
 
     try {
@@ -114,15 +118,30 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
       const fd = new FormData()
       fd.append('image', blob, 'fundus.jpg')
 
-      const res = await fetch(SCAN_URL, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
+      // XHR (not fetch) so we can hook the upload-progress event for the UI bar.
+      const data = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.upload.addEventListener('progress', (ev) => {
+          if (ev.lengthComputable) {
+            setUploadProgress(Math.round((ev.loaded / ev.total) * 100))
+          }
+        })
+        xhr.upload.addEventListener('load', () => {
+          setUploadProgress(100)
+          setPhase('analyzing')
+        })
+        xhr.addEventListener('load', () => {
+          let parsed = {}
+          try { parsed = JSON.parse(xhr.responseText) } catch { /* keep empty */ }
+          if (xhr.status >= 200 && xhr.status < 300) resolve(parsed)
+          else reject(new Error(parsed.error || `Scan failed (${xhr.status})`))
+        })
+        xhr.addEventListener('error', () => reject(new Error('Network error')))
+        xhr.addEventListener('abort', () => reject(new Error('Upload aborted')))
+        xhr.open('POST', SCAN_URL)
+        xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+        xhr.send(fd)
       })
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        throw new Error(data.error || `Scan failed (${res.status})`)
-      }
 
       // Adapt API response → NazarResult-compatible shape (legacy: severity, confidence%)
       const severity = CLASS_TO_SEVERITY[data.classification] ?? 0
@@ -142,6 +161,8 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
     } catch (e) {
       setError(e.message || 'Could not analyze image. Please try again.')
       setStep(1)
+      setPhase('idle')
+      setUploadProgress(0)
     }
   }
 
@@ -324,28 +345,52 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
 
       {step === 2 && (
         <div className="flex flex-col items-center py-12 animate-fade-up">
-          <IrisLoader size={96} />
-          <p className="font-display font-bold text-teal-deep text-heading mt-6 animate-heartbeat">
-            {t('analyzing', lang)}
-          </p>
-          <p className="text-ink-muted text-caption mt-2">{t('estimatedWait', lang)}</p>
-          <div className="mt-8 opacity-20">
-            <svg width="200" height="40" viewBox="0 0 200 40">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <circle
-                  key={i}
-                  cx={20 + i * 40}
-                  cy="20"
-                  r="12"
-                  fill="none"
-                  stroke="#0A6E6E"
-                  strokeWidth="1"
-                  className="animate-heartbeat"
-                  style={{ animationDelay: `${i * 200}ms` }}
-                />
-              ))}
-            </svg>
-          </div>
+          {phase === 'uploading' ? (
+            <>
+              <div className="w-16 h-16 mb-6 bg-teal-pale rounded-full flex items-center justify-center">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0A6E6E" strokeWidth="2.5">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                </svg>
+              </div>
+              <p className="font-display font-bold text-teal-deep text-heading">{t('uploading', lang)}</p>
+              <div className="w-full max-w-xs mt-6">
+                <div className="h-2 bg-ivory-dark rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-teal-deep transition-all duration-200 ease-out"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+                <p className="text-ink-muted text-caption mt-2 text-center font-mono">
+                  {t('uploadProgress', lang, { percent: uploadProgress })}
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <IrisLoader size={96} />
+              <p className="font-display font-bold text-teal-deep text-heading mt-6 animate-heartbeat">
+                {t('analyzing', lang)}
+              </p>
+              <p className="text-ink-muted text-caption mt-2">{t('estimatedWait', lang)}</p>
+              <div className="mt-8 opacity-20">
+                <svg width="200" height="40" viewBox="0 0 200 40">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <circle
+                      key={i}
+                      cx={20 + i * 40}
+                      cy="20"
+                      r="12"
+                      fill="none"
+                      stroke="#0A6E6E"
+                      strokeWidth="1"
+                      className="animate-heartbeat"
+                      style={{ animationDelay: `${i * 200}ms` }}
+                    />
+                  ))}
+                </svg>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

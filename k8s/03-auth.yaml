@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: registry.gheware-ai.com/nazarai/auth:v1
+          image: registry.gheware-ai.com/nazarai/auth:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: registry.gheware-ai.com/nazarai/web:v7
+          image: registry.gheware-ai.com/nazarai/web:v8
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
