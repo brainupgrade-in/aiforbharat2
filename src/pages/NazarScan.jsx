@@ -30,6 +30,10 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
   const [photoQuality, setPhotoQuality] = useState(null)
   const [qualityReason, setQualityReason] = useState(null)   // 'too_small' | 'blurry' | null
   const [showCamera, setShowCamera] = useState(false)
+  // Default to front camera — primary use case is the patient pointing the
+  // phone at their own eye. ASHA workers / clinic users with a fundus lens
+  // adapter can flip to the back camera with the in-frame button.
+  const [cameraFacing, setCameraFacing] = useState('user')   // 'user' (front) | 'environment' (back)
   const [cameraError, setCameraError] = useState(null)
   const [error, setError] = useState(null)
 
@@ -50,14 +54,22 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
     setShowCamera(false)
   }
 
-  const startCamera = async () => {
+  const startCamera = async (facing) => {
+    const desiredFacing = facing || cameraFacing
+    const wasShown = showCamera
     setCameraError(null)
+    // Tear down any existing stream first (needed when flipping)
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current = null
+    }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+        video: { facingMode: desiredFacing, width: { ideal: 1280 }, height: { ideal: 720 } },
       })
       streamRef.current = stream
       setShowCamera(true)
+      setCameraFacing(desiredFacing)
       requestAnimationFrame(() => {
         if (videoRef.current) videoRef.current.srcObject = stream
       })
@@ -66,8 +78,14 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
       setCameraError(err.name === 'NotAllowedError'
         ? 'Camera permission denied. Please allow camera access.'
         : 'Could not access camera. Try uploading a photo instead.')
-      fileRef.current?.click()
+      // Only fall back to the file picker if this is the *initial* camera open;
+      // a failed flip should keep the user inside the camera UI.
+      if (!wasShown) fileRef.current?.click()
     }
+  }
+
+  const flipCamera = () => {
+    startCamera(cameraFacing === 'environment' ? 'user' : 'environment')
   }
 
   const runQualityCheck = useCallback(async (src) => {
@@ -244,7 +262,20 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
                     <line x1="160" y1="100" x2="190" y2="100" stroke="#12ABAB" strokeWidth="0.5" />
                   </svg>
                 </div>
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4">
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center gap-5">
+                  <button
+                    onClick={flipCamera}
+                    className="w-12 h-12 bg-white/80 rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+                    aria-label={cameraFacing === 'user' ? 'Switch to back camera' : 'Switch to front camera'}
+                    title={cameraFacing === 'user' ? 'Front camera (tap for back)' : 'Back camera (tap for front)'}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M23 4v6h-6" />
+                      <path d="M1 20v-6h6" />
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10" />
+                      <path d="M20.49 15A9 9 0 0 1 5.64 18.36L1 14" />
+                    </svg>
+                  </button>
                   <button
                     onClick={captureFromCamera}
                     className="w-16 h-16 bg-white rounded-full border-4 border-teal-deep flex items-center justify-center shadow-lg active:scale-95 transition-transform"
