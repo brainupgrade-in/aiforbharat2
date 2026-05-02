@@ -4,7 +4,8 @@ AI-powered diabetic retinopathy screening and diabetes management for India's 89
 
 **Live:** [https://nazarai.gheware-ai.com/](https://nazarai.gheware-ai.com/)
 **GitHub:** [https://github.com/brainupgrade-in/aiforbharat2](https://github.com/brainupgrade-in/aiforbharat2)
-**Demo Video:** [https://youtu.be/G620A-YF_bY](https://youtu.be/G620A-YF_bY)
+**Demo Video:** [https://youtu.be/G620A-YF_bY](https://youtu.be/G620A-YF_bY) (full 2:45 walkthrough)
+**How-To Short:** [https://youtube.com/shorts/Xhfi6niUU90](https://youtube.com/shorts/Xhfi6niUU90) (60 seconds, vertical)
 
 **Team:** TheHealthGheware · **Lead:** Rajesh Gheware (25+ yrs at JPMorgan Chase, Deutsche Bank, Morgan Stanley)
 **Hackathon:** AWS AI for Bharat (entered Round 2; concluded)
@@ -268,7 +269,8 @@ The original AWS-based projection (~₹3 lakh/month at 100K users) was retired a
 ## Quick Links
 
 - **Live:** [https://nazarai.gheware-ai.com/](https://nazarai.gheware-ai.com/)
-- **Demo video:** [https://youtu.be/G620A-YF_bY](https://youtu.be/G620A-YF_bY)
+- **Demo video (long-form):** [https://youtu.be/G620A-YF_bY](https://youtu.be/G620A-YF_bY)
+- **How-To Short:** [https://youtube.com/shorts/Xhfi6niUU90](https://youtube.com/shorts/Xhfi6niUU90)
 - **Developer guide:** `CLAUDE.md`
 - **Diabetes scope rationale:** `DIABETES_FOCUS.md`
 - **Hackathon submission record:** `IDEA_SUBMISSION.md`, `PROJECT_SUMMARY.md`, `*.pptx`

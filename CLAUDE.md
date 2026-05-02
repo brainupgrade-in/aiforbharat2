@@ -63,8 +63,9 @@ Design an AI solution that improves efficiency, understanding, or support within
 - **E2E Integration Tests** — 20/20 passing (Vitest) ✅
   - Magic-link auth, Hasura GraphQL CRUD with RLS (incl. admin-only `login_otp`), ollama_cloud chatbot, full retina-scan pipeline (upload → classify → persist → image roundtrip → cross-user 404), live site health check
 - **Intro/Demo Video** — Live on YouTube ✅
-  - YouTube: https://youtu.be/G620A-YF_bY
-  - Built with Remotion 4.0 (React-based) + edge-tts voiceover
+  - Long-form (2:45, 1920×1080): https://youtu.be/G620A-YF_bY
+  - How-To Short (53s, 1080×1920): https://youtube.com/shorts/Xhfi6niUU90
+  - Both built with Remotion 4.0 (custom comps in `video/`) + edge-tts voiceover. The Short uses `en-IN-NeerjaExpressiveNeural` (female Indian English) at +10% rate over an `upbeat.mp3` bg loop, with fresh app screenshots captured via `scripts/capture-app-screenshots.js` (Puppeteer + seeded test user). Published to the **Health Gheware** YouTube channel via Alex agent's OAuth credentials in the `youtube-credentials` Secret in the `alex-gheware` namespace on the NUC.
 - **Next phase:** meal-photo analyzer (will need shared object storage tier — MinIO when a second service needs the images), validation against real Indian fundus captures, model upgrade to RETFound if smartphone-image accuracy is insufficient
 
 ## Repository Structure
