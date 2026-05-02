@@ -62,6 +62,30 @@ export default function NazarResult({ lang, result, onNavigate }) {
             </p>
           </div>
 
+          {/* Prominent screening-vs-diagnosis disclaimer when DR is detected.
+              Real-user feedback (Mangesh, May 2026): a bare-phone selfie was
+              graded as DR and the user immediately took it as a diagnosis,
+              which is not what the AI is actually capable of. */}
+          {!isOk && (
+            <div className="bg-amber-light border-2 border-amber-warm/50 rounded-2xl p-4 flex gap-3 items-start animate-fade-up" style={{ animationDelay: '80ms' }}>
+              <div className="w-11 h-11 bg-amber-warm rounded-xl flex items-center justify-center shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-display font-bold text-ink mb-1.5 leading-tight">
+                  {t('screeningCaveatTitle', lang)}
+                </p>
+                <p className="text-[12px] text-ink-light leading-relaxed">
+                  {t('screeningCaveatBody', lang)}
+                </p>
+              </div>
+            </div>
+          )}
+
           {recommendations.length > 0 && (
             <div className="card-warm">
               <h2 className="font-display font-semibold text-ink mb-3">{t('recommendations', lang)}</h2>

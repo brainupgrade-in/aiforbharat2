@@ -109,6 +109,18 @@ export const strings = {
   // Photo quality reasons
   photoTooSmall: { en: 'Image too small. Need at least 224×224 pixels.', hi: 'इमेज बहुत छोटी है। कम से कम 224×224 पिक्सेल चाहिए।', kn: 'ಚಿತ್ರ ತುಂಬಾ ಸಣ್ಣದು. ಕನಿಷ್ಠ 224×224 ಪಿಕ್ಸೆಲ್ ಬೇಕು.' },
   photoBlurry: { en: 'Image looks blurry. Hold steady and retake.', hi: 'इमेज धुंधली है। स्थिर रखकर फिर लें।', kn: 'ಚಿತ್ರ ಮಸುಕಾಗಿದೆ. ಸ್ಥಿರವಾಗಿ ಹಿಡಿದು ಮತ್ತೆ ತೆಗೆಯಿರಿ.' },
+  // Prominent disclaimer banner shown above the result when DR is detected,
+  // so users don't mistake the AI screening for a clinical diagnosis.
+  screeningCaveatTitle: {
+    en: 'Screening tool — not a diagnosis',
+    hi: 'जाँच का साधन — निदान नहीं',
+    kn: 'ಪರೀಕ್ಷಾ ಸಾಧನ — ರೋಗ ನಿರ್ಣಯವಲ್ಲ',
+  },
+  screeningCaveatBody: {
+    en: 'A clinical fundus exam (with a proper retinal camera) is the only reliable way to confirm diabetic retinopathy. A bare phone camera cannot capture the back of your eye. Please book an appointment with an ophthalmologist to verify this result.',
+    hi: 'डायबिटिक रेटिनोपैथी की पुष्टि सिर्फ़ अस्पताल की फंडस जाँच से ही की जा सकती है। साधारण फ़ोन कैमरा आँख के अंदर का चित्र नहीं ले सकता। कृपया नेत्र विशेषज्ञ से मिलकर इस परिणाम की पुष्टि करें।',
+    kn: 'ಮಧುಮೇಹ ರೆಟಿನೋಪತಿಯನ್ನು ಆಸ್ಪತ್ರೆಯ ಫಂಡಸ್ ಪರೀಕ್ಷೆಯಿಂದ ಮಾತ್ರ ದೃಢೀಕರಿಸಬಹುದು. ಸಾಮಾನ್ಯ ಫೋನ್ ಕ್ಯಾಮೆರಾ ಕಣ್ಣಿನ ಒಳಭಾಗದ ಚಿತ್ರ ತೆಗೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ. ಈ ಫಲಿತಾಂಶವನ್ನು ಪರಿಶೀಲಿಸಲು ನೇತ್ರ ತಜ್ಞರನ್ನು ಭೇಟಿಮಾಡಿ.',
+  },
   confidence: { en: 'AI Confidence', hi: 'AI विश्वास', kn: 'AI ವಿಶ್ವಾಸ' },
   doctorMode: { en: 'Doctor View', hi: 'डॉक्टर व्यू', kn: 'ವೈದ್ಯರ ನೋಟ' },
   patientMode: { en: 'Patient View', hi: 'मरीज़ व्यू', kn: 'ರೋಗಿಯ ನೋಟ' },
