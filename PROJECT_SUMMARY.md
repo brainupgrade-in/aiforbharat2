@@ -17,7 +17,7 @@ India has 89.8 million diabetics — the world's second-largest population — y
 
 **Live Prototype:** [https://main.d3vwqyp1h0elbo.amplifyapp.com/](https://main.d3vwqyp1h0elbo.amplifyapp.com/)
 **GitHub:** [https://github.com/brainupgrade-in/aiforbharat2](https://github.com/brainupgrade-in/aiforbharat2)
-**Demo Video:** [https://youtu.be/G620A-YF_bY](https://youtu.be/G620A-YF_bY)
+**Demo Video:** [https://youtube.com/shorts/Xhfi6niUU90](https://youtube.com/shorts/Xhfi6niUU90) (53s YouTube Short)
 
 ### Implemented Features (Live)
 
