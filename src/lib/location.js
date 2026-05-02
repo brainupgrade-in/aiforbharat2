@@ -100,13 +100,14 @@ export function getGoogleMapsDirectionsURL(lat, lng, destQuery) {
 }
 
 /**
- * Generate WhatsApp share message with scan result and location
+ * Build the share text for a DR screening result. Used by both the Web Share
+ * API path (preferred on mobile) and the WhatsApp URL fallback.
  */
-export function getWhatsAppShareURL({ patientId, grade, confidence, lat, lng, locationName }) {
+function buildShareMessage({ patientId, grade, confidence, lat, lng, locationName }) {
   const locationLink = lat && lng
     ? `\n📍 Location: ${locationName || ''}\nhttps://www.google.com/maps?q=${lat},${lng}`
     : ''
-  const message = `🔬 *Nazar AI — DR Screening Result*
+  return `🔬 *Nazar AI — DR Screening Result*
 
 👤 Patient: ${patientId}
 🏥 DR Grade: ${grade}
@@ -116,8 +117,38 @@ ${locationLink}
 ⚠️ Please consult an ophthalmologist for professional evaluation.
 
 Screened with Nazar AI — https://nazarai.gheware-ai.com`
+}
 
-  return `https://wa.me/?text=${encodeURIComponent(message)}`
+/**
+ * Share a DR scan result. Prefers the native Web Share API (most modern mobile
+ * browsers — opens the system share sheet with WhatsApp + many other apps).
+ * Falls back to api.whatsapp.com (more reliable than wa.me/?text=, which fails
+ * silently on some Android browsers when no phone number is supplied).
+ */
+export async function shareScanResult(opts) {
+  const message = buildShareMessage(opts)
+
+  // 1. Web Share API — best UX on mobile, picks up any installed messaging app
+  if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+    try {
+      await navigator.share({ title: 'Nazar AI — DR screening result', text: message })
+      return { ok: true, via: 'web-share' }
+    } catch (err) {
+      if (err?.name === 'AbortError') return { ok: false, via: 'web-share', cancelled: true }
+      // Fall through to WhatsApp URL fallback on any other error
+    }
+  }
+
+  // 2. WhatsApp URL fallback — api.whatsapp.com is more reliable than wa.me/
+  //    when no recipient phone number is specified.
+  const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`
+  if (typeof window !== 'undefined') window.open(url, '_blank', 'noopener,noreferrer')
+  return { ok: true, via: 'whatsapp-url' }
+}
+
+/** @deprecated Kept for backward-compat — use shareScanResult() instead. */
+export function getWhatsAppShareURL(opts) {
+  return `https://api.whatsapp.com/send?text=${encodeURIComponent(buildShareMessage(opts))}`
 }
 
 /**

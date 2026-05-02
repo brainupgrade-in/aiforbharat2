@@ -56,12 +56,17 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
 
   const startCamera = async (facing) => {
     const desiredFacing = facing || cameraFacing
-    const wasShown = showCamera
     setCameraError(null)
     // Tear down any existing stream first (needed when flipping)
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop())
       streamRef.current = null
+    }
+    // Some browsers (older Android WebViews, in-app browsers like Instagram/
+    // FB browser) don't expose mediaDevices. Detect and explain.
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCameraError('This browser can\'t access the camera. Try Chrome or Safari, or use Upload Photo below.')
+      return
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -70,19 +75,39 @@ export default function NazarScan({ lang, onResult, initialPatientId = '' }) {
       streamRef.current = stream
       setShowCamera(true)
       setCameraFacing(desiredFacing)
-      requestAnimationFrame(() => {
-        if (videoRef.current) videoRef.current.srcObject = stream
-      })
+      // Stream attachment happens in the useEffect below, after the <video>
+      // element is mounted. requestAnimationFrame was unreliable on slower
+      // mobile devices.
     } catch (err) {
       console.error('Camera error:', err)
-      setCameraError(err.name === 'NotAllowedError'
-        ? 'Camera permission denied. Please allow camera access.'
-        : 'Could not access camera. Try uploading a photo instead.')
-      // Only fall back to the file picker if this is the *initial* camera open;
-      // a failed flip should keep the user inside the camera UI.
-      if (!wasShown) fileRef.current?.click()
+      const name = err?.name || ''
+      if (name === 'NotAllowedError' || name === 'PermissionDeniedError') {
+        setCameraError('Camera permission was denied. Please tap "Take Photo" again and allow access — or use Upload Photo below.')
+      } else if (name === 'NotFoundError' || name === 'OverconstrainedError') {
+        setCameraError('No camera found. Try Upload Photo below.')
+      } else if (name === 'NotReadableError') {
+        setCameraError('Camera is in use by another app. Close the other app and try again.')
+      } else {
+        setCameraError('Could not start the camera. Try Upload Photo below, or open this page in Chrome / Safari.')
+      }
+      // Don't auto-trigger the file picker — most mobile browsers block
+      // programmatic file-input clicks unless they're the *direct* user
+      // gesture, so it'd silently fail and Mangesh sees nothing happen.
+      // The Upload Photo button right below stays available.
     }
   }
+
+  // Reliably attach the MediaStream once the <video> element is mounted.
+  // requestAnimationFrame inside startCamera was racing on slower devices
+  // (the video ref was sometimes still null when rAF fired).
+  useEffect(() => {
+    if (!showCamera || !videoRef.current || !streamRef.current) return
+    const v = videoRef.current
+    v.srcObject = streamRef.current
+    v.muted = true              // iOS Safari requires muted before play()
+    v.playsInline = true
+    v.play().catch((e) => console.warn('video.play() rejected:', e))
+  }, [showCamera])
 
   const flipCamera = () => {
     startCamera(cameraFacing === 'environment' ? 'user' : 'environment')
